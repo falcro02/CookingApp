@@ -1,0 +1,18 @@
+{
+  "resourceName": "MealsDB",
+  "tableName": "Meals",
+  "partitionKey": {
+    "fieldName": "id",
+    "fieldType": "string"
+  },
+  "gsi": [
+    {
+      "name": "byUser",
+      "partitionKey": {
+        "fieldName": "userId",
+        "fieldType": "string"
+      }
+    }
+  ],
+  "triggerFunctions": []
+}
