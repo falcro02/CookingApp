@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/meals": {
+      "name": "/meals",
+      "lambdaFunction": "mealsFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

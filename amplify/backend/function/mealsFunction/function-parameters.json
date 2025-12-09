@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "storage": {
+      "MealsDB": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
