@@ -14,18 +14,6 @@
     "categories": {
       "storage": {
         "MealsDB": {}
-      },
-      "function": {
-        "mealsFunction": {
-          "deploymentBucketName": "amplify-cookingwebapp-dev-6ad4a-deployment",
-          "s3Key": "amplify-builds/mealsFunction-33416d33515256595641-build.zip"
-        }
-      },
-      "api": {
-        "cookingapi": {}
-      },
-      "auth": {
-        "cookingwebappedcc5497": {}
       }
     }
   }

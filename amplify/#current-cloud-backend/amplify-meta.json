@@ -20,7 +20,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-cookingwebapp-dev-6ad4a-deployment/amplify-cfn-templates/storage/MealsDB-cloudformation-template.json",
         "logicalId": "storageMealsDB"
       },
-      "lastPushTimeStamp": "2025-12-08T01:02:03.746Z",
+      "lastPushTimeStamp": "2025-12-09T11:26:58.028Z",
       "output": {
         "PartitionKeyName": "id",
         "Region": "eu-south-1",
@@ -32,116 +32,7 @@
       "lastPushDirHash": "Ogr1FVTiG2Ry7iD9bAmHbDf4KKA="
     }
   },
-  "function": {
-    "mealsFunction": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "storage",
-          "resourceName": "MealsDB",
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "attributeEnvMap": {
-            "Name": "TABLE_NAME",
-            "Arn": "TABLE_ARN"
-          }
-        }
-      ],
-      "lastBuildTimeStamp": "2025-12-08T01:00:40.112Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2025-12-08T01:00:40.709Z",
-      "distZipFilename": "mealsFunction-33416d33515256595641-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-cookingwebapp-dev-6ad4a-deployment",
-        "s3Key": "amplify-builds/mealsFunction-33416d33515256595641-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-cookingwebapp-dev-6ad4a-deployment/amplify-cfn-templates/function/mealsFunction-cloudformation-template.json",
-        "logicalId": "functionmealsFunction"
-      },
-      "lastPushTimeStamp": "2025-12-08T01:02:04.397Z",
-      "output": {
-        "LambdaExecutionRoleArn": "arn:aws:iam::142281049130:role/cookingwebappLambdaRole465044b4-dev",
-        "Region": "eu-south-1",
-        "Arn": "arn:aws:lambda:eu-south-1:142281049130:function:mealsFunction-dev",
-        "Name": "mealsFunction-dev",
-        "LambdaExecutionRole": "cookingwebappLambdaRole465044b4-dev"
-      },
-      "lastPushDirHash": "ap8KyJWxAnfYw0nFPHY3Ay1vE5o="
-    }
-  },
-  "api": {
-    "cookingapi": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "mealsFunction",
-          "attributes": [
-            "Name",
-            "Arn"
-          ]
-        }
-      ],
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-cookingwebapp-dev-6ad4a-deployment/amplify-cfn-templates/api/cookingapi-cloudformation-template.json",
-        "logicalId": "apicookingapi"
-      },
-      "lastPushTimeStamp": "2025-12-08T01:02:03.750Z",
-      "output": {
-        "ApiName": "cookingapi",
-        "RootUrl": "https://rvqwi5sqyk.execute-api.eu-south-1.amazonaws.com/dev",
-        "ApiId": "rvqwi5sqyk"
-      },
-      "lastPushDirHash": "tYVM3okHQkERTCyVwAsFGKYLTDc="
-    }
-  },
-  "auth": {
-    "cookingwebappedcc5497": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false,
-      "frontendAuthConfig": {
-        "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 8,
-          "passwordPolicyCharacters": []
-        },
-        "mfaConfiguration": "OFF",
-        "mfaTypes": [
-          "SMS"
-        ],
-        "verificationMechanisms": [
-          "EMAIL"
-        ]
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-cookingwebapp-dev-6ad4a-deployment/amplify-cfn-templates/auth/cookingwebappedcc5497-cloudformation-template.json",
-        "logicalId": "authcookingwebappedcc5497"
-      },
-      "lastPushTimeStamp": "2025-12-08T01:02:03.750Z",
-      "output": {
-        "UserPoolId": "eu-south-1_0rDvzVYOG",
-        "AppClientIDWeb": "33oskqtvdn2c747v1ltsj3bu9i",
-        "AppClientID": "6fko7cnoto92uqskkf212g66dp",
-        "IdentityPoolId": "eu-south-1:96eec037-1e6f-4827-a4a9-3e328d298536",
-        "UserPoolArn": "arn:aws:cognito-idp:eu-south-1:142281049130:userpool/eu-south-1_0rDvzVYOG",
-        "IdentityPoolName": "cookingwebappedcc5497_identitypool_edcc5497__dev",
-        "UserPoolName": "cookingwebappedcc5497_userpool_edcc5497"
-      },
-      "lastPushDirHash": "axFkAeb8SiNQAsMj+oCZxuxV+Q8="
-    }
-  }
+  "function": {},
+  "api": {},
+  "auth": {}
 }
