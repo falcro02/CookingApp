@@ -32,11 +32,11 @@ Resources:
       BillingMode: PAY_PER_REQUEST
 
   # --- 2. THE UPDATED LAMBDA FUNCTION ---
-  HelloWorldFunction:
+  MealFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: hello-world/
-      Handler: app.lambdaHandler
+      CodeUri: backend/ 
+      Handler: src/handlers/mealHandler.lambdaHandler 
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -55,15 +55,14 @@ Resources:
           Properties:
             Path: /meals
             Method: any # Accepts GET, POST, PUT, DELETE
-
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: es2020
+        Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - app.ts
+          - src/handlers/mealHandler.ts
 
   # Monitoring with Application Insights
   ApplicationResourceGroup:
