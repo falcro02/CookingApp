@@ -1,39 +1,71 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  cooking_web_app
+  cooking_web_app - Backend with DynamoDB for meal management
 
-  Sample SAM Template for cooking_web_app
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
-
+    Timeout: 10 
+    MemorySize: 128
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,DELETE,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+      
 Resources:
+  # --- 1. DATABASE (Single Table Design) ---
+  CookingAppTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CookingAppData
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+
+  # --- 2. THE UPDATED LAMBDA FUNCTION ---
   HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: hello-world/
       Handler: app.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
-      - x86_64
+        - x86_64
+      # Environment variables for the TypeScript code
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      # CRUD permissions for the table
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
       Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        # Endpoint to manage meals
+        MealsApi:
+          Type: Api
           Properties:
-            Path: /hello
-            Method: get
-    Metadata: # Manage esbuild properties
+            Path: /meals
+            Method: any # Accepts GET, POST, PUT, DELETE
+
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
         Target: es2020
         Sourcemap: true
         EntryPoints:
-        - app.ts
+          - app.ts
 
+  # Monitoring with Application Insights
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
@@ -47,17 +79,9 @@ Resources:
       ResourceGroupName:
         Ref: ApplicationResourceGroup
       AutoConfigurationEnabled: 'true'
+
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World 
-      function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello/"
-  HelloWorldFunction:
-    Description: Hello World Lambda Function ARN
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+  # The URL that the frontend will use to call the backend API
+  CookingApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/meals"
