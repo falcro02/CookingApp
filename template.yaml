@@ -50,6 +50,7 @@ Resources:
         AllowOrigin: "'*'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false 
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: !GetAtt CookingUserPool.Arn
@@ -71,7 +72,7 @@ Resources:
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
 
-  # --- 3. THE UPDATED LAMBDA FUNCTION ---
+  # --- 5. THE LAMBDA FUNCTIONS ---
   MealFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -80,26 +81,34 @@ Resources:
       Runtime: nodejs24.x
       Architectures:
         - x86_64
-      # Environment variables for the TypeScript code
       Environment:
         Variables:
           TABLE_NAME: !Ref CookingAppTable
-      # CRUD permissions for the table
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CookingAppTable
       Events:
-        # Endpoint to manage meals
         MealsApi:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
             Path: /meals
-            Method: any # Accepts GET, POST, PUT, DELETE
+            Method: any 
+        WeeklyPlansApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /weekly-plans
+            Method: any
     Metadata:
       BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/mealHandler.ts
 
-  # --- 4. PANTRY FUNCTION ---
   PantryFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -123,8 +132,13 @@ Resources:
             Method: any
     Metadata:
       BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/pantryHandler.ts
 
-  # --- 5. PREFERENCES FUNCTION ---
   PreferencesFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -148,8 +162,13 @@ Resources:
             Method: any
     Metadata:
       BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/preferencesHandler.ts
 
-  # --- 6. AI FUNCTION ---
   AiFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -168,7 +187,7 @@ Resources:
             Effect: Allow
             Action:
               - bedrock:InvokeModel
-            Resource: "*"  # Restrict this to specific models in production
+            Resource: "*"
       Events:
         AiApi:
           Type: Api
@@ -183,9 +202,9 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - src/handlers/mealHandler.ts
+          - src/handlers/aiHandler.ts
 
-  # Monitoring with Application Insights
+  # --- 6. MONITORING ---
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
@@ -201,16 +220,13 @@ Resources:
       AutoConfigurationEnabled: 'true'
 
 Outputs:
-  # The URL that the frontend will use to call the backend API
   CookingApiUrl:
     Description: "API Gateway endpoint URL"
-    # Change ${ServerlessRestApi} to ${CookingApi} here:
     Value: !Sub "https://${CookingApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/meals"
     
-  # Output the Cognito IDs needed for the React frontend
   UserPoolId:
     Description: "Cognito User Pool ID"
-    Value: !Ref CookingUserPool    aws cloudformation describe-stacks --stack-name cooking-web-stack --region eu-south-1 --query "Stacks[0].Outputs" --output json
+    Value: !Ref CookingUserPool
 
   UserPoolClientId:
     Description: "Cognito User Pool Client ID"

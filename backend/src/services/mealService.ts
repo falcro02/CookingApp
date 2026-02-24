@@ -1,11 +1,6 @@
 import { MealRepository } from "../databases/mealRepository";
 import { Meal, CreateMealInput } from "../models/meal";
 
-/**
- * Service class to handle business logic for Meals.
- * This layer is independent of the transport layer (AWS Lambda)
- * and the data layer (DynamoDB).
- */
 export class MealService {
     private repository: MealRepository;
 
@@ -13,38 +8,50 @@ export class MealService {
         this.repository = new MealRepository();
     }
 
-    /**
-     * Retrieves all meals for a user and sorts them by date
-     */
     async getUserMeals(userId: string): Promise<Meal[]> {
         console.log(`Fetching meals for user: ${userId}`);
         const meals = await this.repository.findAllByUserId(userId);
-
-        // Logic: Sort meals by date (SK) before returning them
-        return meals.sort((a, b) => a.SK.localeCompare(b.SK));
+        return meals.sort((a, b) => (a.SK || "").localeCompare(b.SK || ""));
     }
 
-    /**
-     * Orchestrates the creation of a new meal
-     */
     async createMeal(userId: string, input: CreateMealInput): Promise<Meal> {
         const newMeal: Meal = {
             PK: userId,
-            SK: `MEAL#${input.date}`,
-            mealName: input.name,
-            ingredients: input.ingredients || [],
-            updatedAt: new Date().toISOString()
+            // ADDED Date.now() HERE: Now it looks like "MEAL#Monday#Dinner#173849503"
+            SK: `MEAL#${input.dayOfWeek}#${input.type}#${Date.now()}`,
+            name: input.name,
+            dayOfWeek: input.dayOfWeek,
+            type: input.type,
+            isEaten: false
         };
 
         await this.repository.save(newMeal);
         return newMeal;
     }
 
-    /**
-     * Handles meal deletion
-     */
-    async deleteUserMeal(userId: string, date: string): Promise<void> {
-        // Business logic could be added here (e.g., check permissions)
-        await this.repository.delete(userId, date);
+    async createWeeklyPlan(userId: string, meals: CreateMealInput[]): Promise<Meal[]> {
+        const savedMeals: Meal[] = [];
+
+        // Use Promise.all to save all the meals to DynamoDB at the same time (in parallel)
+        await Promise.all(meals.map(async (input) => {
+            const newMeal: Meal = {
+                PK: userId,
+                SK: `MEAL#${input.dayOfWeek}#${input.type}`,
+                name: input.name,
+                dayOfWeek: input.dayOfWeek,
+                type: input.type,
+                isEaten: false
+            };
+
+            await this.repository.save(newMeal);
+            savedMeals.push(newMeal);
+        }));
+
+        return savedMeals;
+    }
+
+    // Updated to expect the specific SK of the meal to delete
+    async deleteUserMeal(userId: string, sk: string): Promise<void> {
+        await this.repository.delete(userId, sk);
     }
 }

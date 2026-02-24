@@ -1,28 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom';
 import { Authenticator } from '@aws-amplify/ui-react';
+import { Dashboard } from './pages/Dashboard';
+import { ManagePlan } from './pages/ManagePlan';
 import './styles/App.css';
-import { MealList } from './components/MealList';
-import { MealForm } from './components/MealForm';
-import { apiService } from './services/apiService';
-import { Meal } from './types';
 
 function App() {
-  const [meals, setMeals] = useState<Meal[]>([]);
-
-  const loadMeals = async () => {
-    try {
-      const data = await apiService.getMeals();
-      setMeals(data);
-    } catch (error) {
-      console.error("Error loading meals:", error);
-    }
-  };
-
-  useEffect(() => {
-    loadMeals();
-  }, []);
-
   return (
     <Router>
       <div className="App">
@@ -30,15 +13,37 @@ function App() {
           {({ signOut, user }) => (
             <>
               <header className="App-header">
-                <h1>Il Mio Piano Alimentare</h1>
+                <div>
+                  <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <h1>Il Mio Piano Alimentare</h1>
+                  </Link>
+                </div>
                 <div className="user-controls">
-                  <span>Welcome, {user?.username}</span>
-                  <button onClick={signOut} style={{ marginLeft: '10px' }}>Sign out</button>
+                  Welcome, {user?.username}
+                  <button
+                    onClick={signOut}
+                    className="signout-btn"
+                  >
+                    Sign out
+                  </button>
                 </div>
               </header>
-              <main>
-                <MealForm onMealAdded={loadMeals} />
-                <MealList meals={meals} onDelete={loadMeals} />
+
+              {/* NEW: Global Navigation Bar */}
+              <nav className="main-nav">
+                <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                  Today's Menu
+                </NavLink>
+                <NavLink to="/manage" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                  Weekly Planner
+                </NavLink>
+              </nav>
+
+              <main className="main-content">
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/manage" element={<ManagePlan />} />
+                </Routes>
               </main>
             </>
           )}

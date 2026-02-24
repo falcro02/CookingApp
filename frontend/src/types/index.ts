@@ -1,57 +1,25 @@
-export interface Meal {
-    PK: string;
-    SK: string;
-    mealName: string;
-    ingredients: string[];
-    updatedAt: string;
-}
+export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+export type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack';
 
-export interface PantryItem {
-    id: string;
+export interface Meal {
+    PK?: string;
+    SK?: string;
     name: string;
-    quantity: number;
-    unit: string;
+    dayOfWeek: DayOfWeek;
+    type: MealType;
+    isEaten?: boolean;
 }
 
 export interface CreateMealInput {
     name: string;
-    date: string;
-    ingredients: string[];
+    dayOfWeek: DayOfWeek;
+    type: MealType;
 }
 
-export interface CreatePantryItemInput {
-    name: string;
-    quantity: number;
-    unit: string;
-}
-
-export interface UserPreferences {
-    dietaryRestrictions: string[];
-    allergies: string[];
-    dislikedIngredients: string[];
-    servingSize: number;
-}
-
-export interface UpdatePreferencesInput {
-    dietaryRestrictions?: string[];
-    allergies?: string[];
-    dislikedIngredients?: string[];
-    servingSize?: number;
-}
-
-export interface AiRecipeRequest {
-    ingredients: string[];
-    preferences?: {
-        dietary: string[];
-        allergies: string[];
-    };
-    mealType?: string;
-}
-
-export interface AiRecipeResponse {
-    recipeName: string;
-    description: string;
-    ingredients: string[];
-    instructions: string[];
-    estimatedTime: string;
+export interface WeeklyPlan {
+    id: string; // e.g., "WEEK#2026-02-23"
+    startDate: string;
+    endDate: string;
+    isActive: boolean;
+    meals: Meal[];
 }

@@ -11,13 +11,7 @@ const client = new DynamoDBClient({});
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME;
 
-/**
- * Encapsulates all DynamoDB operations for Meals
- */
 export class MealRepository {
-    /**
-     * Finds all meals for a specific user
-     */
     async findAllByUserId(userId: string): Promise<Meal[]> {
         const result = await ddbDocClient.send(new QueryCommand({
             TableName: tableName,
@@ -30,9 +24,6 @@ export class MealRepository {
         return (result.Items as Meal[]) || [];
     }
 
-    /**
-     * Saves or updates a meal
-     */
     async save(meal: Meal): Promise<void> {
         await ddbDocClient.send(new PutCommand({
             TableName: tableName,
@@ -40,15 +31,13 @@ export class MealRepository {
         }));
     }
 
-    /**
-     * Deletes a meal by its composite key
-     */
-    async delete(userId: string, date: string): Promise<void> {
+    // Updated to accept the full SK instead of just a date
+    async delete(userId: string, sk: string): Promise<void> {
         await ddbDocClient.send(new DeleteCommand({
             TableName: tableName,
             Key: {
                 PK: userId,
-                SK: `MEAL#${date}`
+                SK: sk
             }
         }));
     }
