@@ -10,7 +10,25 @@ const mealService = new MealService();
  */
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const method = event.httpMethod;
-    const userId = "USER#1"; // Static ID for now, will be replaced by Cognito ID later
+    let userId: string;
+
+    // --- AUTHENTICATION & LOCAL BYPASS LOGIC ---
+
+    // 1. Check if we are testing locally via SAM CLI
+    if (process.env.AWS_SAM_LOCAL) {
+        userId = "USER#LOCAL_MOCK_123";
+    }
+    // 2. Extract the real Cognito User ID (sub) when deployed in AWS
+    else if (event.requestContext?.authorizer?.claims?.sub) {
+        // We prepend "USER#" to keep a consistent Partition Key structure in DynamoDB
+        userId = `USER#${event.requestContext.authorizer.claims.sub}`;
+    }
+    // 3. Reject requests that lack valid Cognito claims (allow OPTIONS for CORS)
+    else if (method !== 'OPTIONS') {
+        return buildResponse(401, { message: "Unauthorized: Missing user claims" });
+    } else {
+        userId = "UNKNOWN"; // Fallback purely to allow the OPTIONS preflight to execute
+    }
 
     try {
         // Handle CORS Preflight

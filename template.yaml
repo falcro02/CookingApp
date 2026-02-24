@@ -14,7 +14,47 @@ Globals:
       AllowOrigin: "'*'"
       
 Resources:
-  # --- 1. DATABASE (Single Table Design) ---
+
+  # --- 1. COGNITO USER POOL ---
+  CookingUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: CookingAppUsers
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+
+  # --- 2. COGNITO USER POOL CLIENT (For React) ---
+  CookingUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: CookingReactApp
+      UserPoolId: !Ref CookingUserPool
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: false # Must be false for Single Page Apps like React
+
+  # --- 3. SECURE API GATEWAY ---
+  CookingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: CognitoAuthorizer
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !GetAtt CookingUserPool.Arn
+
+  # --- 4. DATABASE (Single Table Design) ---
   CookingAppTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -31,7 +71,7 @@ Resources:
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
 
-  # --- 2. THE UPDATED LAMBDA FUNCTION ---
+  # --- 3. THE UPDATED LAMBDA FUNCTION ---
   MealFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -53,8 +93,89 @@ Resources:
         MealsApi:
           Type: Api
           Properties:
+            RestApiId: !Ref CookingApi
             Path: /meals
             Method: any # Accepts GET, POST, PUT, DELETE
+    Metadata:
+      BuildMethod: esbuild
+
+  # --- 4. PANTRY FUNCTION ---
+  PantryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/ 
+      Handler: src/handlers/pantryHandler.lambdaHandler 
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+      Events:
+        PantryApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /pantry
+            Method: any
+    Metadata:
+      BuildMethod: esbuild
+
+  # --- 5. PREFERENCES FUNCTION ---
+  PreferencesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/ 
+      Handler: src/handlers/preferencesHandler.lambdaHandler 
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+      Events:
+        PreferencesApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /preferences
+            Method: any
+    Metadata:
+      BuildMethod: esbuild
+
+  # --- 6. AI FUNCTION ---
+  AiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/ 
+      Handler: src/handlers/aiHandler.lambdaHandler 
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource: "*"  # Restrict this to specific models in production
+      Events:
+        AiApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ai/recipes
+            Method: post
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -83,4 +204,14 @@ Outputs:
   # The URL that the frontend will use to call the backend API
   CookingApiUrl:
     Description: "API Gateway endpoint URL"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/meals"
+    # Change ${ServerlessRestApi} to ${CookingApi} here:
+    Value: !Sub "https://${CookingApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/meals"
+    
+  # Output the Cognito IDs needed for the React frontend
+  UserPoolId:
+    Description: "Cognito User Pool ID"
+    Value: !Ref CookingUserPool    aws cloudformation describe-stacks --stack-name cooking-web-stack --region eu-south-1 --query "Stacks[0].Outputs" --output json
+
+  UserPoolClientId:
+    Description: "Cognito User Pool Client ID"
+    Value: !Ref CookingUserPoolClient
