@@ -1,0 +1,39 @@
+site_name: Cooking
+repo_url: https://github.com/falcro02/CookingApp
+repo_name: falcro02/CookingApp
+theme:
+  name: material
+  favicon: icon.webp
+  logo: icon.webp
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - scheme: default
+      primary: red
+      accent: red
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Poppins
+    code: Roboto Mono
+  features:
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - navigation.footer
+    - navigation.expand
+    - content.code.copy
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+nav:
+  - Home: index.md
+  - API: api.md
+
