@@ -7,10 +7,10 @@
 Send ID token received from Apple ID provider and, if valid, get back a JWT
 token relative to the newly created session for the user.
 
-#### Request
+**Request**
 
 ```text
-POST api/signin/apple
+POST /signin/apple
 ```
 
 ```json
@@ -19,7 +19,7 @@ POST api/signin/apple
 }
 ```
 
-#### Response
+**Response**
 
 - 200: user authenticated successfully
 - 400: invalid ID token
@@ -35,10 +35,10 @@ POST api/signin/apple
 Send ID token received from Google ID provider and, if valid, get back a JWT
 token relative to the newly created session for the user.
 
-#### Request
+**Request**
 
 ```text
-POST api/signin/google
+POST /signin/google
 ```
 
 ```json
@@ -47,7 +47,7 @@ POST api/signin/google
 }
 ```
 
-#### Response
+**Response**
 
 - 200: user authenticated successfully
 - 400: invalid ID token
@@ -68,13 +68,13 @@ Items are returned in a dictionary where the item IDs are the key for an object
 with other item's data.
 Week day is represented as an integer between 0 and 6.
 
-#### Request
+**Request**
 
 ```text
-GET api/groceries
+GET /groceries
 ```
 
-#### Response
+**Response**
 
 - 200: grocery items found
 
@@ -101,10 +101,10 @@ Add a new element manually in the groceries list.
 
 Week day must be represented by an integer between 0 and 6.
 
-#### Request
+**Request**
 
 ```text
-POST api/groceries
+POST /groceries
 ```
 
 ```json
@@ -114,7 +114,7 @@ POST api/groceries
 }
 ```
 
-#### Response
+**Response**
 
 - 201: new item created
 - 400: invalid field
@@ -129,13 +129,13 @@ POST api/groceries
 
 Delete an item from the groceries list.
 
-#### Request
+**Request**
 
 ```text
-DELETE api/groceries/{itemID}
+DELETE /groceries/{itemID}
 ```
 
-#### Response
+**Response**
 
 - 200: item deleted successfully
 - 404: item not found
@@ -146,10 +146,10 @@ Edit fields of an item in the groceries list.
 Fields may be the description, or the check-box state.
 Omitted fields are ignored (not updated).
 
-#### Request
+**Request**
 
 ```text
-PATCH api/groceries/{itemID}
+PATCH /groceries/{itemID}
 ```
 
 ```json
@@ -159,7 +159,7 @@ PATCH api/groceries/{itemID}
 }
 ```
 
-#### Response
+**Response**
 
 - 200: fields updated successfully
 - 400: invalid field
@@ -168,8 +168,13 @@ PATCH api/groceries/{itemID}
 ### Generate items with AI
 
 Based on input data (available days, chosen plan and extra infos) and based on
-user data in the backend (meals plan and preferences), a list of grocery items
-are generated with AI and returned to the user.
+user data in the backend (meals plan and preferences), a task for generating a
+list of grocery items with AI is started.
+
+Generated items are not returned: to see the updated items list use the
+[get groceries](#get-groceries-list) request when the operation concludes.
+To check the status of the task it is possible to poll the
+[get status](#get-task-status) request with the returned task ID.
 
 In the request schema, available days are represented as a list of integers,
 where Monday is 0 and Sunday is 6.
@@ -181,13 +186,10 @@ Extra textual infos are provided with a single string.
 If replace field is false, old items in the groceries list aren't deleted and
 new ones are simply appended.
 
-New items are not returned: after the request eventually responds, the GET api
-is to be called separately.
-
-#### Request
+**Request**
 
 ```text
-POST api/groceries/generate
+POST /groceries/generate
 ```
 
 ```json
@@ -200,11 +202,49 @@ POST api/groceries/generate
 }
 ```
 
-#### Response
+**Response**
 
-- 201: generated items are created successfully
+- 202: generation task initialized
 - 400: invalid field
 - 404: plan not found
+- 409: a generation task is already executing for the user
+
+```json
+{
+    "taskID": string
+}
+```
+
+## Tasks
+
+### Get task status
+
+The status of ongoing tasks in the server (such as content generation with AI)
+can be retrieved by polling this request.
+Please poll after at least 2 seconds of delay.
+
+The status of a task is represented by an integer.
+
+- -1: task failed
+- 0: task is still running
+- 1: task completed successfully
+
+**Request**
+
+```text
+GET /tasks/{taskID}
+```
+
+**Response**
+
+- 200: task found
+- 404: task not found
+
+```json
+{
+    "status": int
+}
+```
 
 ## Plans
 
@@ -220,13 +260,13 @@ Items' icon identifies the Unicode value of an emoji.
 Week day is represented as an integer between 0 and 6.
 Empty plans are omitted.
 
-#### Request
+**Request**
 
 ```text
-GET api/plans
+GET /plans
 ```
 
-#### Response
+**Response**
 
 - 200: plans found
 
@@ -259,13 +299,13 @@ GET api/plans
 Clear the user's meals plan with the provided number (1-4).
 This request is idempotent: if the plan was already empty no error is returned.
 
-#### Request
+**Request**
 
 ```text
-DELETE api/plans/{planNR}
+DELETE /plans/{planNR}
 ```
 
-#### Response
+**Response**
 
 - 200: plan deleted successfully
 
@@ -279,10 +319,10 @@ Items' icon must identify the Unicode value of an emoji.
 Week day must be represented by an integer between 0 and 6.
 The plan in which to add the meal is identified by a number from 1 to 4.
 
-#### Request
+**Request**
 
 ```text
-POST api/meals
+POST /meals
 ```
 
 ```json
@@ -294,7 +334,7 @@ POST api/meals
 }
 ```
 
-#### Response
+**Response**
 
 - 201: new item created
 - 400: invalid field
@@ -309,13 +349,13 @@ POST api/meals
 
 Delete a meal from its plan.
 
-#### Request
+**Request**
 
 ```text
-DELETE api/meals/{itemID}
+DELETE /meals/{itemID}
 ```
 
-#### Response
+**Response**
 
 - 200: meal deleted successfully
 - 404: meal not found
@@ -325,10 +365,10 @@ DELETE api/meals/{itemID}
 Edit the description or the emoji of a meal.
 Omitted fields are ignored (not updated).
 
-#### Request
+**Request**
 
 ```text
-PATCH api/meals/{itemID}
+PATCH /meals/{itemID}
 ```
 
 ```json
@@ -338,7 +378,7 @@ PATCH api/meals/{itemID}
 }
 ```
 
-#### Response
+**Response**
 
 - 200: fields updated successfully
 - 400: invalid field
