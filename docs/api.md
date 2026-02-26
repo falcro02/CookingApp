@@ -144,6 +144,7 @@ DELETE api/groceries/{itemID}
 
 Edit fields of an item in the groceries list.
 Fields may be the description, or the check-box state.
+Omitted fields are ignored (not updated).
 
 #### Request
 
@@ -207,13 +208,139 @@ POST api/groceries/generate
 
 ## Plans
 
+### Get plans
+
+Get the weekly meals plans of the user.
+
+Plans are returned in a dictionary where the key is the plan number shown in
+the UI (1-4).
+Each plan is itself a dictionary where the item IDs are the key for an object i
+with other item's data.
+Items' icon identifies the Unicode value of an emoji.
+Week day is represented as an integer between 0 and 6.
+Empty plans are omitted.
+
+#### Request
+
+```text
 GET api/plans
+```
 
-POST api/plans/{planNr}/meals
+#### Response
 
-DELETE api/plans/{planNr}/meals/{itemID}
+- 200: plans found
 
-PATCH api/plans/{planNr}/meals/{itemID}
+```json
+{
+    "1": {
+        "id-1": {
+            "description": string,
+            "icon": string,
+            "weekDay": int
+        },
+        "id-2": {
+            "description": string,
+            "icon": string,
+            "weekDay": int
+        }
+    },
+    "2": {
+        "id-3": {
+            "description": string,
+            "icon": string,
+            "weekDay": int
+        }
+    }
+}
+```
 
-DELETE api/plans/{planNr}
+### Delete plan
+
+Clear the user's meals plan with the provided number (1-4).
+This request is idempotent: if the plan was already empty no error is returned.
+
+#### Request
+
+```text
+DELETE api/plans/{planNR}
+```
+
+#### Response
+
+- 200: plan deleted successfully
+
+## Meals
+
+### Add meal to plan
+
+Create a new meal in a plan.
+
+Items' icon must identify the Unicode value of an emoji.
+Week day must be represented by an integer between 0 and 6.
+The plan in which to add the meal is identified by a number from 1 to 4.
+
+#### Request
+
+```text
+POST api/meals
+```
+
+```json
+{
+    "description": string,
+    "icon": string,
+    "weekDay": int,
+    "plan": int
+}
+```
+
+#### Response
+
+- 201: new item created
+- 400: invalid field
+
+```json
+{
+    "itemID": string
+}
+```
+
+### Delete meal from plan
+
+Delete a meal from its plan.
+
+#### Request
+
+```text
+DELETE api/meals/{itemID}
+```
+
+#### Response
+
+- 200: meal deleted successfully
+- 404: meal not found
+
+### Edit meal state
+
+Edit the description or the emoji of a meal.
+Omitted fields are ignored (not updated).
+
+#### Request
+
+```text
+PATCH api/meals/{itemID}
+```
+
+```json
+{
+    "description": string,
+    "icon": string
+}
+```
+
+#### Response
+
+- 200: fields updated successfully
+- 400: invalid field
+- 404: meal not found
 
