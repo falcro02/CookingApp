@@ -25,9 +25,10 @@
 <br>[`DELETE /ideas`](#clear-ideas)
 <br>[`GET /preferences`](#get-user-preferences)
 <br>[`PUT /preferences`](#update-user-preferences)
-<br>[`DELETE /data`](#clear-all-user-data)
-<br>[`DELETE /user`](#delete-user-account)
 <br>[`GET /tasks/{taskID}`](#get-task-status)
+<br>[`DELETE /data`](#clear-all-user-data)
+<br>[`DELETE /sessions`](#delete-all-active-sessions)
+<br>[`DELETE /user`](#delete-user-account)
 
 ## Sign in
 
@@ -274,6 +275,7 @@ POST /groceries/generate
 - 400: invalid field
 - 404: plan not found (empty)
 - 409: a generation task is already executing for the user
+- 429: computation limit reached
 
 ```json
 {
@@ -565,7 +567,7 @@ GET /ideas
 
 **Response**
 
-- 200:
+- 200: data returned successfully
 
 ```json
 {
@@ -622,6 +624,7 @@ POST /ideas/generate
 - 202: generation task initialized
 - 404: ingredients not found (empty list)
 - 409: a generation task is already executing for the user
+- 429: computation limit reached
 
 ```json
 {
@@ -629,12 +632,52 @@ POST /ideas/generate
 }
 ```
 
-## Profile
+## Preferences
 
-<br>[`GET /preferences`](#get-user-preferences)
-<br>[`PUT /preferences`](#update-user-preferences)
-<br>[`DELETE /data`](#clear-all-user-data)
-<br>[`DELETE /user`](#delete-user-account)
+### Get user preferences
+
+Get the textual description of user's preferences.
+An empty string is valid content, meaning that if the user has not set it, an
+empty string is returned with the preferences key.
+
+**Request**
+
+```text
+GET /preferences
+```
+
+**Response**
+
+- 200: data returned successfully
+
+```json
+{
+    "preferences": string
+}
+```
+
+### Update user preferences
+
+Set a new textual description of user's preferences.
+An empty string is valid content, therefore this request can be used also to
+unset it, by sending an empty string with the preferences key.
+
+**Request**
+
+```text
+PUT /preferences
+```
+
+```json
+{
+    "preferences": string
+}
+```
+
+**Response**
+
+- 204: preferences set successfully
+- 400: invalid field
 
 ## Tasks
 
@@ -666,4 +709,55 @@ GET /tasks/{taskID}
     "status": int
 }
 ```
+
+## Account
+
+### Clear all user data
+
+Delete all content registered with the user profile (without deleting the
+account itself).
+This is a way to "reset" a user profile.
+This request is idempotent: it doesn't fail if user profile is already clear of
+all its data.
+
+**Request**
+
+```text
+DELETE /data
+```
+
+**Response**
+
+- 204: operation successful
+
+### Delete all active sessions
+
+All active sessions of the user are deleted for all devices in which it had
+signed in, essentially making all previously issued JWT tokens of the user
+invalid.
+This means that the user is required to authenticate again on all devices.
+
+**Request**
+
+```text
+DELETE /sessions
+```
+
+**Response**
+
+- 204: operation successful
+
+### Delete user account
+
+The user profile is deleted alongside all its data.
+
+**Request**
+
+```text
+DELETE /user
+```
+
+**Response**
+
+- 204: operation successful
 
