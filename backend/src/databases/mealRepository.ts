@@ -12,6 +12,7 @@ const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME;
 
 export class MealRepository {
+
     async findAllByUserId(userId: string): Promise<Meal[]> {
         const result = await ddbDocClient.send(new QueryCommand({
             TableName: tableName,

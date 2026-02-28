@@ -1,5 +1,3 @@
-// backend/src/models/meal.ts
-
 export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 export type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack';
 

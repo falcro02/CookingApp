@@ -114,7 +114,7 @@ Resources:
     Properties:
       CodeUri: backend/ 
       Handler: src/handlers/pantryHandler.lambdaHandler 
-      Runtime: nodejs20.x
+      Runtime: nodejs24.x
       Architectures:
         - x86_64
       Environment:
@@ -144,7 +144,7 @@ Resources:
     Properties:
       CodeUri: backend/ 
       Handler: src/handlers/preferencesHandler.lambdaHandler 
-      Runtime: nodejs20.x
+      Runtime: nodejs24.x
       Architectures:
         - x86_64
       Environment:
@@ -174,7 +174,7 @@ Resources:
     Properties:
       CodeUri: backend/ 
       Handler: src/handlers/aiHandler.lambdaHandler 
-      Runtime: nodejs20.x
+      Runtime: nodejs24.x
       Architectures:
         - x86_64
       Environment:
