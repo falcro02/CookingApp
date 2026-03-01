@@ -287,7 +287,8 @@ POST /groceries/generate
 
 ### Get plans
 
-Get the weekly meals plans of the user.
+Get all the weekly meals plans registered by the user, alongside the one
+currently selected.
 
 Plans are returned in a dictionary where the key is the plan number shown in
 the UI (1-4).
@@ -309,23 +310,26 @@ GET /plans
 
 ```json
 {
-    "1": {
-        "id-1": {
-            "description": string,
-            "icon": string,
-            "weekDay": int
+    "current": int,
+    "plans": {
+        "1": {
+            "id-1": {
+                "description": string,
+                "icon": string,
+                "weekDay": int
+            },
+            "id-2": {
+                "description": string,
+                "icon": string,
+                "weekDay": int
+            }
         },
-        "id-2": {
-            "description": string,
-            "icon": string,
-            "weekDay": int
-        }
-    },
-    "2": {
-        "id-3": {
-            "description": string,
-            "icon": string,
-            "weekDay": int
+        "2": {
+            "id-3": {
+                "description": string,
+                "icon": string,
+                "weekDay": int
+            }
         }
     }
 }
