@@ -5,40 +5,38 @@ import {
     QueryCommand,
     DeleteCommand
 } from "@aws-sdk/lib-dynamodb";
-import { Meal } from "../models/meal";
+import { PantryItem } from "../models/pantry";
 
 const client = new DynamoDBClient({});
 const ddbDocClient = DynamoDBDocumentClient.from(client);
 const tableName = process.env.TABLE_NAME;
 
-export class MealRepository {
-
-    async findAllByUserId(userId: string): Promise<Meal[]> {
+export class PantryRepository {
+    async findAllByUserId(userId: string): Promise<PantryItem[]> {
         const result = await ddbDocClient.send(new QueryCommand({
             TableName: tableName,
             KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
             ExpressionAttributeValues: {
                 ":pk": userId,
-                ":sk": "MEAL#"
+                ":sk": "ITEM#"
             }
         }));
-        return (result.Items as Meal[]) || [];
+        return (result.Items as PantryItem[]) || [];
     }
 
-    async save(meal: Meal): Promise<void> {
+    async save(item: PantryItem): Promise<void> {
         await ddbDocClient.send(new PutCommand({
             TableName: tableName,
-            Item: meal
+            Item: item
         }));
     }
 
-    // Updated to accept the full SK instead of just a date
-    async delete(userId: string, sk: string): Promise<void> {
+    async delete(userId: string, itemId: string): Promise<void> {
         await ddbDocClient.send(new DeleteCommand({
             TableName: tableName,
             Key: {
                 PK: userId,
-                SK: sk
+                SK: `ITEM#${itemId}`
             }
         }));
     }
