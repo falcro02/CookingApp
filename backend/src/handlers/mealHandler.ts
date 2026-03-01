@@ -1,78 +1,81 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { MealService } from '../services/mealService';
+import { mealService } from '../services/mealService';
 import { buildResponse } from '../utils/response';
-import { CreateMealInput } from '../models/meal';
-
-const mealService = new MealService();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const method = event.httpMethod;
-    let userId: string;
-
-    // Cognito Authentication & Local Bypass
-    if (process.env.AWS_SAM_LOCAL) {
-        userId = "USER#LOCAL_MOCK_123";
-    } else if (event.requestContext?.authorizer?.claims?.sub) {
-        userId = `USER#${event.requestContext.authorizer.claims.sub}`;
-    } else if (method !== 'OPTIONS') {
-        return buildResponse(401, { message: "Unauthorized: Missing user claims" });
-    } else {
-        userId = "UNKNOWN";
-    }
-
     try {
-        const path = event.path || '';
+        // --- 1. AUTHENTICATION & LOCAL BYPASS ---
+        let userId: string;
+        const cognitoUserId = event.requestContext?.authorizer?.claims?.sub;
 
-        if (method === 'OPTIONS') {
-            return buildResponse(200, { message: "CORS OK" });
+        if (process.env.AWS_SAM_LOCAL) {
+            console.log("LOCAL MODE: Bypassing Auth.");
+            userId = 'USER#LOCAL_TEST_ID';
+        } else {
+            if (!cognitoUserId) {
+                console.warn("PRODUCTION MODE: Unauthorized access blocked.");
+                return buildResponse(401, { error: 'Unauthorized: Missing valid token' });
+            }
+            userId = `USER#${cognitoUserId}`;
         }
 
-        if (method === 'GET') {
-            const meals = await mealService.getUserMeals(userId);
-            return buildResponse(200, meals);
+        // --- 2. ROUTING PREPARATION ---
+        const httpMethod = event.httpMethod;
+        const itemID = event.pathParameters?.itemID;
+
+        // Automatically handle browser preflight requests for React
+        if (httpMethod === 'OPTIONS') {
+            return buildResponse(200, '');
         }
 
-        if (method === 'POST') {
-            // NEW ROUTE: POST /weekly-plans
-            if (path.includes('/weekly-plans')) {
-                const body = JSON.parse(event.body || '[]') as CreateMealInput[];
+        // --- POST /meals ---
+        if (httpMethod === 'POST') {
+            try {
+                const body = JSON.parse(event.body || '{}');
+                const newItemID = await mealService.createMeal(userId, body);
+                return buildResponse(201, { itemID: newItemID });
+            } catch (error: any) {
+                console.error("POST /meals Error:", error);
 
-                if (!Array.isArray(body)) {
-                    return buildResponse(400, { message: "Body must be an array of meals" });
+                // Smart Error Catching: If it's not a validation error, expose the real DB crash
+                if (error.message?.includes('invalid field') || error.name === 'ValidationError') {
+                    return buildResponse(400, { error: 'invalid field' });
                 }
-
-                const savedPlan = await mealService.createWeeklyPlan(userId, body);
-                return buildResponse(201, { message: "Weekly plan saved successfully", meals: savedPlan });
-            }
-
-            // EXISTING ROUTE: POST /meals
-            else {
-                const body = JSON.parse(event.body || '{}') as CreateMealInput;
-
-                if (!body.name || !body.dayOfWeek || !body.type) {
-                    return buildResponse(400, { message: "Missing required fields" });
-                }
-
-                const newMeal = await mealService.createMeal(userId, body);
-                return buildResponse(201, newMeal);
+                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
             }
         }
 
-        if (method === 'DELETE') {
-            const sk = event.queryStringParameters?.sk;
-            if (!sk) {
-                return buildResponse(400, { message: "Missing sk parameter" });
+        // --- DELETE /meals/{itemID} ---
+        if (httpMethod === 'DELETE' && itemID) {
+            try {
+                await mealService.deleteMeal(userId, itemID);
+                return buildResponse(204, '');
+            } catch (error: any) {
+                console.error(`DELETE /meals/${itemID} Error:`, error);
+                if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
+                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
             }
-
-            await mealService.deleteUserMeal(userId, decodeURIComponent(sk));
-            return buildResponse(200, { message: "Meal deleted" });
         }
 
-        return buildResponse(405, { message: "Method Not Allowed" });
+        // --- PATCH /meals/{itemID} ---
+        if (httpMethod === 'PATCH' && itemID) {
+            try {
+                const body = JSON.parse(event.body || '{}');
+                await mealService.updateMeal(userId, itemID, body);
+                return buildResponse(204, '');
+            } catch (error: any) {
+                console.error(`PATCH /meals/${itemID} Error:`, error);
+                if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
+                if (error.message?.includes('invalid field')) return buildResponse(400, { error: 'invalid field' });
+                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
+            }
+        }
 
-    } catch (error: any) {
-        console.error("Handler Error:", error);
-        return buildResponse(500, { message: "Internal Server Error", error: error.message });
+        // Fallback for incorrect URLs
+        return buildResponse(404, { message: 'Route not found' });
+
+    } catch (globalError: any) {
+        console.error("FATAL HANDLER ERROR:", globalError);
+        return buildResponse(500, { message: 'Fatal server error', error: globalError.message });
     }
-
 };

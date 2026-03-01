@@ -1,4 +1,4 @@
-import { UserRepository } from "../databases/userRepository";
+import { UserRepository } from "../repositories/userRepository";
 import { UserPreferences, UpdatePreferencesInput } from "../models/preferences";
 
 export class PreferencesService {

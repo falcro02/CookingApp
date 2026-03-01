@@ -1,4 +1,4 @@
-import { PantryRepository } from "../databases/pantryRepository";
+import { PantryRepository } from "../repositories/pantryRepository";
 import { CreatePantryItemInput, PantryItem } from "../models/pantry";
 
 export class PantryService {

@@ -88,18 +88,21 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref CookingAppTable
       Events:
-        MealsApi:
+        CreateMeal:
           Type: Api
           Properties:
-            RestApiId: !Ref CookingApi
             Path: /meals
-            Method: any 
-        WeeklyPlansApi:
+            Method: post
+        DeleteMeal:
           Type: Api
           Properties:
-            RestApiId: !Ref CookingApi
-            Path: /weekly-plans
-            Method: any
+            Path: /meals/{itemID}
+            Method: delete
+        UpdateMeal:
+          Type: Api
+          Properties:
+            Path: /meals/{itemID}
+            Method: patch
     Metadata:
       BuildMethod: esbuild
       BuildProperties:

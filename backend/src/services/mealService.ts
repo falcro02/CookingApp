@@ -1,57 +1,44 @@
-import { MealRepository } from "../databases/mealRepository";
-import { Meal, CreateMealInput } from "../models/meal";
+import { mealRepository } from '../repositories/mealRepository';
+import { CreateMealInput, UpdateMealInput, Meal } from '../models/meal';
 
-export class MealService {
-    private repository: MealRepository;
+export const mealService = {
+    async createMeal(userId: string, input: CreateMealInput): Promise<string> {
+        // Validazione rigorosa come da contratto
+        if (!input.description || !input.icon || input.weekDay === undefined || input.plan === undefined) {
+            throw new Error('invalid field');
+        }
+        if (input.weekDay < 0 || input.weekDay > 6) throw new Error('weekDay must be between 0 and 6');
+        if (input.plan < 1 || input.plan > 4) throw new Error('plan must be between 1 and 4');
 
-    constructor() {
-        this.repository = new MealRepository();
-    }
+        const itemID = Date.now().toString();
 
-    async getUserMeals(userId: string): Promise<Meal[]> {
-        console.log(`Fetching meals for user: ${userId}`);
-        const meals = await this.repository.findAllByUserId(userId);
-        return meals.sort((a, b) => (a.SK || "").localeCompare(b.SK || ""));
-    }
-
-    async createMeal(userId: string, input: CreateMealInput): Promise<Meal> {
         const newMeal: Meal = {
             PK: userId,
-            // ADDED Date.now() HERE: Now it looks like "MEAL#Monday#Dinner#173849503"
-            SK: `MEAL#${input.dayOfWeek}#${input.type}#${Date.now()}`,
-            name: input.name,
-            dayOfWeek: input.dayOfWeek,
-            type: input.type,
-            isEaten: false
+            SK: `MEAL#${itemID}`,
+            itemID,
+            description: input.description,
+            icon: input.icon,
+            weekDay: input.weekDay,
+            plan: input.plan
         };
 
-        await this.repository.save(newMeal);
-        return newMeal;
+        await mealRepository.create(newMeal);
+        return itemID;
+    },
+
+    async deleteMeal(userId: string, itemID: string): Promise<void> {
+        const meal = await mealRepository.findById(userId, itemID);
+        if (!meal) throw new Error('meal not found');
+
+        await mealRepository.delete(userId, itemID);
+    },
+
+    async updateMeal(userId: string, itemID: string, updates: UpdateMealInput): Promise<void> {
+        if (!updates.description && !updates.icon) return;
+
+        const meal = await mealRepository.findById(userId, itemID);
+        if (!meal) throw new Error('meal not found');
+
+        await mealRepository.update(userId, itemID, updates);
     }
-
-    async createWeeklyPlan(userId: string, meals: CreateMealInput[]): Promise<Meal[]> {
-        const savedMeals: Meal[] = [];
-
-        // Use Promise.all to save all the meals to DynamoDB at the same time (in parallel)
-        await Promise.all(meals.map(async (input) => {
-            const newMeal: Meal = {
-                PK: userId,
-                SK: `MEAL#${input.dayOfWeek}#${input.type}`,
-                name: input.name,
-                dayOfWeek: input.dayOfWeek,
-                type: input.type,
-                isEaten: false
-            };
-
-            await this.repository.save(newMeal);
-            savedMeals.push(newMeal);
-        }));
-
-        return savedMeals;
-    }
-
-    // Updated to expect the specific SK of the meal to delete
-    async deleteUserMeal(userId: string, sk: string): Promise<void> {
-        await this.repository.delete(userId, sk);
-    }
-}
+};

@@ -1,25 +1,21 @@
-export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
-export type MealType = 'Breakfast' | 'Lunch' | 'Dinner' | 'Snack';
-
 export interface Meal {
-    PK?: string;
-    SK?: string;
-    name: string;
-    dayOfWeek: DayOfWeek;
-    type: MealType;
-    isEaten?: boolean;
+    PK: string;         // Esempio: USER#123
+    SK: string;         // Esempio: MEAL#173849503
+    itemID: string;     // L'ID univoco che restituiremo al frontend
+    description: string;
+    icon: string;
+    weekDay: number;    // 0 = Monday, 6 = Sunday
+    plan: number;       // 1, 2, 3 o 4
 }
 
 export interface CreateMealInput {
-    name: string;
-    dayOfWeek: DayOfWeek;
-    type: MealType;
+    description: string;
+    icon: string;
+    weekDay: number;
+    plan: number;
 }
 
-export interface WeeklyPlan {
-    id: string; // e.g., "WEEK#2026-02-23" (usually the Monday of that week)
-    startDate: string;
-    endDate: string;
-    isActive: boolean;
-    meals: Meal[];
+export interface UpdateMealInput {
+    description?: string;
+    icon?: string;
 }
