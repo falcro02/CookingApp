@@ -292,7 +292,7 @@ currently selected.
 
 Plans are returned in a dictionary where the key is the plan number shown in
 the UI (1-4).
-Each plan is itself a dictionary where the item IDs are the key for an object i
+Each plan is itself a dictionary where the item IDs are the key for an object
 with other item's data.
 Items' icon identifies the Unicode value of an emoji.
 Week day is represented as an integer between 0 and 6.

@@ -1,56 +1,35 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom';
-import { Authenticator } from '@aws-amplify/ui-react';
-import { Dashboard } from './pages/Dashboard';
-import { ManagePlan } from './pages/ManagePlan';
-import './styles/App.css';
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
 
 function App() {
+  const [count, setCount] = useState(0)
+
   return (
-    <Router>
-      <div className="App">
-        <Authenticator>
-          {({ signOut, user }) => (
-            <>
-              <header className="App-header">
-                <div>
-                  <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <h1>Il Mio Piano Alimentare</h1>
-                  </Link>
-                </div>
-                <div className="user-controls">
-                  Welcome, {user?.username}
-                  <button
-                    onClick={signOut}
-                    className="signout-btn"
-                  >
-                    Sign out
-                  </button>
-                </div>
-              </header>
-
-              {/* NEW: Global Navigation Bar */}
-              <nav className="main-nav">
-                <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                  Today's Menu
-                </NavLink>
-                <NavLink to="/manage" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                  Weekly Planner
-                </NavLink>
-              </nav>
-
-              <main className="main-content">
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/manage" element={<ManagePlan />} />
-                </Routes>
-              </main>
-            </>
-          )}
-        </Authenticator>
+    <>
+      <div>
+        <a href="https://vite.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
       </div>
-    </Router>
-  );
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </>
+  )
 }
 
-export default App;
+export default App
