@@ -2,11 +2,11 @@ import FloatFoot from './FloatFoot';
 import FloatHead from './FloatHead';
 import { Flex } from "@radix-ui/themes";
 
-const Layout = ({ appearance, setAppearance, children }) => {
+const Layout = ({ appearance, setAppearance, currentPage, setCurrentPage, children }) => {
     return (
         <>
             <header>
-                <FloatHead />
+                <FloatHead currentPage={currentPage} setCurrentPage={setCurrentPage} />
             </header>
             <main>
                 <Flex direction="column" px="30vw" py="4vh">

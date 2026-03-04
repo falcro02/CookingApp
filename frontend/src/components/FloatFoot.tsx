@@ -17,7 +17,7 @@ const FloatFoot = ({ appearance, setAppearance }) => (
 )
 
 const AppearanceToggle = ({ appearance, setAppearance }) => (
-    <IconButton {...iconButtonProps} onClick={() =>
+    <IconButton {...iconButtonProps()} onClick={() =>
         setAppearance((prev: string) => (prev === 'dark' ? 'light' : 'dark'))
     }>
         {
@@ -30,7 +30,7 @@ const AppearanceToggle = ({ appearance, setAppearance }) => (
 
 const GitHubLink = () => (
     <Link href="https://github.com/falcro02/CookingApp" target="_blank" underline="none" >
-        <IconButton {...iconButtonProps}>
+        <IconButton {...iconButtonProps(true)}>
             <GitHubLogoIcon {...iconSize} />
         </IconButton>
     </Link>
@@ -39,7 +39,7 @@ const GitHubLink = () => (
 const InfoPopover = () => (
     <Popover.Root>
         <Popover.Trigger>
-            <IconButton {...iconButtonProps}>
+            <IconButton {...iconButtonProps()}>
                 <InfoCircledIcon {...iconSize} />
             </IconButton>
         </Popover.Trigger>
@@ -56,10 +56,15 @@ const iconSize = {
     height: "20",
 }
 
-const iconButtonProps = {
-    variant: "ghost",
-    radius: "full",
-    style: { color: "var(--gray-12)" },
+const iconButtonProps = (link: boolean = false) => {
+    return {
+        variant: "ghost",
+        radius: "full",
+        style: {
+            color: "var(--gray-12)",
+            cursor: link ? "var(--cursor-link)" : undefined,
+        }
+    }
 }
 
 export default FloatFoot
