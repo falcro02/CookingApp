@@ -1,12 +1,20 @@
+# Node
 node_modules
+
+# Build
 dist
+site
+
+# Misc
+.env
+.cache
+.DS_Store
+.out
+logs
 *.local
 
 # Editors
-.idea
-.vscode
 .vim
-
-# Misc
-.DS_Store
+.vscode
+.idea
 

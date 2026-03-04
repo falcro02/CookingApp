@@ -11,6 +11,7 @@ site
 .DS_Store
 .out
 logs
+*.local
 
 # Editors
 .vim
