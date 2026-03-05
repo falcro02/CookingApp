@@ -12,6 +12,17 @@ Amplify.configure({
     Cognito: {
       userPoolId: 'eu-south-1_0DPU0R4y7',
       userPoolClientId: '31ipjdctvb00rdodtk1p2qi3e8',
+      loginWith: {
+        oauth: {
+          // ATTENZIONE: Devi configurare questo dominio nella console AWS Cognito
+          domain: 'IL-TUO-DOMINIO-COGNITO.auth.eu-south-1.amazoncognito.com',
+          scopes: ['phone', 'email', 'profile', 'openid'],
+          // Assicurati che l'URL qui sotto corrisponda a dove gira il tuo frontend locale
+          redirectSignIn: ['http://localhost:3001/'], 
+          redirectSignOut: ['http://localhost:3001/'],
+          responseType: 'code'
+        }
+      }
     }
   }
 });
