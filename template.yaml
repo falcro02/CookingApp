@@ -191,6 +191,60 @@ Resources:
         EntryPoints:
           - src/handlers/preferencesHandler.ts
 
+  IngredientsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/ 
+      Handler: src/handlers/ingredientsHandler.lambdaHandler 
+      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+      Events:
+        GetIngredients:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients
+            Method: get
+        ClearIngredients:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients
+            Method: delete
+        AddIngredient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients
+            Method: post
+        DeleteIngredient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients/{itemID}
+            Method: delete
+        EditIngredient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients/{itemID}
+            Method: patch
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/ingredientsHandler.ts
+
   AiFunction:
     Type: AWS::Serverless::Function
     Properties:
