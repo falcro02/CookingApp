@@ -236,6 +236,12 @@ Resources:
             RestApiId: !Ref CookingApi
             Path: /ingredients/{itemID}
             Method: patch
+        ImportIngredients:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients/import
+            Method: post
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
