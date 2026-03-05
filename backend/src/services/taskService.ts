@@ -5,5 +5,5 @@ export const taskService = {
         const task = await taskRepository.findById(userId, taskID);
         if (!task) return null;
         return task.status;
-    }
+    },
 };

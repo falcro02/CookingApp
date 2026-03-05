@@ -1,4 +1,4 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
     DynamoDBDocumentClient,
     PutCommand,
@@ -6,8 +6,8 @@ import {
     DeleteCommand,
     QueryCommand,
     UpdateCommand,
-    BatchWriteCommand
-} from "@aws-sdk/lib-dynamodb";
+    BatchWriteCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { GroceryItem, GenerationCounter, UpdateGroceryRequest } from '../models/grocery';
 
 const client = new DynamoDBClient({});
@@ -16,38 +16,45 @@ const docClient = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = process.env.TABLE_NAME || '';
 
 export const groceryRepository = {
-
     async create(item: GroceryItem): Promise<void> {
-        await docClient.send(new PutCommand({
-            TableName: TABLE_NAME,
-            Item: item
-        }));
+        await docClient.send(
+            new PutCommand({
+                TableName: TABLE_NAME,
+                Item: item,
+            }),
+        );
     },
 
     async findById(userId: string, itemID: string): Promise<GroceryItem | null> {
-        const result = await docClient.send(new GetCommand({
-            TableName: TABLE_NAME,
-            Key: { PK: userId, SK: `GROCERY#${itemID}` }
-        }));
+        const result = await docClient.send(
+            new GetCommand({
+                TableName: TABLE_NAME,
+                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+            }),
+        );
         return (result.Item as GroceryItem) || null;
     },
 
     async delete(userId: string, itemID: string): Promise<void> {
-        await docClient.send(new DeleteCommand({
-            TableName: TABLE_NAME,
-            Key: { PK: userId, SK: `GROCERY#${itemID}` }
-        }));
+        await docClient.send(
+            new DeleteCommand({
+                TableName: TABLE_NAME,
+                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+            }),
+        );
     },
 
     async findAllByUser(userId: string): Promise<GroceryItem[]> {
-        const result = await docClient.send(new QueryCommand({
-            TableName: TABLE_NAME,
-            KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
-            ExpressionAttributeValues: {
-                ":pk": userId,
-                ":sk": "GROCERY#"
-            }
-        }));
+        const result = await docClient.send(
+            new QueryCommand({
+                TableName: TABLE_NAME,
+                KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+                ExpressionAttributeValues: {
+                    ':pk': userId,
+                    ':sk': 'GROCERY#',
+                },
+            }),
+        );
         return (result.Items as GroceryItem[]) || [];
     },
 
@@ -61,15 +68,17 @@ export const groceryRepository = {
         }
 
         for (const batch of batches) {
-            await docClient.send(new BatchWriteCommand({
-                RequestItems: {
-                    [TABLE_NAME]: batch.map(item => ({
-                        DeleteRequest: {
-                            Key: { PK: item.PK, SK: item.SK }
-                        }
-                    }))
-                }
-            }));
+            await docClient.send(
+                new BatchWriteCommand({
+                    RequestItems: {
+                        [TABLE_NAME]: batch.map((item) => ({
+                            DeleteRequest: {
+                                Key: { PK: item.PK, SK: item.SK },
+                            },
+                        })),
+                    },
+                }),
+            );
         }
     },
 
@@ -91,25 +100,29 @@ export const groceryRepository = {
 
         if (expressionParts.length === 0) return;
 
-        await docClient.send(new UpdateCommand({
-            TableName: TABLE_NAME,
-            Key: { PK: userId, SK: `GROCERY#${itemID}` },
-            UpdateExpression: `SET ${expressionParts.join(', ')}`,
-            ExpressionAttributeNames: attributeNames,
-            ExpressionAttributeValues: attributeValues
-        }));
+        await docClient.send(
+            new UpdateCommand({
+                TableName: TABLE_NAME,
+                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+                UpdateExpression: `SET ${expressionParts.join(', ')}`,
+                ExpressionAttributeNames: attributeNames,
+                ExpressionAttributeValues: attributeValues,
+            }),
+        );
     },
 
     async updateAllChecked(userId: string, check: boolean): Promise<void> {
         const items = await this.findAllByUser(userId);
         for (const item of items) {
-            await docClient.send(new UpdateCommand({
-                TableName: TABLE_NAME,
-                Key: { PK: item.PK, SK: item.SK },
-                UpdateExpression: 'SET #chk = :chk',
-                ExpressionAttributeNames: { '#chk': 'checked' },
-                ExpressionAttributeValues: { ':chk': check }
-            }));
+            await docClient.send(
+                new UpdateCommand({
+                    TableName: TABLE_NAME,
+                    Key: { PK: item.PK, SK: item.SK },
+                    UpdateExpression: 'SET #chk = :chk',
+                    ExpressionAttributeNames: { '#chk': 'checked' },
+                    ExpressionAttributeValues: { ':chk': check },
+                }),
+            );
         }
     },
 
@@ -122,23 +135,27 @@ export const groceryRepository = {
         }
 
         for (const batch of batches) {
-            await docClient.send(new BatchWriteCommand({
-                RequestItems: {
-                    [TABLE_NAME]: batch.map(item => ({
-                        PutRequest: {
-                            Item: item
-                        }
-                    }))
-                }
-            }));
+            await docClient.send(
+                new BatchWriteCommand({
+                    RequestItems: {
+                        [TABLE_NAME]: batch.map((item) => ({
+                            PutRequest: {
+                                Item: item,
+                            },
+                        })),
+                    },
+                }),
+            );
         }
     },
 
     async getGenerationCount(userId: string, dateKey: string): Promise<number> {
-        const result = await docClient.send(new GetCommand({
-            TableName: TABLE_NAME,
-            Key: { PK: userId, SK: `GEN_COUNTER#${dateKey}` }
-        }));
+        const result = await docClient.send(
+            new GetCommand({
+                TableName: TABLE_NAME,
+                Key: { PK: userId, SK: `GEN_COUNTER#${dateKey}` },
+            }),
+        );
         if (!result.Item) return 0;
         return (result.Item as GenerationCounter).count;
     },
@@ -148,12 +165,14 @@ export const groceryRepository = {
         tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
         const ttl = Math.floor(tomorrow.getTime() / 1000);
 
-        await docClient.send(new UpdateCommand({
-            TableName: TABLE_NAME,
-            Key: { PK: userId, SK: `GEN_COUNTER#${dateKey}` },
-            UpdateExpression: "SET #count = if_not_exists(#count, :zero) + :inc, #ttl = :ttl",
-            ExpressionAttributeNames: { "#count": "count", "#ttl": "ttl" },
-            ExpressionAttributeValues: { ":zero": 0, ":inc": 1, ":ttl": ttl }
-        }));
-    }
+        await docClient.send(
+            new UpdateCommand({
+                TableName: TABLE_NAME,
+                Key: { PK: userId, SK: `GEN_COUNTER#${dateKey}` },
+                UpdateExpression: 'SET #count = if_not_exists(#count, :zero) + :inc, #ttl = :ttl',
+                ExpressionAttributeNames: { '#count': 'count', '#ttl': 'ttl' },
+                ExpressionAttributeValues: { ':zero': 0, ':inc': 1, ':ttl': ttl },
+            }),
+        );
+    },
 };

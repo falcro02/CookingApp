@@ -1,20 +1,19 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   cooking_web_app - Backend with DynamoDB for meal management
 
 Globals:
   Function:
-    Timeout: 10 
+    Timeout: 10
     MemorySize: 128
   Api:
     Cors:
       AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
       AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
       AllowOrigin: "'*'"
-      
-Resources:
 
+Resources:
   # --- 1. COGNITO USER POOL ---
   CookingUserPool:
     Type: AWS::Cognito::UserPool
@@ -50,7 +49,7 @@ Resources:
         AllowOrigin: "'*'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
-        AddDefaultAuthorizerToCorsPreflight: false 
+        AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: !GetAtt CookingUserPool.Arn
@@ -79,8 +78,8 @@ Resources:
   MealFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/mealHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/mealHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -118,8 +117,8 @@ Resources:
   PantryFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/pantryHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/pantryHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -148,8 +147,8 @@ Resources:
   PreferencesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/preferencesHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/preferencesHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -174,41 +173,6 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - src/handlers/preferencesHandler.ts
-
-  AiFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/aiHandler.lambdaHandler 
-      Runtime: nodejs24.x
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref CookingAppTable
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
-        - Statement:
-            Effect: Allow
-            Action:
-              - bedrock:InvokeModel
-            Resource: "*"
-      Events:
-        AiApi:
-          Type: Api
-          Properties:
-            RestApiId: !Ref CookingApi
-            Path: /ai/recipes
-            Method: post
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: "es2020"
-        Sourcemap: true
-        EntryPoints:
-          - src/handlers/aiHandler.ts
 
   TaskFunction:
     Type: AWS::Serverless::Function
@@ -355,13 +319,13 @@ Resources:
     Properties:
       ResourceGroupName:
         Ref: ApplicationResourceGroup
-      AutoConfigurationEnabled: 'true'
+      AutoConfigurationEnabled: "true"
 
 Outputs:
   CookingApiUrl:
     Description: "API Gateway endpoint URL"
     Value: !Sub "https://${CookingApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/meals"
-    
+
   UserPoolId:
     Description: "Cognito User Pool ID"
     Value: !Ref CookingUserPool

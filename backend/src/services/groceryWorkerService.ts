@@ -1,4 +1,4 @@
-import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
+import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 import { mealRepository } from '../repositories/mealRepository';
 import { groceryRepository } from '../repositories/groceryRepository';
 import { taskRepository } from '../repositories/taskRepository';
@@ -10,10 +10,9 @@ import { UserPreferences } from '../models/preferences';
 const bedrockClient = new BedrockRuntimeClient({});
 const userRepository = new UserRepository();
 
-const MODEL_ID = "eu.anthropic.claude-haiku-4-5-20251001-v1:0";
+const MODEL_ID = 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 export const groceryWorkerService = {
-
     async execute(payload: GroceryWorkerPayload): Promise<void> {
         const { userId, taskID, days, plan, unplanned, extra, replace } = payload;
 
@@ -45,7 +44,7 @@ export const groceryWorkerService = {
                 itemID: `${Date.now()}_${index}`,
                 description: item.description,
                 weekDay: item.weekDay,
-                checked: false
+                checked: false,
             }));
 
             await groceryRepository.batchCreate(dbItems);
@@ -56,9 +55,8 @@ export const groceryWorkerService = {
 
             // 9. Mark task as completed
             await taskRepository.updateStatus(userId, taskID, 1);
-
         } catch (error: any) {
-            console.error("GroceryWorker FAILED:", error);
+            console.error('GroceryWorker FAILED:', error);
             await taskRepository.updateStatus(userId, taskID, -1, error.message || 'Unknown error');
         }
     },
@@ -68,16 +66,14 @@ export const groceryWorkerService = {
         unplanned: string[],
         days: number[],
         preferences: UserPreferences | null,
-        extra: string
+        extra: string,
     ): string {
         const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const mealLines = meals.map(m => `- ${dayNames[m.weekDay]} (day ${m.weekDay}): ${m.description}`).join('\n');
+        const mealLines = meals.map((m) => `- ${dayNames[m.weekDay]} (day ${m.weekDay}): ${m.description}`).join('\n');
 
-        const unplannedLines = unplanned.length > 0
-            ? unplanned.map(u => `- ${u}`).join('\n')
-            : 'None';
+        const unplannedLines = unplanned.length > 0 ? unplanned.map((u) => `- ${u}`).join('\n') : 'None';
 
-        const selectedDays = days.map(d => `${dayNames[d]} (${d})`).join(', ');
+        const selectedDays = days.map((d) => `${dayNames[d]} (${d})`).join(', ');
 
         let preferencesBlock = 'No preferences set.';
         if (preferences) {
@@ -145,21 +141,21 @@ Do not include any text before or after the JSON array.`;
 
     async callBedrock(prompt: string): Promise<string> {
         const requestBody = {
-            anthropic_version: "bedrock-2023-05-31",
+            anthropic_version: 'bedrock-2023-05-31',
             max_tokens: 4096,
             messages: [
                 {
-                    role: "user",
-                    content: prompt
-                }
-            ]
+                    role: 'user',
+                    content: prompt,
+                },
+            ],
         };
 
         const command = new InvokeModelCommand({
             modelId: MODEL_ID,
-            contentType: "application/json",
-            accept: "application/json",
-            body: JSON.stringify(requestBody)
+            contentType: 'application/json',
+            accept: 'application/json',
+            body: JSON.stringify(requestBody),
         });
 
         const response = await bedrockClient.send(command);
@@ -190,9 +186,7 @@ Do not include any text before or after the JSON array.`;
 
         return parsed.map((item: any) => ({
             description: String(item.description || 'Unknown item'),
-            weekDay: Number.isInteger(item.weekDay) && item.weekDay >= 0 && item.weekDay <= 6
-                ? item.weekDay
-                : 0
+            weekDay: Number.isInteger(item.weekDay) && item.weekDay >= 0 && item.weekDay <= 6 ? item.weekDay : 0,
         }));
-    }
+    },
 };

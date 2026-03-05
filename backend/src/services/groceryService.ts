@@ -1,4 +1,4 @@
-import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
+import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
 import { taskRepository } from '../repositories/taskRepository';
 import { mealRepository } from '../repositories/mealRepository';
 import { groceryRepository } from '../repositories/groceryRepository';
@@ -8,7 +8,7 @@ import {
     GenerateGroceriesRequest,
     CreateGroceryRequest,
     UpdateGroceryRequest,
-    GroceryWorkerPayload
+    GroceryWorkerPayload,
 } from '../models/grocery';
 
 const lambdaClient = new LambdaClient({});
@@ -17,16 +17,17 @@ const DAILY_GENERATION_LIMIT = 3;
 const WORKER_FUNCTION_NAME = process.env.GROCERY_WORKER_FUNCTION_NAME || '';
 
 export const groceryService = {
-
     // --- GET /groceries ---
-    async getGroceries(userId: string): Promise<Record<string, { description: string; weekDay: number; checked: boolean }>> {
+    async getGroceries(
+        userId: string,
+    ): Promise<Record<string, { description: string; weekDay: number; checked: boolean }>> {
         const items = await groceryRepository.findAllByUser(userId);
         const result: Record<string, { description: string; weekDay: number; checked: boolean }> = {};
         for (const item of items) {
             result[item.itemID] = {
                 description: item.description,
                 weekDay: item.weekDay,
-                checked: item.checked
+                checked: item.checked,
             };
         }
         return result;
@@ -48,7 +49,7 @@ export const groceryService = {
             itemID,
             description: input.description,
             weekDay: input.weekDay,
-            checked: false
+            checked: false,
         };
 
         await groceryRepository.create(item);
@@ -129,7 +130,7 @@ export const groceryService = {
             status: 0,
             type: 'GROCERY_GENERATION',
             createdAt: new Date().toISOString(),
-            ttl: Math.floor(Date.now() / 1000) + 3600
+            ttl: Math.floor(Date.now() / 1000) + 3600,
         };
         await taskRepository.create(task);
 
@@ -141,14 +142,16 @@ export const groceryService = {
             plan: request.plan,
             unplanned: request.unplanned,
             extra: request.extra,
-            replace: request.replace
+            replace: request.replace,
         };
 
-        await lambdaClient.send(new InvokeCommand({
-            FunctionName: WORKER_FUNCTION_NAME,
-            InvocationType: 'Event',
-            Payload: Buffer.from(JSON.stringify(workerPayload))
-        }));
+        await lambdaClient.send(
+            new InvokeCommand({
+                FunctionName: WORKER_FUNCTION_NAME,
+                InvocationType: 'Event',
+                Payload: Buffer.from(JSON.stringify(workerPayload)),
+            }),
+        );
 
         return taskID;
     },
@@ -178,5 +181,5 @@ export const groceryService = {
         if (typeof request.replace !== 'boolean') {
             throw new Error('replace must be a boolean');
         }
-    }
+    },
 };

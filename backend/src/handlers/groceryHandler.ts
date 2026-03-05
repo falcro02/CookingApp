@@ -1,7 +1,12 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { groceryService } from '../services/groceryService';
 import { buildResponse } from '../utils/response';
-import { GenerateGroceriesRequest, CreateGroceryRequest, UpdateGroceryRequest, CheckAllRequest } from '../models/grocery';
+import {
+    GenerateGroceriesRequest,
+    CreateGroceryRequest,
+    UpdateGroceryRequest,
+    CheckAllRequest,
+} from '../models/grocery';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
@@ -10,11 +15,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         const cognitoUserId = event.requestContext?.authorizer?.claims?.sub;
 
         if (process.env.AWS_SAM_LOCAL) {
-            console.log("LOCAL MODE: Bypassing Auth.");
+            console.log('LOCAL MODE: Bypassing Auth.');
             userId = 'USER#LOCAL_TEST_ID';
         } else {
             if (!cognitoUserId) {
-                console.warn("PRODUCTION MODE: Unauthorized access blocked.");
+                console.warn('PRODUCTION MODE: Unauthorized access blocked.');
                 return buildResponse(401, { error: 'Unauthorized: Missing valid token' });
             }
             userId = `USER#${cognitoUserId}`;
@@ -106,9 +111,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         }
 
         return buildResponse(404, { message: 'Route not found' });
-
     } catch (globalError: any) {
-        console.error("FATAL HANDLER ERROR:", globalError);
+        console.error('FATAL HANDLER ERROR:', globalError);
         return buildResponse(500, { message: 'Fatal server error', error: globalError.message });
     }
 };

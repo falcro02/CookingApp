@@ -19,7 +19,7 @@ export const mealService = {
             description: input.description,
             icon: input.icon,
             weekDay: input.weekDay,
-            plan: input.plan
+            plan: input.plan,
         };
 
         await mealRepository.create(newMeal);
@@ -40,5 +40,5 @@ export const mealService = {
         if (!meal) throw new Error('meal not found');
 
         await mealRepository.update(userId, itemID, updates);
-    }
+    },
 };
