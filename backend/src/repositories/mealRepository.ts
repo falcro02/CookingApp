@@ -4,7 +4,8 @@ import {
     PutCommand,
     GetCommand,
     DeleteCommand,
-    UpdateCommand
+    UpdateCommand,
+    QueryCommand
 } from "@aws-sdk/lib-dynamodb";
 import { Meal, UpdateMealInput } from '../models/meal';
 
@@ -62,5 +63,20 @@ export const mealRepository = {
             ExpressionAttributeNames: expressionAttributeNames,
             ExpressionAttributeValues: expressionAttributeValues
         }));
+    },
+
+    async findByPlan(userId: string, plan: number): Promise<Meal[]> {
+        const result = await docClient.send(new QueryCommand({
+            TableName: TABLE_NAME,
+            KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+            FilterExpression: "#plan = :plan",
+            ExpressionAttributeNames: { "#plan": "plan" },
+            ExpressionAttributeValues: {
+                ":pk": userId,
+                ":sk": "MEAL#",
+                ":plan": plan
+            }
+        }));
+        return (result.Items as Meal[]) || [];
     }
 };
