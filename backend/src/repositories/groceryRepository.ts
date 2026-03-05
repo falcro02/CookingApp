@@ -144,12 +144,16 @@ export const groceryRepository = {
     },
 
     async incrementGenerationCount(userId: string, dateKey: string): Promise<void> {
+        const tomorrow = new Date(dateKey + 'T00:00:00Z');
+        tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+        const ttl = Math.floor(tomorrow.getTime() / 1000);
+
         await docClient.send(new UpdateCommand({
             TableName: TABLE_NAME,
             Key: { PK: userId, SK: `GEN_COUNTER#${dateKey}` },
-            UpdateExpression: "SET #count = if_not_exists(#count, :zero) + :inc",
-            ExpressionAttributeNames: { "#count": "count" },
-            ExpressionAttributeValues: { ":zero": 0, ":inc": 1 }
+            UpdateExpression: "SET #count = if_not_exists(#count, :zero) + :inc, #ttl = :ttl",
+            ExpressionAttributeNames: { "#count": "count", "#ttl": "ttl" },
+            ExpressionAttributeValues: { ":zero": 0, ":inc": 1, ":ttl": ttl }
         }));
     }
 };

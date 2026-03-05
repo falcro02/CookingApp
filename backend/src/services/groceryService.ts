@@ -128,7 +128,8 @@ export const groceryService = {
             taskID,
             status: 0,
             type: 'GROCERY_GENERATION',
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            ttl: Math.floor(Date.now() / 1000) + 3600
         };
         await taskRepository.create(task);
 

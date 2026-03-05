@@ -6,4 +6,5 @@ export interface Task {
     type: string;         // e.g., "GROCERY_GENERATION"
     createdAt: string;
     errorMessage?: string;
+    ttl: number;          // Unix timestamp (seconds) for DynamoDB TTL auto-deletion
 }

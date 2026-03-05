@@ -71,6 +71,9 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # --- 5. THE LAMBDA FUNCTIONS ---
   MealFunction:
