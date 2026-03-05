@@ -35,19 +35,17 @@ const LogoTitle = () => (
     </Flex>
 )
 
-const PageLink = ({ name, page }) => {
-    return (
-        <Button variant="ghost" radius="full"
-            style={{
-                background: page === pageHelper.currentPage ? "var(--accent-9" : undefined,
-                color: page === pageHelper.currentPage ? "white" : "var(--gray-12)",
-                cursor: "var(--cursor-link)"
-            }}
-            onClick={() => pageHelper.setCurrentPage(page)}>
-            <Heading size="3" weight="medium" mx="8px">{name}</Heading>
-        </Button >
-    )
-}
+const PageLink = ({ name, page }) => (
+    <Button variant="ghost" radius="full"
+        style={{
+            background: page === pageHelper.currentPage ? "var(--accent-9)" : undefined,
+            color: page === pageHelper.currentPage ? "white" : "var(--gray-12)",
+            cursor: "var(--cursor-link)"
+        }}
+        onClick={() => pageHelper.setCurrentPage(page)}>
+        <Heading size="3" weight="medium" mx="8px">{name}</Heading>
+    </Button >
+)
 
 var pageHelper: { currentPage: string; setCurrentPage: (page: string) => void };
 
