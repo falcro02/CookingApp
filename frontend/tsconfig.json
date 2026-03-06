@@ -1,26 +1,14 @@
 {
-    "include": [
-        "src"
-    ],
-    "compilerOptions": {
-        "jsx": "react-jsx",
-        "baseUrl": "./src",
-        "paths": {
-            "@components/*": [
-                "components/*"
-            ],
-            "@pages/*": [
-                "pages/*"
-            ],
-            "@context/*": [
-                "context/*"
-            ],
-            "@api/*": [
-                "api/*"
-            ],
-            "@shared/*": [
-                "shared/*"
-            ]
-        }
+  "include": ["src"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@context/*": ["context/*"],
+      "@api/*": ["api/*"],
+      "@shared/*": ["shared/*"]
     }
+  }
 }

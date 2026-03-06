@@ -1,5 +1,5 @@
-import { PantryRepository } from "../repositories/pantryRepository";
-import { CreatePantryItemInput, PantryItem } from "../models/pantry";
+import { PantryRepository } from '../repositories/pantryRepository';
+import { CreatePantryItemInput, PantryItem } from '../models/pantry';
 
 export class PantryService {
     private repository: PantryRepository;
@@ -21,7 +21,7 @@ export class PantryService {
             name: input.name,
             quantity: input.quantity,
             unit: input.unit,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
         };
         await this.repository.save(item);
         return item;

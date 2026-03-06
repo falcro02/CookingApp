@@ -1,10 +1,5 @@
-import { Heading } from "@radix-ui/themes";
+import {Heading} from "@radix-ui/themes";
 
-const ProfilePage = () => (
-    <Heading>
-        Profile Page
-    </Heading>
-)
+const ProfilePage = () => <Heading>Profile Page</Heading>;
 
-export default ProfilePage
-
+export default ProfilePage;

@@ -9,11 +9,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     const method = event.httpMethod;
     // AI endpoints might not be user-specific in the same way, but it's good practice to secure them
     if (!process.env.AWS_SAM_LOCAL && !event.requestContext?.authorizer?.claims?.sub && method !== 'OPTIONS') {
-        return buildResponse(401, { message: "Unauthorized" });
+        return buildResponse(401, { message: 'Unauthorized' });
     }
 
     try {
-        if (method === 'OPTIONS') return buildResponse(200, { message: "CORS OK" });
+        if (method === 'OPTIONS') return buildResponse(200, { message: 'CORS OK' });
 
         if (method === 'POST') {
             const body = JSON.parse(event.body || '{}') as AiRecipeRequest;
@@ -21,9 +21,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             return buildResponse(200, recipe);
         }
 
-        return buildResponse(405, { message: "Method Not Allowed" });
+        return buildResponse(405, { message: 'Method Not Allowed' });
     } catch (error: any) {
         console.error(error);
-        return buildResponse(500, { message: "Internal Server Error", error: error.message });
+        return buildResponse(500, { message: 'Internal Server Error', error: error.message });
     }
 };

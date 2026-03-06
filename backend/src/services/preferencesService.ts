@@ -1,5 +1,5 @@
-import { UserRepository } from "../repositories/userRepository";
-import { UserPreferences, UpdatePreferencesInput } from "../models/preferences";
+import { UserRepository } from '../repositories/userRepository';
+import { UserPreferences, UpdatePreferencesInput } from '../models/preferences';
 
 export class PreferencesService {
     private repository: UserRepository;
@@ -14,12 +14,12 @@ export class PreferencesService {
             // Return default preferences if none exist
             return {
                 PK: userId,
-                SK: "PREFERENCES",
+                SK: 'PREFERENCES',
                 dietaryRestrictions: [],
                 allergies: [],
                 dislikedIngredients: [],
                 servingSize: 2,
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date().toISOString(),
             };
         }
         return prefs;
@@ -30,7 +30,7 @@ export class PreferencesService {
         const updated: UserPreferences = {
             ...current,
             ...input,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
         };
         await this.repository.savePreferences(updated);
         return updated;
