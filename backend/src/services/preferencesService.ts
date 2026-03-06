@@ -29,7 +29,10 @@ export class PreferencesService {
         const current = await this.getPreferences(userId);
         const updated: UserPreferences = {
             ...current,
-            ...input,
+            ...(input.dietaryRestrictions !== undefined && { dietaryRestrictions: input.dietaryRestrictions }),
+            ...(input.allergies !== undefined && { allergies: input.allergies }),
+            ...(input.dislikedIngredients !== undefined && { dislikedIngredients: input.dislikedIngredients }),
+            ...(input.servingSize !== undefined && { servingSize: input.servingSize }),
             updatedAt: new Date().toISOString(),
         };
         await this.repository.savePreferences(updated);

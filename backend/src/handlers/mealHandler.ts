@@ -41,7 +41,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 if (error.message?.includes('invalid field') || error.name === 'ValidationError') {
                     return buildResponse(400, { error: 'invalid field' });
                 }
-                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -53,7 +53,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             } catch (error: any) {
                 console.error(`DELETE /meals/${itemID} Error:`, error);
                 if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
-                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -67,7 +67,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 console.error(`PATCH /meals/${itemID} Error:`, error);
                 if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
                 if (error.message?.includes('invalid field')) return buildResponse(400, { error: 'invalid field' });
-                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -75,6 +75,6 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         return buildResponse(404, { message: 'Route not found' });
     } catch (globalError: any) {
         console.error('FATAL HANDLER ERROR:', globalError);
-        return buildResponse(500, { message: 'Fatal server error', error: globalError.message });
+        return buildResponse(500, { message: 'Internal server error' });
     }
 };

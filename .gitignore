@@ -207,7 +207,5 @@ $RECYCLE.BIN/
 
 # Local test scripts and config
 test-generate.sh
-env.json
-config.json
 
 # End of https://www.toptal.com/developers/gitignore/api/osx,node,linux,windows,sam

@@ -52,7 +52,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 if (statusCode === 409) return buildResponse(409, { error: error.message });
                 if (statusCode === 429) return buildResponse(429, { error: error.message });
                 if (error.message?.includes('must be')) return buildResponse(400, { error: error.message });
-                return buildResponse(500, { error: 'Internal server error', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -64,7 +64,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 return buildResponse(204, '');
             } catch (error: any) {
                 if (error.message === 'invalid field') return buildResponse(400, { error: 'invalid field' });
-                return buildResponse(500, { error: 'Internal server error', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -76,7 +76,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 return buildResponse(201, { itemID });
             } catch (error: any) {
                 if (error.message === 'invalid field') return buildResponse(400, { error: 'invalid field' });
-                return buildResponse(500, { error: 'Internal server error', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -93,7 +93,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 return buildResponse(204, '');
             } catch (error: any) {
                 if (error.message === 'item not found') return buildResponse(404, { error: 'item not found' });
-                return buildResponse(500, { error: 'Internal server error', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -106,13 +106,13 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             } catch (error: any) {
                 if (error.message === 'invalid field') return buildResponse(400, { error: 'invalid field' });
                 if (error.message === 'item not found') return buildResponse(404, { error: 'item not found' });
-                return buildResponse(500, { error: 'Internal server error', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
         return buildResponse(404, { message: 'Route not found' });
     } catch (globalError: any) {
         console.error('FATAL HANDLER ERROR:', globalError);
-        return buildResponse(500, { message: 'Fatal server error', error: globalError.message });
+        return buildResponse(500, { message: 'Internal server error' });
     }
 };
