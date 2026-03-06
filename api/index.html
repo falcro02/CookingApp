@@ -452,6 +452,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#set-current-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set current plan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#delete-plan" class="md-nav__link">
     <span class="md-ellipsis">
       Delete plan
@@ -882,6 +891,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#set-current-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set current plan
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#delete-plan" class="md-nav__link">
     <span class="md-ellipsis">
       Delete plan
@@ -1178,6 +1196,7 @@
 <br><a href="#check-or-uncheck-all-items"><code>POST /groceries/check</code></a>
 <br><a href="#generate-items-with-ai"><code>POST /groceries/generate</code></a>
 <br><a href="#get-plans"><code>GET /plans</code></a>
+<br><a href="#set-current-plan"><code>PATCH /plans/current</code></a>
 <br><a href="#delete-plan"><code>DELETE /plans/{planNR}</code></a>
 <br><a href="#add-meal-to-plan"><code>POST /meals</code></a>
 <br><a href="#delete-meal-from-plan"><code>DELETE /meals/{itemID}</code></a>
@@ -1192,7 +1211,7 @@
 <br><a href="#get-ideas"><code>GET /ideas</code></a>
 <br><a href="#clear-ideas"><code>DELETE /ideas</code></a>
 <br><a href="#get-user-preferences"><code>GET /preferences</code></a>
-<br><a href="#update-user-preferences"><code>PUT /preferences</code></a>
+<br><a href="#update-user-preferences"><code>PATCH /preferences</code></a>
 <br><a href="#get-task-status"><code>GET /tasks/{taskID}</code></a>
 <br><a href="#clear-all-user-data"><code>DELETE /data</code></a>
 <br><a href="#delete-all-active-sessions"><code>DELETE /sessions</code></a>
@@ -1382,13 +1401,15 @@ new ones are simply appended.</p>
 <h3 id="get-plans">Get plans</h3>
 <p>Get all the weekly meals plans registered by the user, alongside the one
 currently selected.</p>
+<p>If user has just empty plans, then the current plan will be the first and it
+will be empty.
+Otherwise, empty plans are omitted.</p>
 <p>Plans are returned in a dictionary where the key is the plan number shown in
 the UI (1-4).
-Each plan is itself a dictionary where the item IDs are the key for an object i
+Each plan is itself a dictionary where the item IDs are the key for an object
 with other item's data.
 Items' icon identifies the Unicode value of an emoji.
-Week day is represented as an integer between 0 and 6.
-Empty plans are omitted.</p>
+Week day is represented as an integer between 0 and 6.</p>
 <p><strong>Request</strong></p>
 <div class="highlight"><pre><span></span><code>GET /plans
 </code></pre></div>
@@ -1421,9 +1442,29 @@ Empty plans are omitted.</p>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
+<h3 id="set-current-plan">Set current plan</h3>
+<p>Set the number of the plan currently selected and active for the user.</p>
+<p>The plan number is defined with an integer between 1 and 4.</p>
+<p><strong>Request</strong></p>
+<div class="highlight"><pre><span></span><code>PATCH plans/current
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;current&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Response</strong></p>
+<ul>
+<li>204: current plan set</li>
+<li>400: invalid field</li>
+<li>404: plan not found (empty)</li>
+</ul>
 <h3 id="delete-plan">Delete plan</h3>
 <p>Clear the user's meals plan with the provided number (1-4).
 This request is idempotent: if the plan was already empty no error is returned.</p>
+<p>After the plan is deleted, the next currently selected will be the first
+non-empty before the deleted one.
+If all plans get deleted, the currently selected one is the first, even if
+empty.</p>
 <p><strong>Request</strong></p>
 <div class="highlight"><pre><span></span><code>DELETE /plans/{planNR}
 </code></pre></div>
@@ -1458,6 +1499,10 @@ The plan in which to add the meal is identified by a number from 1 to 4.</p>
 </code></pre></div>
 <h3 id="delete-meal-from-plan">Delete meal from plan</h3>
 <p>Delete a meal from its plan.</p>
+<p>If the last item in the plan is deleted, the currently selected plan changes
+and will be the first non-empty before the emptied/deleted one.
+If all plans get deleted, the currently selected one is the first, even if
+empty.</p>
 <p><strong>Request</strong></p>
 <div class="highlight"><pre><span></span><code>DELETE /meals/{itemID}
 </code></pre></div>
@@ -1635,9 +1680,9 @@ To check the status of the task it is possible to poll the
 </code></pre></div>
 <h2 id="preferences">Preferences</h2>
 <h3 id="get-user-preferences">Get user preferences</h3>
-<p>Get the textual description of user's preferences.
-An empty string is valid content, meaning that if the user has not set it, an
-empty string is returned with the preferences key.</p>
+<p>Get the textual descriptions of user's preferences.
+Empty string is valid content, meaning that if the user has not set it, an
+empty string is returned with that specific preference key.</p>
 <p><strong>Request</strong></p>
 <div class="highlight"><pre><span></span><code>GET /preferences
 </code></pre></div>
@@ -1646,18 +1691,27 @@ empty string is returned with the preferences key.</p>
 <li>200: data returned successfully</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;preferences&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="nt">&quot;preferences&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;dietary&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;allergies&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;disliked&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="update-user-preferences">Update user preferences</h3>
 <p>Set a new textual description of user's preferences.
 An empty string is valid content, therefore this request can be used also to
-unset it, by sending an empty string with the preferences key.</p>
+unset it, by sending an empty string with the desired preference key.</p>
+<p>Omitted attributes are ignored, meaning they are not updated/cleared.</p>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>PUT /preferences
+<div class="highlight"><pre><span></span><code>PATCH /preferences
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;preferences&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="nt">&quot;preferences&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;dietary&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;allergies&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;disliked&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><strong>Response</strong></p>
