@@ -4,16 +4,12 @@ import { Box, Flex } from "@radix-ui/themes";
 import FloatHeadCompact from './FloatHeadCompact';
 import { useEffect, useState } from 'react';
 
-const Layout = ({ appearance, setAppearance, currentPage, setCurrentPage, children }) => {
+const Layout = ({ children }) => {
     const width = useWindowWidth();
-
     return (
         <>
             <header>
-                {width < 1100
-                    ? <FloatHeadCompact currentPage={currentPage} setCurrentPage={setCurrentPage} />
-                    : <FloatHead currentPage={currentPage} setCurrentPage={setCurrentPage} />
-                }
+                {width < 1100 ? <FloatHeadCompact /> : <FloatHead />}
             </header>
             <main>
                 <Box align="center" py="4vh" >
@@ -23,7 +19,7 @@ const Layout = ({ appearance, setAppearance, currentPage, setCurrentPage, childr
                 </Box>
             </main>
             <footer>
-                <FloatFoot appearance={appearance} setAppearance={setAppearance} />
+                <FloatFoot />
             </footer>
         </>
     )

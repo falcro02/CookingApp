@@ -1,44 +1,26 @@
 import Layout from '@components/Layout'
+import { useAppearance } from '@context/appearance';
 import GroceriesPage from '@pages/GroceriesPage';
 import IdeasPage from '@pages/IdeasPage';
 import ProfilePage from '@pages/Profile';
 import UnknownPage from '@pages/Unknown';
 import { Theme } from "@radix-ui/themes";
-import { useEffect, useState } from 'react';
-
-const APP_APPEARANCE_KEY = 'theme-appearance';
+import { Route, Routes } from 'react-router-dom';
 
 function App() {
-    const [appearance, setAppearance] = useState<'light' | 'dark'>(() => {
-        const saved = localStorage.getItem(APP_APPEARANCE_KEY);
-        return (saved as 'light' | 'dark') ?? 'dark';
-    });
-
-    useEffect(() => {
-        localStorage.setItem(APP_APPEARANCE_KEY, appearance);
-    }, [appearance]);
-
-    const [currentPage, setCurrentPage] = useState('groceries');
-
-    const renderPage = () => {
-        switch (currentPage) {
-            case 'groceries': return <GroceriesPage />;
-            case 'ideas': return <IdeasPage />;
-            case 'profile': return <ProfilePage />;
-            default: return <UnknownPage setCurrentPage={setCurrentPage} />;
-        }
-    };
-
+    const { appearance } = useAppearance()
     return (
         <Theme accentColor="ruby" grayColor="sage" radius="large" appearance={appearance}>
-            <Layout
-                appearance={appearance} setAppearance={setAppearance}
-                currentPage={currentPage} setCurrentPage={setCurrentPage}
-            >
-                {renderPage()}
+            <Layout>
+                <Routes>
+                    <Route path="/" element={<GroceriesPage />} />
+                    <Route path="/groceries" element={<GroceriesPage />} />
+                    <Route path="/ideas" element={<IdeasPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="*" element={<UnknownPage />} />
+                </Routes>
             </Layout>
-        </Theme>
-    )
+        </Theme>)
 }
 
 export default App

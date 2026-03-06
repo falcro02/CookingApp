@@ -1,7 +1,8 @@
 import { Text, Card, Flex, IconButton, Link, Popover, Tooltip } from '@radix-ui/themes';
 import { GitHubLogoIcon, InfoCircledIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { useAppearance } from '@context/appearance';
 
-const FloatFoot = ({ appearance, setAppearance }) => (
+const FloatFoot = () => (
     <Card m="4" style={{
         position: 'fixed',
         zIndex: 1000,
@@ -9,23 +10,26 @@ const FloatFoot = ({ appearance, setAppearance }) => (
         right: 10,
     }}>
         <Flex direction="column" gap="4">
-            <AppearanceToggle appearance={appearance} setAppearance={setAppearance} />
+            <AppearanceToggle />
             <GitHubLink />
             <InfoPopover />
         </Flex>
     </Card >
 )
 
-const AppearanceToggle = ({ appearance, setAppearance }) => (
-    <Tooltip content="Toggle appearance">
-        <IconButton {...iconButtonProps()}
-            onClick={() => setAppearance((prev: string) => (prev === 'dark' ? 'light' : 'dark'))} >
-            {appearance === 'dark' ? (
-                <SunIcon {...iconSize} />) : (
-                <MoonIcon {...iconSize} />)}
-        </IconButton>
-    </Tooltip>
-)
+const AppearanceToggle = () => {
+    const { appearance, setAppearance } = useAppearance()
+    return (
+        <Tooltip content="Toggle appearance">
+            <IconButton {...iconButtonProps()}
+                onClick={() => setAppearance(appearance === "dark" ? "light" : "dark")} >
+                {appearance === 'dark' ? (
+                    <SunIcon {...iconSize} />) : (
+                    <MoonIcon {...iconSize} />)}
+            </IconButton>
+        </Tooltip>
+    )
+}
 
 const GitHubLink = () => (
     <Tooltip content="Go to GitHub repository">

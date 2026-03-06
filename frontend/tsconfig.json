@@ -12,6 +12,12 @@
             "@pages/*": [
                 "pages/*"
             ],
+            "@context/*": [
+                "context/*"
+            ],
+            "@api/*": [
+                "api/*"
+            ],
             "@shared/*": [
                 "shared/*"
             ]

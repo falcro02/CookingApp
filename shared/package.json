@@ -1,6 +1,5 @@
 {
     "name": "shared",
     "version": "0.0.0",
-    "types": "./src/index.ts",
-    "main": "./src/index.ts"
+    "type": "module"
 }
