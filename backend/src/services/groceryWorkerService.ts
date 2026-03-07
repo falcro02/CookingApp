@@ -2,13 +2,13 @@ import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedroc
 import { mealRepository } from '../repositories/mealRepository';
 import { groceryRepository } from '../repositories/groceryRepository';
 import { taskRepository } from '../repositories/taskRepository';
-import { UserRepository } from '../repositories/userRepository';
+import { preferenceRepository } from '../repositories/preferenceRepository';
 import { GroceryWorkerPayload, GroceryItem, AiGroceryItem } from '../models/grocery';
 import { Meal } from '../models/meal';
 import { UserPreferences } from '../models/preferences';
+import { counterRepository } from '../repositories/counterRepository';
 
 const bedrockClient = new BedrockRuntimeClient({});
-const userRepository = new UserRepository();
 
 const MODEL_ID = 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
@@ -21,7 +21,7 @@ export const groceryWorkerService = {
             const allMealsInPlan: Meal[] = await mealRepository.findByPlan(userId, plan);
 
             // 2. Fetch user preferences
-            const preferences: UserPreferences | null = await userRepository.getPreferences(userId);
+            const preferences: UserPreferences | null = await preferenceRepository.getPreferences(userId);
 
             // 3. Build the prompt
             const prompt = this.buildPrompt(allMealsInPlan, unplanned, days, preferences, extra);
@@ -51,7 +51,7 @@ export const groceryWorkerService = {
 
             // 8. Increment daily generation counter
             const today = new Date().toISOString().split('T')[0];
-            await groceryRepository.incrementGenerationCount(userId, today);
+            await counterRepository.incrementCount(userId, today);
 
             // 9. Mark task as completed
             await taskRepository.updateStatus(userId, taskID, 1);

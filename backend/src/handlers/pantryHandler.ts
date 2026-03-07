@@ -1,9 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { PantryService } from '../services/pantryService';
+import { pantryService } from '../services/pantryService';
 import { buildResponse } from '../utils/response';
 import { CreatePantryItemInput } from '../models/pantry';
-
-const pantryService = new PantryService();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const method = event.httpMethod;

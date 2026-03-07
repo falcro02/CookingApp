@@ -34,6 +34,8 @@ export const mealRepository = {
         return (result.Item as Meal) || null;
     },
 
+    //TODO delete of the last meal in a plan have to check it and set the previous plan
+
     async delete(userId: string, itemID: string): Promise<void> {
         await docClient.send(
             new DeleteCommand({

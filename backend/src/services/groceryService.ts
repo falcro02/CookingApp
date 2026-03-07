@@ -2,9 +2,11 @@ import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
 import { taskRepository } from '../repositories/taskRepository';
 import { mealRepository } from '../repositories/mealRepository';
 import { groceryRepository } from '../repositories/groceryRepository';
+import { counterRepository } from '../repositories/counterRepository';
 import { Task } from '../models/task';
 import {
     GroceryItem,
+    GroceryMap,
     GenerateGroceriesRequest,
     CreateGroceryRequest,
     UpdateGroceryRequest,
@@ -18,11 +20,9 @@ const WORKER_FUNCTION_NAME = process.env.GROCERY_WORKER_FUNCTION_NAME || '';
 
 export const groceryService = {
     // --- GET /groceries ---
-    async getGroceries(
-        userId: string,
-    ): Promise<Record<string, { description: string; weekDay: number; checked: boolean }>> {
+    async getGroceries(userId: string): Promise<GroceryMap> {
         const items = await groceryRepository.findAllByUser(userId);
-        const result: Record<string, { description: string; weekDay: number; checked: boolean }> = {};
+        const result: GroceryMap = {};
         for (const item of items) {
             result[item.itemID] = {
                 description: item.description,
@@ -98,7 +98,7 @@ export const groceryService = {
 
         // Check daily generation limit (429)
         const today = new Date().toISOString().split('T')[0];
-        const currentCount = await groceryRepository.getGenerationCount(userId, today);
+        const currentCount = await counterRepository.getCount(userId, today);
         if (currentCount >= DAILY_GENERATION_LIMIT) {
             const error = new Error('Daily generation limit reached');
             (error as any).statusCode = 429;

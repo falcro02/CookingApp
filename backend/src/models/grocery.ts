@@ -1,3 +1,7 @@
+export interface GroceryMap {
+    [itemID: string]: { description: string; weekDay: number; checked: boolean };
+}
+
 export interface GroceryItem {
     PK: string; // USER#<cognitoId>
     SK: string; // GROCERY#<itemID>

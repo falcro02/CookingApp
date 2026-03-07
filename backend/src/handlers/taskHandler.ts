@@ -39,6 +39,6 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         return buildResponse(404, { message: 'Route not found' });
     } catch (globalError: any) {
         console.error('FATAL HANDLER ERROR:', globalError);
-        return buildResponse(500, { message: 'Fatal server error', error: globalError.message });
+        return buildResponse(500, { message: 'Internal server error' });
     }
 };
