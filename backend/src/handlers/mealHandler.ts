@@ -9,11 +9,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         const cognitoUserId = event.requestContext?.authorizer?.claims?.sub;
 
         if (process.env.AWS_SAM_LOCAL) {
-            console.log("LOCAL MODE: Bypassing Auth.");
+            console.log('LOCAL MODE: Bypassing Auth.');
             userId = 'USER#LOCAL_TEST_ID';
         } else {
             if (!cognitoUserId) {
-                console.warn("PRODUCTION MODE: Unauthorized access blocked.");
+                console.warn('PRODUCTION MODE: Unauthorized access blocked.');
                 return buildResponse(401, { error: 'Unauthorized: Missing valid token' });
             }
             userId = `USER#${cognitoUserId}`;
@@ -35,13 +35,13 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 const newItemID = await mealService.createMeal(userId, body);
                 return buildResponse(201, { itemID: newItemID });
             } catch (error: any) {
-                console.error("POST /meals Error:", error);
+                console.error('POST /meals Error:', error);
 
                 // Smart Error Catching: If it's not a validation error, expose the real DB crash
                 if (error.message?.includes('invalid field') || error.name === 'ValidationError') {
                     return buildResponse(400, { error: 'invalid field' });
                 }
-                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -53,7 +53,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             } catch (error: any) {
                 console.error(`DELETE /meals/${itemID} Error:`, error);
                 if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
-                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
@@ -67,15 +67,14 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 console.error(`PATCH /meals/${itemID} Error:`, error);
                 if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
                 if (error.message?.includes('invalid field')) return buildResponse(400, { error: 'invalid field' });
-                return buildResponse(500, { error: 'Database/Server Crash', details: error.message });
+                return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
         // Fallback for incorrect URLs
         return buildResponse(404, { message: 'Route not found' });
-
     } catch (globalError: any) {
-        console.error("FATAL HANDLER ERROR:", globalError);
-        return buildResponse(500, { message: 'Fatal server error', error: globalError.message });
+        console.error('FATAL HANDLER ERROR:', globalError);
+        return buildResponse(500, { message: 'Internal server error' });
     }
 };

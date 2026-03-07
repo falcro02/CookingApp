@@ -1,14 +1,11 @@
 export interface PantryItem {
-    PK: string;          // USER#<id>
-    SK: string;          // ITEM#<itemId>
+    PK: string; // USER#<id>
+    SK: string; // ITEM#<itemId>
     name: string;
-    quantity: number;
-    unit: string;
-    updatedAt: string;
+    quantity: string;
 }
 
 export interface CreatePantryItemInput {
     name: string;
-    quantity: number;
-    unit: string;
+    quantity: string;
 }

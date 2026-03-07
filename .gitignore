@@ -205,4 +205,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Local test scripts and config
+test-generate.sh
+
 # End of https://www.toptal.com/developers/gitignore/api/osx,node,linux,windows,sam
