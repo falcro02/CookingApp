@@ -1,20 +1,19 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   cooking_web_app - Backend with DynamoDB for meal management
 
 Globals:
   Function:
-    Timeout: 10 
+    Timeout: 10
     MemorySize: 128
   Api:
     Cors:
-      AllowMethods: "'GET,POST,DELETE,OPTIONS'"
+      AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
       AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
       AllowOrigin: "'*'"
-      
-Resources:
 
+Resources:
   # --- 1. COGNITO USER POOL ---
   CookingUserPool:
     Type: AWS::Cognito::UserPool
@@ -64,12 +63,12 @@ Resources:
     Properties:
       StageName: Prod
       Cors:
-        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,Authorization'"
         AllowOrigin: "'*'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
-        AddDefaultAuthorizerToCorsPreflight: false 
+        AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: !GetAtt CookingUserPool.Arn
@@ -90,13 +89,16 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # --- 5. THE LAMBDA FUNCTIONS ---
   MealFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/mealHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/mealHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -134,8 +136,8 @@ Resources:
   PantryFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/pantryHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/pantryHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -164,8 +166,8 @@ Resources:
   PreferencesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/preferencesHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/preferencesHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -191,11 +193,11 @@ Resources:
         EntryPoints:
           - src/handlers/preferencesHandler.ts
 
-  IngredientsFunction:
+  TaskFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/ingredientsHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/taskHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
@@ -206,41 +208,83 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref CookingAppTable
       Events:
-        GetIngredients:
+        GetTask:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /ingredients
+            Path: /tasks/{taskID}
             Method: get
-        ClearIngredients:
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/taskHandler.ts
+
+  GroceryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/groceryHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+          GROCERY_WORKER_FUNCTION_NAME: !Ref GroceryWorkerFunction
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: !GetAtt GroceryWorkerFunction.Arn
+      Events:
+        GetGroceries:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /ingredients
-            Method: delete
-        AddIngredient:
+            Path: /groceries
+            Method: get
+        CreateGrocery:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /ingredients
+            Path: /groceries
             Method: post
-        DeleteIngredient:
+        ClearGroceries:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /ingredients/{itemID}
+            Path: /groceries
             Method: delete
-        EditIngredient:
+        DeleteGrocery:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /ingredients/{itemID}
+            Path: /groceries/{itemID}
+            Method: delete
+        UpdateGrocery:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries/{itemID}
             Method: patch
-        ImportIngredients:
+        GenerateGroceries:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /ingredients/import
+            Path: /groceries/generate
+            Method: post
+        CheckGroceries:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries/check
             Method: post
     Metadata:
       BuildMethod: esbuild
@@ -249,14 +293,16 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - src/handlers/ingredientsHandler.ts
+          - src/handlers/groceryHandler.ts
 
-  AiFunction:
+  GroceryWorkerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: backend/ 
-      Handler: src/handlers/aiHandler.lambdaHandler 
+      CodeUri: backend/
+      Handler: src/handlers/groceryWorkerHandler.lambdaHandler
       Runtime: nodejs24.x
+      Timeout: 90
+      MemorySize: 256
       Architectures:
         - x86_64
       Environment:
@@ -269,14 +315,9 @@ Resources:
             Effect: Allow
             Action:
               - bedrock:InvokeModel
-            Resource: "*"
-      Events:
-        AiApi:
-          Type: Api
-          Properties:
-            RestApiId: !Ref CookingApi
-            Path: /ai/recipes
-            Method: post
+            Resource:
+              - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+              - "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0"
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -284,33 +325,46 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - src/handlers/aiHandler.ts
+          - src/handlers/groceryWorkerHandler.ts
 
-  # --- NUOVA: FUNZIONE DI AUTENTICAZIONE CUSTOM ---
-  AuthFunction:
+  IdeasFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: backend/
-      Handler: src/handlers/authHandler.lambdaHandler
+      Handler: src/handlers/ideaHandler.lambdaHandler
       Runtime: nodejs24.x
       Architectures:
         - x86_64
       Environment:
         Variables:
           TABLE_NAME: !Ref CookingAppTable
-          USER_POOL_ID: !Ref CookingUserPool
+          IDEAS_WORKER_FUNCTION_NAME: !Ref IdeasWorkerFunction
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: !GetAtt IdeasWorkerFunction.Arn
       Events:
-        AppleSignIn:
+        GetIdeas:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /signin/apple
-            Method: post
-        GoogleSignIn:
+            Path: /ideas
+            Method: get
+        ClearIdeas:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /signin/google
+            Path: /ideas
+            Method: delete
+        GenerateIdeas:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ideas/generate
             Method: post
     Metadata:
       BuildMethod: esbuild
@@ -319,7 +373,39 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - src/handlers/authHandler.ts
+          - src/handlers/ideaHandler.ts
+
+  IdeasWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/ideaWorkerHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Timeout: 90
+      MemorySize: 256
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource:
+              - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+              - "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/ideaWorkerHandler.ts
 
   # --- 6. MONITORING ---
   ApplicationResourceGroup:
@@ -334,13 +420,13 @@ Resources:
     Properties:
       ResourceGroupName:
         Ref: ApplicationResourceGroup
-      AutoConfigurationEnabled: 'true'
+      AutoConfigurationEnabled: "true"
 
 Outputs:
   CookingApiUrl:
     Description: "API Gateway endpoint URL"
     Value: !Sub "https://${CookingApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/meals"
-    
+
   UserPoolId:
     Description: "Cognito User Pool ID"
     Value: !Ref CookingUserPool
