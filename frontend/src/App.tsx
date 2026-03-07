@@ -1,5 +1,5 @@
 import Layout from "@components/Layout";
-import {useAppearance} from "@context/appearance";
+import useAppearance from "@hooks/appearance";
 import GroceriesPage from "@pages/GroceriesPage";
 import IdeasPage from "@pages/IdeasPage";
 import ProfilePage from "@pages/Profile";

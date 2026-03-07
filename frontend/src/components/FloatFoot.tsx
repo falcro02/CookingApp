@@ -6,6 +6,7 @@ import {
   Link,
   Popover,
   Tooltip,
+  Box,
 } from "@radix-ui/themes";
 import {
   GitHubLogoIcon,
@@ -13,24 +14,18 @@ import {
   MoonIcon,
   SunIcon,
 } from "@radix-ui/react-icons";
-import {useAppearance} from "@context/appearance";
+import useAppearance from "@hooks/appearance";
 
 const FloatFoot = () => (
-  <Card
-    m="4"
-    style={{
-      position: "fixed",
-      zIndex: 1000,
-      top: 10,
-      right: 10,
-    }}
-  >
-    <Flex direction="column" gap="4">
-      <AppearanceToggle />
-      <GitHubLink />
-      <InfoPopover />
-    </Flex>
-  </Card>
+  <Box position="fixed" m="4" right="0" top="0">
+    <Card>
+      <Flex direction="column" gap="4">
+        <AppearanceToggle />
+        <GitHubLink />
+        <InfoPopover />
+      </Flex>
+    </Card>
+  </Box>
 );
 
 const AppearanceToggle = () => {

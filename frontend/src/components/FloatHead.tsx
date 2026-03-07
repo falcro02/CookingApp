@@ -1,41 +1,33 @@
-import {usePage} from "@context/page";
+import usePage from "@hooks/page";
 import {Box, Button, Card, Flex, Heading, Separator} from "@radix-ui/themes";
 
 const FloatHead = () => (
-  <Card
-    m="4"
-    style={{
-      position: "fixed",
-      zIndex: 1000,
-      top: 10,
-      left: 10,
-    }}
-  >
-    <Box width="20vw">
-      <LogoTitle />
-      <Separator size="4" my="2" />
-      <Flex direction="column" align="start" gap="4" p="4">
-        <PageLink name="Groceries list" page="/groceries" />
-        <PageLink name="Meal ideas" page="/ideas" />
-        <PageLink name="Profile" page="/profile" />
-      </Flex>
-      <Box height="3em" />
-    </Box>
-  </Card>
+  <Box position="fixed" m="4" top="0" left="0">
+    <Card>
+      <Box width="20vw">
+        <LogoTitle />
+        <Separator size="4" my="2" />
+        <Flex direction="column" align="start" gap="4" p="4">
+          <PageLink name="Groceries list" page="/groceries" />
+          <PageLink name="Meal ideas" page="/ideas" />
+          <PageLink name="Profile" page="/profile" />
+        </Flex>
+        <Box height="3em" />
+      </Box>
+    </Card>
+  </Box>
 );
 
 const LogoTitle = () => {
   const {updatePage} = usePage();
   return (
-    <Flex direction="row" align="center" gap="4">
+    <Flex direction="row" align="center" gap="4" p="1">
       <Button
         variant="ghost"
         style={{background: "none", cursor: "var(--cursor-link)"}}
         onClick={() => updatePage("/")}
       >
-        <Box p="1">
-          <img src="/icon.webp" alt="Logo" width="40" />
-        </Box>
+        <img src="/icon.webp" alt="Logo" width="40" />
       </Button>
       <Heading size="6">Cooking</Heading>
     </Flex>

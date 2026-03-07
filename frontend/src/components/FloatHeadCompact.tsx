@@ -1,29 +1,23 @@
-import {usePage} from "@context/page";
+import usePage from "@hooks/page";
 import {AvatarIcon, CheckboxIcon, StackIcon} from "@radix-ui/react-icons";
-import {Card, Flex, IconButton, Tooltip} from "@radix-ui/themes";
+import {Box, Card, Flex, IconButton, Tooltip} from "@radix-ui/themes";
 
 const FloatHeadCompact = () => (
-  <Card
-    m="4"
-    style={{
-      position: "fixed",
-      zIndex: 1000,
-      top: 10,
-      left: 10,
-    }}
-  >
-    <Flex direction="column" gap="4">
-      <PageButton name="Groceries list" page="/groceries">
-        <CheckboxIcon {...iconSize} />
-      </PageButton>
-      <PageButton name="Meal ideas" page="/ideas">
-        <StackIcon {...iconSize} />
-      </PageButton>
-      <PageButton name="Profile" page="/profile">
-        <AvatarIcon {...iconSize} />
-      </PageButton>
-    </Flex>
-  </Card>
+  <Box position="fixed" m="4" top="0" left="0">
+    <Card>
+      <Flex direction="column" gap="4">
+        <PageButton name="Groceries list" page="/groceries">
+          <CheckboxIcon {...iconSize} />
+        </PageButton>
+        <PageButton name="Meal ideas" page="/ideas">
+          <StackIcon {...iconSize} />
+        </PageButton>
+        <PageButton name="Profile" page="/profile">
+          <AvatarIcon {...iconSize} />
+        </PageButton>
+      </Flex>
+    </Card>
+  </Box>
 );
 
 const PageButton = ({name, page, children}) => {

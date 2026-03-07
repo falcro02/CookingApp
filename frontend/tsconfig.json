@@ -1,14 +1,33 @@
 {
-  "include": ["src"],
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "baseUrl": "./src",
-    "paths": {
-      "@components/*": ["components/*"],
-      "@pages/*": ["pages/*"],
-      "@context/*": ["context/*"],
-      "@api/*": ["api/*"],
-      "@shared/*": ["shared/*"]
+    "include": [
+        "src",
+        "../shared/src"
+    ],
+    "compilerOptions": {
+        // "target": "ES2022",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@components/*": [
+                "src/components/*"
+            ],
+            "@pages/*": [
+                "src/pages/*"
+            ],
+            "@context/*": [
+                "src/context/*"
+            ],
+            "@hooks/*": [
+                "src/hooks/*"
+            ],
+            "@api/*": [
+                "src/api/*"
+            ],
+            "@shared/*": [
+                "../shared/src/*"
+            ]
+        }
     }
-  }
 }

@@ -1,4 +1,4 @@
-import {usePage} from "@context/page";
+import usePage from "@hooks/page";
 import {ArrowRightIcon, CrossCircledIcon} from "@radix-ui/react-icons";
 import {Callout, Strong, Box, Flex, Button} from "@radix-ui/themes";
 
