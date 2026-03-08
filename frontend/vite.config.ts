@@ -4,6 +4,16 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import path from "path";
 
 export default defineConfig({
+  server: {
+    // FIXME: find a better solution to this shit
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
   plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: {

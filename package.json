@@ -1,25 +1,25 @@
 {
-    "name": "cooking",
-    "private": true,
-    "workspaces": [
-        "frontend",
-        "backend",
-        "shared"
-    ],
-    "scripts": {
-        "fmt": "prettier -w .",
-        "frontend:dev": "cd frontend && npm run dev",
-        "frontend:build": "cd frontend && npm run build",
-        "frontend:lint": "cd frontend && npm run lint",
-        "frontend:run": "cd frontend && npm run build && npm run preview"
-    },
-    "devDependencies": {
-        "@eslint/js": "^10",
-        "@fsouza/prettierd": "^0.27.0",
-        "eslint": "^10",
-        "globals": "^17",
-        "prettier": "^3.8.1",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8"
-    }
+  "name": "cooking",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "fmt": "prettier -w .",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "frontend:lint": "cd frontend && npm run lint",
+    "frontend:run": "cd frontend && npm run build && npm run preview"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10",
+    "@fsouza/prettierd": "^0.27.0",
+    "eslint": "^10",
+    "globals": "^17",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8"
+  }
 }

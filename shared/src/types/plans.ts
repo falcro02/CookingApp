@@ -4,10 +4,12 @@ export interface PlanItem {
   weekDay: number;
 }
 
+export interface Plan {
+  [planItemId: string]: PlanItem;
+}
+
 export interface Plans {
-  [planNr: string]: {
-    [planItemId: string]: PlanItem;
-  };
+  [planNr: string]: Plan;
 }
 
 export interface PlansState {

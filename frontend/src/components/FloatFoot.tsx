@@ -32,16 +32,19 @@ const AppearanceToggle = () => {
   const {appearance, setAppearance} = useAppearance();
   return (
     <Tooltip content="Toggle appearance">
-      <IconButton
-        {...iconButtonProps()}
-        onClick={() => setAppearance(appearance === "dark" ? "light" : "dark")}
-      >
-        {appearance === "dark" ? (
-          <SunIcon {...iconSize} />
-        ) : (
-          <MoonIcon {...iconSize} />
-        )}
-      </IconButton>
+      <div>
+        <IconButtonStyled
+          onClick={() =>
+            setAppearance(appearance === "dark" ? "light" : "dark")
+          }
+        >
+          {appearance === "dark" ? (
+            <SunIcon {...iconSize} />
+          ) : (
+            <MoonIcon {...iconSize} />
+          )}
+        </IconButtonStyled>
+      </div>
     </Tooltip>
   );
 };
@@ -53,9 +56,9 @@ const GitHubLink = () => (
       target="_blank"
       underline="none"
     >
-      <IconButton {...iconButtonProps(true)}>
+      <IconButtonStyled link>
         <GitHubLogoIcon {...iconSize} />
-      </IconButton>
+      </IconButtonStyled>
     </Link>
   </Tooltip>
 );
@@ -64,9 +67,11 @@ const InfoPopover = () => (
   <Popover.Root>
     <Tooltip content="Show credits">
       <Popover.Trigger>
-        <IconButton {...iconButtonProps()}>
-          <InfoCircledIcon {...iconSize} />
-        </IconButton>
+        <div>
+          <IconButtonStyled>
+            <InfoCircledIcon {...iconSize} />
+          </IconButtonStyled>
+        </div>
       </Popover.Trigger>
     </Tooltip>
     <Popover.Content>
@@ -88,20 +93,23 @@ const InfoPopover = () => (
   </Popover.Root>
 );
 
+const IconButtonStyled = ({link = false, onClick = null, children}) => (
+  <IconButton
+    onClick={onClick}
+    variant="ghost"
+    radius="full"
+    style={{
+      color: "var(--gray-12)",
+      cursor: link ? "var(--cursor-link)" : undefined,
+    }}
+  >
+    {children}
+  </IconButton>
+);
+
 const iconSize = {
   width: "20",
   height: "20",
-};
-
-const iconButtonProps = (link: boolean = false) => {
-  return {
-    variant: "ghost",
-    radius: "full",
-    style: {
-      color: "var(--gray-12)",
-      cursor: link ? "var(--cursor-link)" : undefined,
-    },
-  };
 };
 
 export default FloatFoot;

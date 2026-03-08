@@ -1,9 +1,8 @@
 import {PlansState} from "@shared/types/plans";
-import {SERVER_URL} from "@hooks/config";
 
 export async function getPlans(): Promise<PlansState> {
-  const res = await fetch(`${SERVER_URL}/plans`, {
-    method: "GET",
-  });
-  return null;
+  console.log("fetching user plans");
+  const res = await fetch("/api/plans");
+  if (!res.ok) throw new Error("error while calling the server");
+  return await res.json();
 }
