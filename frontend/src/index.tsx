@@ -7,19 +7,18 @@ import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 
 // Configure Amplify
+// cooking-app-auth
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolId: 'eu-south-1_0DPU0R4y7',
-      userPoolClientId: '31ipjdctvb00rdodtk1p2qi3e8',
+      userPoolId: process.env.REACT_APP_USER_POOL_ID!,
+      userPoolClientId: process.env.REACT_APP_USER_POOL_CLIENT_ID!,
       loginWith: {
         oauth: {
-          // ATTENZIONE: Devi configurare questo dominio nella console AWS Cognito
-          domain: 'IL-TUO-DOMINIO-COGNITO.auth.eu-south-1.amazoncognito.com',
+          domain: process.env.REACT_APP_COGNITO_DOMAIN!,
           scopes: ['phone', 'email', 'profile', 'openid'],
-          // Assicurati che l'URL qui sotto corrisponda a dove gira il tuo frontend locale
-          redirectSignIn: ['http://localhost:3001/'], 
-          redirectSignOut: ['http://localhost:3001/'],
+          redirectSignIn: ['http://localhost:3000/'],
+          redirectSignOut: ['http://localhost:3000/'],
           responseType: 'code'
         }
       }

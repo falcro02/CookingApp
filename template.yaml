@@ -3,6 +3,15 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   cooking_web_app - Backend with DynamoDB for meal management
 
+Parameters:
+  GoogleClientId:
+    Type: String
+    Description: Google OAuth 2.0 Client ID
+  GoogleClientSecret:
+    Type: String
+    Description: Google OAuth 2.0 Client Secret
+    NoEcho: true
+
 Globals:
   Function:
     Timeout: 10
@@ -26,6 +35,12 @@ Resources:
       Policies:
         PasswordPolicy:
           MinimumLength: 8
+  
+  CookingUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: cooking-app-auth
+      UserPoolId: !Ref CookingUserPool
 
   # --- NUOVO: PROVIDER GOOGLE PER COGNITO ---
   CookingUserPoolGoogleProvider:
@@ -35,8 +50,8 @@ Resources:
       ProviderName: Google
       ProviderType: Google
       ProviderDetails:
-        client_id: "CLIENT ID"
-        client_secret: "CLIENT SECRET"
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
         authorize_scopes: "profile email openid"
       AttributeMapping:
         email: email
@@ -56,6 +71,18 @@ Resources:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
       GenerateSecret: false # Must be false for Single Page Apps like React
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - profile
+        - openid
+      CallbackURLs:
+        - http://localhost:3000/
+      LogoutURLs:
+        - http://localhost:3000/
 
   # --- 3. SECURE API GATEWAY ---
   CookingApi:
@@ -71,7 +98,7 @@ Resources:
         AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           CognitoAuthorizer:
-            UserPoolArn: !GetAtt CookingUserPool.Arn
+            UserPoolArn: !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CookingUserPool}"
 
   # --- 4. DATABASE (Single Table Design) ---
   CookingAppTable:
