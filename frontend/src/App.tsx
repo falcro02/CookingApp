@@ -9,7 +9,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Authenticator>
+        <Authenticator socialProviders={['google']}>
           {({ signOut, user }) => (
             <>
               <header className="App-header">
