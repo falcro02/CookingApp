@@ -21,9 +21,6 @@ stack_name = "cooking-web-stack"
 s3_prefix = "cooking-web-stack"
 disable_rollback = true
 image_repositories = []
-# WARNING: Replace these values with your actual credentials before deploying.
-# Do NOT commit real credentials to git — set them via environment variables or a local override file.
-parameter_overrides = "GoogleClientId=REPLACE_ME GoogleClientSecret=REPLACE_ME"
 
 [default.package.parameters]
 resolve_s3 = true

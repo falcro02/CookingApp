@@ -3,15 +3,6 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   cooking_web_app - Backend with DynamoDB for meal management
 
-Parameters:
-  GoogleClientId:
-    Type: String
-    Description: Google OAuth 2.0 Client ID
-  GoogleClientSecret:
-    Type: String
-    Description: Google OAuth 2.0 Client Secret
-    NoEcho: true
-
 Globals:
   Function:
     Timeout: 10
@@ -50,8 +41,8 @@ Resources:
       ProviderName: Google
       ProviderType: Google
       ProviderDetails:
-        client_id: !Ref GoogleClientId
-        client_secret: !Ref GoogleClientSecret
+        client_id: "{{resolve:ssm:/cooking-app/google/client-id}}"
+        client_secret: "{{resolve:ssm:/cooking-app/google/client-secret}}"
         authorize_scopes: "profile email openid"
       AttributeMapping:
         email: email

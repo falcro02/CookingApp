@@ -208,7 +208,4 @@ $RECYCLE.BIN/
 # Local test scripts and config
 test-generate.sh
 
-# Local SAM config override with real credentials (never commit this)
-samconfig.local.toml
-
 # End of https://www.toptal.com/developers/gitignore/api/osx,node,linux,windows,sam
