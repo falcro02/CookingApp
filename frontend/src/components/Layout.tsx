@@ -1,7 +1,7 @@
-import FloatFoot from "./FloatFoot";
-import FloatHead from "./FloatHead";
+import FloatFoot from "@components/FloatFoot";
+import FloatHead from "@components/FloatHead";
 import {Container, Flex} from "@radix-ui/themes";
-import FloatHeadCompact from "./FloatHeadCompact";
+import FloatHeadCompact from "@components/FloatHeadCompact";
 import useWindowWidth from "@hooks/window";
 
 const Layout = ({children}) => {

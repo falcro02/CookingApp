@@ -1,5 +1,5 @@
 import {createContext, useContext, useMemo} from "react";
-import {GroceriesState} from "@shared/types/groceries";
+import {GroceriesState, Groceries} from "@shared/types/groceries";
 import {IdeasState} from "@shared/types/ideas";
 import {IngredientsState} from "@shared/types/ingredients";
 import {Plans, PlansState} from "@shared/types/plans";
@@ -17,7 +17,8 @@ interface User {
 
 type UserAction =
   | {action: "SET_PLANS"; plans: Plans; current: number}
-  | {action: "SET_CURRENT_PLAN"; current: number};
+  | {action: "SET_CURRENT_PLAN"; current: number}
+  | {action: "SET_GROCERIES"; groceries: Groceries};
 
 export function userReducer(
   state: User | null,
@@ -39,6 +40,14 @@ export function userReducer(
         plans: {
           ...state?.plans,
           current: action.current,
+        },
+      };
+    case "SET_GROCERIES":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: action.groceries,
         },
       };
   }
