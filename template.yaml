@@ -27,12 +27,31 @@ Resources:
         PasswordPolicy:
           MinimumLength: 8
 
+  # --- NUOVO: PROVIDER GOOGLE PER COGNITO ---
+  CookingUserPoolGoogleProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CookingUserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: "CLIENT ID"
+        client_secret: "CLIENT SECRET"
+        authorize_scopes: "profile email openid"
+      AttributeMapping:
+        email: email
+        username: sub
+
   # --- 2. COGNITO USER POOL CLIENT (For React) ---
   CookingUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
+    DependsOn: CookingUserPoolGoogleProvider # Necessario per creare prima il provider
     Properties:
       ClientName: CookingReactApp
       UserPoolId: !Ref CookingUserPool
+      SupportedIdentityProviders:
+        - COGNITO
+        - Google
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
