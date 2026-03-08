@@ -1,9 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { PreferencesService } from '../services/preferencesService';
+import { preferencesService } from '../services/preferencesService';
 import { buildResponse } from '../utils/response';
 import { UpdatePreferencesInput } from '../models/preferences';
-
-const preferencesService = new PreferencesService();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const method = event.httpMethod;
@@ -34,6 +32,6 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         return buildResponse(405, { message: 'Method Not Allowed' });
     } catch (error: any) {
         console.error(error);
-        return buildResponse(500, { message: 'Internal Server Error', error: error.message });
+        return buildResponse(500, { message: 'Internal server error' });
     }
 };

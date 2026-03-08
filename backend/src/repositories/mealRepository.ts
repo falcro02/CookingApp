@@ -1,5 +1,12 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import {
+    DynamoDBDocumentClient,
+    PutCommand,
+    GetCommand,
+    DeleteCommand,
+    UpdateCommand,
+    QueryCommand,
+} from '@aws-sdk/lib-dynamodb';
 import { Meal, UpdateMealInput } from '../models/meal';
 
 const client = new DynamoDBClient({});
@@ -26,6 +33,8 @@ export const mealRepository = {
         );
         return (result.Item as Meal) || null;
     },
+
+    //TODO delete of the last meal in a plan have to check it and set the previous plan
 
     async delete(userId: string, itemID: string): Promise<void> {
         await docClient.send(
@@ -64,5 +73,22 @@ export const mealRepository = {
                 ExpressionAttributeValues: expressionAttributeValues,
             }),
         );
+    },
+
+    async findByPlan(userId: string, plan: number): Promise<Meal[]> {
+        const result = await docClient.send(
+            new QueryCommand({
+                TableName: TABLE_NAME,
+                KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+                FilterExpression: '#plan = :plan',
+                ExpressionAttributeNames: { '#plan': 'plan' },
+                ExpressionAttributeValues: {
+                    ':pk': userId,
+                    ':sk': 'MEAL#',
+                    ':plan': plan,
+                },
+            }),
+        );
+        return (result.Items as Meal[]) || [];
     },
 };

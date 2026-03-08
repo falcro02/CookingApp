@@ -3,14 +3,14 @@ import { DynamoDBDocumentClient, PutCommand, QueryCommand, DeleteCommand } from 
 import { PantryItem } from '../models/pantry';
 
 const client = new DynamoDBClient({});
-const ddbDocClient = DynamoDBDocumentClient.from(client);
-const tableName = process.env.TABLE_NAME;
+const docClient = DynamoDBDocumentClient.from(client);
+const TABLE_NAME = process.env.TABLE_NAME || '';
 
-export class PantryRepository {
+export const pantryRepository = {
     async findAllByUserId(userId: string): Promise<PantryItem[]> {
-        const result = await ddbDocClient.send(
+        const result = await docClient.send(
             new QueryCommand({
-                TableName: tableName,
+                TableName: TABLE_NAME,
                 KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
                 ExpressionAttributeValues: {
                     ':pk': userId,
@@ -19,26 +19,26 @@ export class PantryRepository {
             }),
         );
         return (result.Items as PantryItem[]) || [];
-    }
+    },
 
     async save(item: PantryItem): Promise<void> {
-        await ddbDocClient.send(
+        await docClient.send(
             new PutCommand({
-                TableName: tableName,
+                TableName: TABLE_NAME,
                 Item: item,
             }),
         );
-    }
+    },
 
     async delete(userId: string, itemId: string): Promise<void> {
-        await ddbDocClient.send(
+        await docClient.send(
             new DeleteCommand({
-                TableName: tableName,
+                TableName: TABLE_NAME,
                 Key: {
                     PK: userId,
                     SK: `ITEM#${itemId}`,
                 },
             }),
         );
-    }
-}
+    },
+};

@@ -9,7 +9,7 @@ Globals:
     MemorySize: 128
   Api:
     Cors:
-      AllowMethods: "'GET,POST,DELETE,OPTIONS'"
+      AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
       AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
       AllowOrigin: "'*'"
 
@@ -27,12 +27,31 @@ Resources:
         PasswordPolicy:
           MinimumLength: 8
 
+  # --- NUOVO: PROVIDER GOOGLE PER COGNITO ---
+  CookingUserPoolGoogleProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CookingUserPool
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        client_id: "CLIENT ID"
+        client_secret: "CLIENT SECRET"
+        authorize_scopes: "profile email openid"
+      AttributeMapping:
+        email: email
+        username: sub
+
   # --- 2. COGNITO USER POOL CLIENT (For React) ---
   CookingUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
+    DependsOn: CookingUserPoolGoogleProvider # Necessario per creare prima il provider
     Properties:
       ClientName: CookingReactApp
       UserPoolId: !Ref CookingUserPool
+      SupportedIdentityProviders:
+        - COGNITO
+        - Google
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
@@ -44,7 +63,7 @@ Resources:
     Properties:
       StageName: Prod
       Cors:
-        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,Authorization'"
         AllowOrigin: "'*'"
       Auth:
@@ -70,6 +89,9 @@ Resources:
         - AttributeName: SK
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   # --- 5. THE LAMBDA FUNCTIONS ---
   MealFunction:
@@ -171,12 +193,116 @@ Resources:
         EntryPoints:
           - src/handlers/preferencesHandler.ts
 
-  AiFunction:
+  TaskFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: backend/
-      Handler: src/handlers/aiHandler.lambdaHandler
+      Handler: src/handlers/taskHandler.lambdaHandler
       Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+      Events:
+        GetTask:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /tasks/{taskID}
+            Method: get
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/taskHandler.ts
+
+  GroceryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/groceryHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+          GROCERY_WORKER_FUNCTION_NAME: !Ref GroceryWorkerFunction
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: !GetAtt GroceryWorkerFunction.Arn
+      Events:
+        GetGroceries:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries
+            Method: get
+        CreateGrocery:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries
+            Method: post
+        ClearGroceries:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries
+            Method: delete
+        DeleteGrocery:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries/{itemID}
+            Method: delete
+        UpdateGrocery:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries/{itemID}
+            Method: patch
+        GenerateGroceries:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries/generate
+            Method: post
+        CheckGroceries:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /groceries/check
+            Method: post
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/groceryHandler.ts
+
+  GroceryWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/groceryWorkerHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Timeout: 90
+      MemorySize: 256
       Architectures:
         - x86_64
       Environment:
@@ -189,13 +315,56 @@ Resources:
             Effect: Allow
             Action:
               - bedrock:InvokeModel
-            Resource: "*"
+            Resource:
+              - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+              - "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/groceryWorkerHandler.ts
+
+  IdeasFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/ideaHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+          IDEAS_WORKER_FUNCTION_NAME: !Ref IdeasWorkerFunction
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: !GetAtt IdeasWorkerFunction.Arn
       Events:
-        AiApi:
+        GetIdeas:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /ai/recipes
+            Path: /ideas
+            Method: get
+        ClearIdeas:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ideas
+            Method: delete
+        GenerateIdeas:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ideas/generate
             Method: post
     Metadata:
       BuildMethod: esbuild
@@ -204,7 +373,39 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - src/handlers/aiHandler.ts
+          - src/handlers/ideaHandler.ts
+
+  IdeasWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/ideaWorkerHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Timeout: 90
+      MemorySize: 256
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+        - Statement:
+            Effect: Allow
+            Action:
+              - bedrock:InvokeModel
+            Resource:
+              - !Sub "arn:aws:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/eu.anthropic.claude-haiku-4-5-20251001-v1:0"
+              - "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-4-5-20251001-v1:0"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/ideaWorkerHandler.ts
 
   # --- 6. MONITORING ---
   ApplicationResourceGroup:

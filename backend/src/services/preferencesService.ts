@@ -1,17 +1,10 @@
-import { UserRepository } from '../repositories/userRepository';
+import { preferenceRepository } from '../repositories/preferenceRepository';
 import { UserPreferences, UpdatePreferencesInput } from '../models/preferences';
 
-export class PreferencesService {
-    private repository: UserRepository;
-
-    constructor() {
-        this.repository = new UserRepository();
-    }
-
+export const preferencesService = {
     async getPreferences(userId: string): Promise<UserPreferences> {
-        const prefs = await this.repository.getPreferences(userId);
+        const prefs = await preferenceRepository.getPreferences(userId);
         if (!prefs) {
-            // Return default preferences if none exist
             return {
                 PK: userId,
                 SK: 'PREFERENCES',
@@ -23,16 +16,19 @@ export class PreferencesService {
             };
         }
         return prefs;
-    }
+    },
 
     async updatePreferences(userId: string, input: UpdatePreferencesInput): Promise<UserPreferences> {
         const current = await this.getPreferences(userId);
         const updated: UserPreferences = {
             ...current,
-            ...input,
+            ...(input.dietaryRestrictions !== undefined && { dietaryRestrictions: input.dietaryRestrictions }),
+            ...(input.allergies !== undefined && { allergies: input.allergies }),
+            ...(input.dislikedIngredients !== undefined && { dislikedIngredients: input.dislikedIngredients }),
+            ...(input.servingSize !== undefined && { servingSize: input.servingSize }),
             updatedAt: new Date().toISOString(),
         };
-        await this.repository.savePreferences(updated);
+        await preferenceRepository.savePreferences(updated);
         return updated;
-    }
-}
+    },
+};

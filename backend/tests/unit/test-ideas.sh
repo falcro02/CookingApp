@@ -1,0 +1,115 @@
+#!/bin/bash
+# Test script for POST /ideas/generate
+# Usage: ./test-ideas.sh
+
+REGION="eu-south-1"
+IDEAS_FN="cooking-web-stack-IdeasFunction-dLO3fXJIYLJe"
+TASK_FN="cooking-web-stack-TaskFunction-gWAytI6idlyc"
+USER_ID="LOCAL_TEST_ID"
+
+# ============================
+# MODIFICA QUESTI PARAMETRI
+# ============================
+INGREDIENTS='["Pasta", "Tomato sauce", "Onions", "Oil", "Bread", "Lentils", "Rice", "Spices"]'
+# ============================
+
+echo "=== POST /ideas/generate ==="
+echo "Ingredients: $INGREDIENTS"
+echo ""
+
+# 1. Crea il payload
+INGREDIENTS_ESC=$(echo "$INGREDIENTS" | sed 's/"/\\"/g')
+
+cat > /tmp/ideas-event.json << EOF
+{
+  "resource": "/ideas/generate",
+  "path": "/ideas/generate",
+  "httpMethod": "POST",
+  "headers": {},
+  "body": "{\"ingredients\":$INGREDIENTS_ESC}",
+  "requestContext": {"authorizer": {"claims": {"sub": "$USER_ID"}}},
+  "pathParameters": null,
+  "queryStringParameters": null
+}
+EOF
+
+# 2. Invoca la IdeasFunction
+aws lambda invoke \
+    --function-name "$IDEAS_FN" \
+    --invocation-type "RequestResponse" \
+    --payload fileb:///tmp/ideas-event.json \
+    --region "$REGION" \
+    /tmp/ideas-output.json > /dev/null 2>&1
+
+RESPONSE=$(cat /tmp/ideas-output.json)
+echo "Response: $RESPONSE"
+
+# 3. Estrai il taskID
+TASK_ID=$(echo "$RESPONSE" | python3 -c "import sys,json; r=json.load(sys.stdin); print(json.loads(r['body'])['taskID'])" 2>/dev/null)
+
+if [ -z "$TASK_ID" ]; then
+    echo "ERRORE: nessun taskID nella risposta"
+    exit 1
+fi
+
+echo "Task ID: $TASK_ID"
+echo ""
+echo "=== Polling GET /tasks/$TASK_ID ==="
+
+# 4. Polling del task
+while true; do
+    cat > /tmp/task-event.json << EOF
+{
+  "resource": "/tasks/{taskID}",
+  "path": "/tasks/$TASK_ID",
+  "httpMethod": "GET",
+  "headers": {},
+  "body": null,
+  "requestContext": {"authorizer": {"claims": {"sub": "$USER_ID"}}},
+  "pathParameters": {"taskID": "$TASK_ID"},
+  "queryStringParameters": null
+}
+EOF
+
+    aws lambda invoke \
+        --function-name "$TASK_FN" \
+        --invocation-type "RequestResponse" \
+        --payload fileb:///tmp/task-event.json \
+        --region "$REGION" \
+        /tmp/task-output.json > /dev/null 2>&1
+
+    STATUS=$(cat /tmp/task-output.json | python3 -c "import sys,json; r=json.load(sys.stdin); print(json.loads(r['body'])['status'])" 2>/dev/null)
+
+    if [ "$STATUS" = "1" ]; then
+        echo "Status: COMPLETED"
+        break
+    elif [ "$STATUS" = "-1" ]; then
+        echo "Status: FAILED"
+        cat /tmp/task-output.json
+        exit 1
+    else
+        echo "Status: RUNNING... (polling in 3s)"
+        sleep 3
+    fi
+done
+
+# 5. Mostra le idee generate
+echo ""
+echo "=== Idee generate ==="
+aws dynamodb get-item \
+    --table-name CookingAppData \
+    --key "{\"PK\":{\"S\":\"USER#$USER_ID\"},\"SK\":{\"S\":\"IDEAS\"}}" \
+    --region "$REGION" \
+    --output json | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+ideas = data.get('Item', {}).get('ideas', {}).get('L', [])
+for idea in ideas:
+    m = idea.get('M', {})
+    icon = m.get('icon', {}).get('S', '')
+    name = m.get('name', {}).get('S', '')
+    story = m.get('story', {}).get('S', '')
+    print(f'{icon}  {name}')
+    print(f'   {story}')
+    print()
+"
