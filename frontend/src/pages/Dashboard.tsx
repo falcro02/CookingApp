@@ -1,31 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
-import { Meal, DayOfWeek } from '../types';
+import { Meal, weekDayToName } from '../types';
 import '../styles/App.css';
-
-// The numerical order for chronological sorting
-const MEAL_ORDER = { Breakfast: 1, Lunch: 2, Snack: 3, Dinner: 4 };
 
 export const Dashboard = () => {
     const [todaysMeals, setTodaysMeals] = useState<Meal[]>([]);
-    const todayString = new Date().toLocaleDateString('en-US', { weekday: 'long' }) as DayOfWeek;
+
+    // Get today's weekDay index (0=Monday, 6=Sunday)
+    const jsDay = new Date().getDay(); // 0=Sunday, 6=Saturday
+    const todayWeekDay = jsDay === 0 ? 6 : jsDay - 1; // Convert to 0=Monday, 6=Sunday
+    const todayString = weekDayToName(todayWeekDay);
 
     useEffect(() => {
         const loadTodaysMeals = async () => {
             try {
                 const allMeals = await apiService.getMeals();
-                // Filter for today, then sort chronologically
-                const filteredAndSorted = allMeals
-                    .filter(meal => meal.dayOfWeek === todayString)
-                    .sort((a, b) => MEAL_ORDER[a.type] - MEAL_ORDER[b.type]);
-
-                setTodaysMeals(filteredAndSorted);
+                const filtered = allMeals.filter(meal => meal.weekDay === todayWeekDay);
+                setTodaysMeals(filtered);
             } catch (error) {
                 console.error("Error loading meals:", error);
             }
         };
         loadTodaysMeals();
-    }, [todayString]);
+    }, [todayWeekDay]);
 
     return (
         <div className="app-container">
@@ -40,12 +37,11 @@ export const Dashboard = () => {
                         <p className="empty-day">Nothing planned for today.</p>
                     ) : (
                         todaysMeals.map((meal, index) => (
-                            <div key={meal.SK || index} className="meal-row">
+                            <div key={meal.itemID || index} className="meal-row">
                                 <div className="meal-info">
-                                    <span className="meal-icon">🍽️</span>
-                                    <span className="meal-name">{meal.name}</span>
+                                    <span className="meal-icon">{meal.icon}</span>
+                                    <span className="meal-name">{meal.description}</span>
                                 </div>
-                                <span className="meal-type" style={{ fontWeight: 600 }}>{meal.type}</span>
                             </div>
                         ))
                     )}

@@ -26,7 +26,7 @@ Resources:
       Policies:
         PasswordPolicy:
           MinimumLength: 8
-  
+
   CookingUserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
@@ -127,19 +127,28 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref CookingAppTable
       Events:
+        GetMeals:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /meals
+            Method: get
         CreateMeal:
           Type: Api
           Properties:
+            RestApiId: !Ref CookingApi
             Path: /meals
             Method: post
         DeleteMeal:
           Type: Api
           Properties:
+            RestApiId: !Ref CookingApi
             Path: /meals/{itemID}
             Method: delete
         UpdateMeal:
           Type: Api
           Properties:
+            RestApiId: !Ref CookingApi
             Path: /meals/{itemID}
             Method: patch
     Metadata:
@@ -424,6 +433,48 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - src/handlers/ideaWorkerHandler.ts
+
+  PlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/planHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+      Events:
+        GetPlans:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /plans
+            Method: get
+        SetCurrentPlan:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /plans/current
+            Method: patch
+        DeletePlan:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /plans/{planNR}
+            Method: delete
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/planHandler.ts
 
   # --- 6. MONITORING ---
   ApplicationResourceGroup:

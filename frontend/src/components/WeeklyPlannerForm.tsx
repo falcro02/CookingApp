@@ -1,41 +1,46 @@
 import React, { useState } from 'react';
-import { CreateMealInput, DayOfWeek, MealType } from '../types';
+import { CreateMealInput, DAYS_OF_WEEK, DayOfWeek, nameToWeekDay } from '../types';
 import { apiService } from '../services/apiService';
 
 interface Props {
-    onPlanSaved: () => void; // A function to refresh the Dashboard after saving
+    onPlanSaved: () => void;
 }
 
 export const WeeklyPlannerForm: React.FC<Props> = ({ onPlanSaved }) => {
     const [draftMeals, setDraftMeals] = useState<CreateMealInput[]>([]);
-    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [icon, setIcon] = useState('🍽️');
     const [dayOfWeek, setDayOfWeek] = useState<DayOfWeek>('Monday');
-    const [type, setType] = useState<MealType>('Dinner');
     const [isSaving, setIsSaving] = useState(false);
 
-    // Add a single meal to the local draft list
     const handleAddToDraft = () => {
-        if (!name.trim()) return;
+        if (!description.trim()) return;
 
-        const newMeal: CreateMealInput = { name, dayOfWeek, type };
+        const newMeal: CreateMealInput = {
+            description,
+            icon,
+            weekDay: nameToWeekDay(dayOfWeek),
+            plan: 1,
+        };
         setDraftMeals([...draftMeals, newMeal]);
-        setName(''); // Clear the input field
+        setDescription('');
     };
 
-    // Remove a meal from the draft before saving
     const handleRemoveFromDraft = (indexToRemove: number) => {
         setDraftMeals(draftMeals.filter((_, index) => index !== indexToRemove));
     };
 
-    // Send the massive array to the backend
     const handleSaveWeek = async () => {
         if (draftMeals.length === 0) return;
 
         setIsSaving(true);
         try {
-            await apiService.createWeeklyPlan(draftMeals);
-            setDraftMeals([]); // Clear drafts on success
-            onPlanSaved(); // Tell the Dashboard to reload and close the modal
+            // Save each meal individually
+            for (const meal of draftMeals) {
+                await apiService.addMeal(meal);
+            }
+            setDraftMeals([]);
+            onPlanSaved();
         } catch (error) {
             console.error("Failed to save weekly plan", error);
             alert("Failed to save the plan. Check the console.");
@@ -49,18 +54,20 @@ export const WeeklyPlannerForm: React.FC<Props> = ({ onPlanSaved }) => {
             <div className="add-meal-controls">
                 <input
                     type="text"
-                    placeholder="Meal Name (e.g., Spaghetti)"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Meal description (e.g., Spaghetti)"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder="Emoji"
+                    value={icon}
+                    onChange={(e) => setIcon(e.target.value)}
+                    style={{ width: '60px', textAlign: 'center' }}
                 />
                 <select value={dayOfWeek} onChange={(e) => setDayOfWeek(e.target.value as DayOfWeek)}>
-                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
+                    {DAYS_OF_WEEK.map(day => (
                         <option key={day} value={day}>{day}</option>
-                    ))}
-                </select>
-                <select value={type} onChange={(e) => setType(e.target.value as MealType)}>
-                    {['Breakfast', 'Lunch', 'Dinner', 'Snack'].map(t => (
-                        <option key={t} value={t}>{t}</option>
                     ))}
                 </select>
                 <button onClick={handleAddToDraft}>Add to Draft</button>
@@ -71,7 +78,7 @@ export const WeeklyPlannerForm: React.FC<Props> = ({ onPlanSaved }) => {
                 <ul>
                     {draftMeals.map((meal, index) => (
                         <li key={index}>
-                            {meal.dayOfWeek} - {meal.type}: {meal.name}
+                            {DAYS_OF_WEEK[meal.weekDay]} - {meal.icon} {meal.description}
                             <button onClick={() => handleRemoveFromDraft(index)}>X</button>
                         </li>
                     ))}

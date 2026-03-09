@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreateMealInput, DayOfWeek, MealType } from '../types';
+import { CreateMealInput, DAYS_OF_WEEK, DayOfWeek, nameToWeekDay } from '../types';
 import { apiService } from '../services/apiService';
 
 interface Props {
@@ -7,21 +7,26 @@ interface Props {
 }
 
 export const MealForm: React.FC<Props> = ({ onMealAdded }) => {
-    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [icon, setIcon] = useState('🍽️');
     const [dayOfWeek, setDayOfWeek] = useState<DayOfWeek>('Monday');
-    const [type, setType] = useState<MealType>('Dinner');
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name.trim()) return;
+        if (!description.trim()) return;
 
         setIsSaving(true);
         try {
-            const newMeal: CreateMealInput = { name, dayOfWeek, type };
+            const newMeal: CreateMealInput = {
+                description,
+                icon,
+                weekDay: nameToWeekDay(dayOfWeek),
+                plan: 1, // Default to plan 1
+            };
             await apiService.addMeal(newMeal);
-            setName(''); // Clear input after saving
-            onMealAdded(); // Refresh the list
+            setDescription('');
+            onMealAdded();
         } catch (error) {
             console.error("Error adding meal:", error);
         } finally {
@@ -33,19 +38,21 @@ export const MealForm: React.FC<Props> = ({ onMealAdded }) => {
         <form className="meal-form" onSubmit={handleSubmit}>
             <input
                 type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Meal Name (e.g., Lasagna)"
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                placeholder="Meal description (e.g., Lasagna)"
                 required
             />
+            <input
+                type="text"
+                value={icon}
+                onChange={e => setIcon(e.target.value)}
+                placeholder="Emoji"
+                style={{ width: '60px', textAlign: 'center' }}
+            />
             <select value={dayOfWeek} onChange={e => setDayOfWeek(e.target.value as DayOfWeek)}>
-                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(d => (
+                {DAYS_OF_WEEK.map(d => (
                     <option key={d} value={d}>{d}</option>
-                ))}
-            </select>
-            <select value={type} onChange={e => setType(e.target.value as MealType)}>
-                {['Breakfast', 'Lunch', 'Dinner', 'Snack'].map(t => (
-                    <option key={t} value={t}>{t}</option>
                 ))}
             </select>
             <button type="submit" disabled={isSaving}>

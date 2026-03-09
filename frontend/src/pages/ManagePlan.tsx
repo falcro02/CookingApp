@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
-import { Meal, DayOfWeek, MealType } from '../types';
+import { Meal, DAYS_OF_WEEK, DayOfWeek, weekDayToName, nameToWeekDay } from '../types';
 import '../styles/App.css';
-
-//TODO - Implement the fuction of the "Plan Tabs" to switch between different saved plans. For now, it just shows "Plan 1" with all meals.
-
-const DAYS_OF_WEEK: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const MEAL_ORDER = { Breakfast: 1, Lunch: 2, Snack: 3, Dinner: 4 };
 
 export const ManagePlan = () => {
     const [meals, setMeals] = useState<Meal[]>([]);
@@ -14,8 +9,8 @@ export const ManagePlan = () => {
 
     // New state to manage the inline "Add Meal" form
     const [addingMealForDay, setAddingMealForDay] = useState<DayOfWeek | null>(null);
-    const [newMealName, setNewMealName] = useState('');
-    const [newMealType, setNewMealType] = useState<MealType>('Dinner');
+    const [newMealDesc, setNewMealDesc] = useState('');
+    const [newMealIcon, setNewMealIcon] = useState('🍽️');
     const [isSaving, setIsSaving] = useState(false);
 
     const loadMeals = async () => {
@@ -31,9 +26,9 @@ export const ManagePlan = () => {
         loadMeals();
     }, []);
 
-    const handleDelete = async (sk: string) => {
+    const handleDelete = async (itemID: string) => {
         try {
-            await apiService.deleteMeal(sk);
+            await apiService.deleteMeal(itemID);
             loadMeals();
         } catch (error) {
             console.error("Failed to delete", error);
@@ -42,24 +37,24 @@ export const ManagePlan = () => {
 
     const toggleDay = (day: DayOfWeek) => {
         setExpandedDay(expandedDay === day ? null : day);
-        // Reset the inline form if the user clicks away to another day
         setAddingMealForDay(null);
-        setNewMealName('');
+        setNewMealDesc('');
     };
 
-    // New function to save the meal directly to the day you clicked
     const handleSaveInlineMeal = async (day: DayOfWeek) => {
-        if (!newMealName.trim()) return;
+        if (!newMealDesc.trim()) return;
         setIsSaving(true);
         try {
             await apiService.addMeal({
-                name: newMealName,
-                dayOfWeek: day,
-                type: newMealType
+                description: newMealDesc,
+                icon: newMealIcon,
+                weekDay: nameToWeekDay(day),
+                plan: 1, // Default to plan 1 for now
             });
-            setNewMealName('');
-            setAddingMealForDay(null); // Close the inline form
-            loadMeals(); // Refresh the list
+            setNewMealDesc('');
+            setNewMealIcon('🍽️');
+            setAddingMealForDay(null);
+            loadMeals();
         } catch (error) {
             console.error("Error saving meal:", error);
         } finally {
@@ -77,7 +72,8 @@ export const ManagePlan = () => {
 
             <div className="meals-plan-list">
                 {DAYS_OF_WEEK.map((day) => {
-                    const mealsForDay = meals.filter(m => m.dayOfWeek === day).sort((a, b) => MEAL_ORDER[a.type] - MEAL_ORDER[b.type]);
+                    const dayIndex = nameToWeekDay(day);
+                    const mealsForDay = meals.filter(m => m.weekDay === dayIndex);
                     const isExpanded = expandedDay === day;
 
                     return (
@@ -89,42 +85,37 @@ export const ManagePlan = () => {
 
                             {isExpanded && (
                                 <div className="day-meals">
-                                    {/* 1. Show existing meals */}
                                     {mealsForDay.map((meal, index) => (
-                                        <div key={meal.SK || index} className="meal-row">
+                                        <div key={meal.itemID || index} className="meal-row">
                                             <div className="meal-info">
-                                                <span className="meal-icon">🍽️</span>
-                                                <span className="meal-name">{meal.name}</span>
-                                                <span className="meal-type">({meal.type})</span>
+                                                <span className="meal-icon">{meal.icon}</span>
+                                                <span className="meal-name">{meal.description}</span>
                                             </div>
                                             <button
                                                 className="delete-icon"
-                                                onClick={() => meal.SK && handleDelete(meal.SK)}
+                                                onClick={() => meal.itemID && handleDelete(meal.itemID)}
                                             >
                                                 ✕
                                             </button>
                                         </div>
                                     ))}
 
-                                    {/* 2. Show the Inline "Add" Form OR the "Add Button" */}
                                     {addingMealForDay === day ? (
                                         <div className="inline-add-box">
                                             <input
                                                 type="text"
-                                                placeholder="Meal name (e.g. Pasta)"
-                                                value={newMealName}
-                                                onChange={(e) => setNewMealName(e.target.value)}
+                                                placeholder="Meal description (e.g. Pasta)"
+                                                value={newMealDesc}
+                                                onChange={(e) => setNewMealDesc(e.target.value)}
                                                 autoFocus
                                             />
-                                            <select
-                                                value={newMealType}
-                                                onChange={(e) => setNewMealType(e.target.value as MealType)}
-                                            >
-                                                <option value="Breakfast">Breakfast</option>
-                                                <option value="Lunch">Lunch</option>
-                                                <option value="Dinner">Dinner</option>
-                                                <option value="Snack">Snack</option>
-                                            </select>
+                                            <input
+                                                type="text"
+                                                placeholder="Emoji icon"
+                                                value={newMealIcon}
+                                                onChange={(e) => setNewMealIcon(e.target.value)}
+                                                style={{ width: '60px', textAlign: 'center' }}
+                                            />
                                             <div className="inline-actions">
                                                 <button
                                                     className="save-btn"
