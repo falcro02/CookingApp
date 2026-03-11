@@ -8,10 +8,10 @@ export const buildResponse = (statusCode: number, body: any): APIGatewayProxyRes
     return {
         statusCode,
         headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*", // For development. Restrict this in production.
-            "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*', // For development. Restrict this in production.
+            'Access-Control-Allow-Methods': 'GET,POST,DELETE,OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
         },
         body: JSON.stringify(body),
     };

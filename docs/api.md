@@ -1,34 +1,35 @@
 # REST API contracts
 
-   >[`POST /signin/apple`](#apple-sign-in)
-<br>[`POST /signin/google`](#google-sign-in)
-<br>[`GET /groceries`](#get-groceries-list)
-<br>[`DELETE /groceries`](#clear-groceries)
-<br>[`POST /groceries`](#add-new-item)
-<br>[`DELETE /groceries/{itemID}`](#delete-item)
-<br>[`PATCH /groceries/{itemID}`](#edit-item-state)
-<br>[`POST /groceries/check`](#check-or-uncheck-all-items)
-<br>[`POST /groceries/generate`](#generate-items-with-ai)
-<br>[`GET /plans`](#get-plans)
-<br>[`DELETE /plans/{planNR}`](#delete-plan)
-<br>[`POST /meals`](#add-meal-to-plan)
-<br>[`DELETE /meals/{itemID}`](#delete-meal-from-plan)
-<br>[`PATCH /meals/{itemID}`](#edit-meal-state)
-<br>[`GET /ingredients`](#get-pantry-ingredients)
-<br>[`DELETE /ingredients`](#clear-pantry-ingredients)
-<br>[`POST /ingredients`](#add-new-ingredient)
-<br>[`DELETE /ingredients/{itemID}`](#delete-ingredient)
-<br>[`PATCH /ingredients/{itemID}`](#edit-ingredient-state)
-<br>[`POST /ingredients/import`](#import-from-groceries)
-<br>[`POST /ideas/generate`](#generate-ideas-with-ai)
-<br>[`GET /ideas`](#get-ideas)
-<br>[`DELETE /ideas`](#clear-ideas)
-<br>[`GET /preferences`](#get-user-preferences)
-<br>[`PUT /preferences`](#update-user-preferences)
-<br>[`GET /tasks/{taskID}`](#get-task-status)
-<br>[`DELETE /data`](#clear-all-user-data)
-<br>[`DELETE /sessions`](#delete-all-active-sessions)
-<br>[`DELETE /user`](#delete-user-account)
+> [`POST /signin/apple`](#apple-sign-in)
+> <br>[`POST /signin/google`](#google-sign-in)
+> <br>[`GET /groceries`](#get-groceries-list)
+> <br>[`DELETE /groceries`](#clear-groceries)
+> <br>[`POST /groceries`](#add-new-item)
+> <br>[`DELETE /groceries/{itemID}`](#delete-item)
+> <br>[`PATCH /groceries/{itemID}`](#edit-item-state)
+> <br>[`POST /groceries/check`](#check-or-uncheck-all-items)
+> <br>[`POST /groceries/generate`](#generate-items-with-ai)
+> <br>[`GET /plans`](#get-plans)
+> <br>[`PATCH /plans/current`](#set-current-plan)
+> <br>[`DELETE /plans/{planNR}`](#delete-plan)
+> <br>[`POST /meals`](#add-meal-to-plan)
+> <br>[`DELETE /meals/{itemID}`](#delete-meal-from-plan)
+> <br>[`PATCH /meals/{itemID}`](#edit-meal-state)
+> <br>[`GET /ingredients`](#get-pantry-ingredients)
+> <br>[`DELETE /ingredients`](#clear-pantry-ingredients)
+> <br>[`POST /ingredients`](#add-new-ingredient)
+> <br>[`DELETE /ingredients/{itemID}`](#delete-ingredient)
+> <br>[`PATCH /ingredients/{itemID}`](#edit-ingredient-state)
+> <br>[`POST /ingredients/import`](#import-from-groceries)
+> <br>[`POST /ideas/generate`](#generate-ideas-with-ai)
+> <br>[`GET /ideas`](#get-ideas)
+> <br>[`DELETE /ideas`](#clear-ideas)
+> <br>[`GET /preferences`](#get-user-preferences)
+> <br>[`PATCH /preferences`](#update-user-preferences)
+> <br>[`GET /tasks/{taskID}`](#get-task-status)
+> <br>[`DELETE /data`](#clear-all-user-data)
+> <br>[`DELETE /sessions`](#delete-all-active-sessions)
+> <br>[`DELETE /user`](#delete-user-account)
 
 ## Sign in
 
@@ -290,13 +291,16 @@ POST /groceries/generate
 Get all the weekly meals plans registered by the user, alongside the one
 currently selected.
 
+If user has just empty plans, then the current plan will be the first and it
+will be empty.
+Otherwise, empty plans are omitted.
+
 Plans are returned in a dictionary where the key is the plan number shown in
 the UI (1-4).
-Each plan is itself a dictionary where the item IDs are the key for an object i
+Each plan is itself a dictionary where the item IDs are the key for an object
 with other item's data.
 Items' icon identifies the Unicode value of an emoji.
 Week day is represented as an integer between 0 and 6.
-Empty plans are omitted.
 
 **Request**
 
@@ -335,10 +339,39 @@ GET /plans
 }
 ```
 
+### Set current plan
+
+Set the number of the plan currently selected and active for the user.
+
+The plan number is defined with an integer between 1 and 4.
+
+**Request**
+
+```text
+PATCH plans/current
+```
+
+```json
+{
+    "current": int
+}
+```
+
+**Response**
+
+- 204: current plan set
+- 400: invalid field
+- 404: plan not found (empty)
+
 ### Delete plan
 
 Clear the user's meals plan with the provided number (1-4).
 This request is idempotent: if the plan was already empty no error is returned.
+
+After the plan is deleted, the next currently selected will be the first
+non-empty before the deleted one.
+If all plans get deleted, the currently selected one is the first, even if
+empty.
 
 **Request**
 
@@ -389,6 +422,11 @@ POST /meals
 ### Delete meal from plan
 
 Delete a meal from its plan.
+
+If the last item in the plan is deleted, the currently selected plan changes
+and will be the first non-empty before the emptied/deleted one.
+If all plans get deleted, the currently selected one is the first, even if
+empty.
 
 **Request**
 
@@ -640,9 +678,9 @@ POST /ideas/generate
 
 ### Get user preferences
 
-Get the textual description of user's preferences.
-An empty string is valid content, meaning that if the user has not set it, an
-empty string is returned with the preferences key.
+Get the textual descriptions of user's preferences.
+Empty string is valid content, meaning that if the user has not set it, an
+empty string is returned with that specific preference key.
 
 **Request**
 
@@ -656,7 +694,11 @@ GET /preferences
 
 ```json
 {
-    "preferences": string
+    "preferences": {
+        "dietary": string,
+        "allergies": string,
+        "disliked": string
+    }
 }
 ```
 
@@ -664,17 +706,23 @@ GET /preferences
 
 Set a new textual description of user's preferences.
 An empty string is valid content, therefore this request can be used also to
-unset it, by sending an empty string with the preferences key.
+unset it, by sending an empty string with the desired preference key.
+
+Omitted attributes are ignored, meaning they are not updated/cleared.
 
 **Request**
 
 ```text
-PUT /preferences
+PATCH /preferences
 ```
 
 ```json
 {
-    "preferences": string
+    "preferences": {
+        "dietary": string,
+        "allergies": string,
+        "disliked": string
+    }
 }
 ```
 
@@ -764,4 +812,3 @@ DELETE /user
 **Response**
 
 - 204: operation successful
-

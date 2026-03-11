@@ -1,55 +1,36 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom';
-import { Authenticator } from '@aws-amplify/ui-react';
-import { Dashboard } from './pages/Dashboard';
-import { ManagePlan } from './pages/ManagePlan';
-import './styles/App.css';
+import Layout from "@components/Layout";
+import useAppearance from "@hooks/appearance";
+import FillGroceriesPage from "@pages/FillGroceriesPage";
+import GroceriesPage from "@pages/GroceriesPage";
+import IdeasPage from "@pages/IdeasPage";
+import PlansPage from "@pages/PlansPage";
+import ProfilePage from "@pages/ProfilePage";
+import UnknownPage from "@pages/UnknownPage";
+import {Theme} from "@radix-ui/themes";
+import {Route, Routes} from "react-router-dom";
 
 function App() {
+  const {appearance} = useAppearance();
   return (
-    <Router>
-      <div className="App">
-        <Authenticator socialProviders={['google']}>
-          {({ signOut, user }) => (
-            <>
-              <header className="App-header">
-                <div>
-                  <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <h1>Il Mio Piano Alimentare</h1>
-                  </Link>
-                </div>
-                <div className="user-controls">
-                  Welcome, {user?.username}
-                  <button
-                    onClick={signOut}
-                    className="signout-btn"
-                  >
-                    Sign out
-                  </button>
-                </div>
-              </header>
-
-              {/* NEW: Global Navigation Bar */}
-              <nav className="main-nav">
-                <NavLink to="/" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                  Today's Menu
-                </NavLink>
-                <NavLink to="/manage" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                  Weekly Planner
-                </NavLink>
-              </nav>
-
-              <main className="main-content">
-                <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/manage" element={<ManagePlan />} />
-                </Routes>
-              </main>
-            </>
-          )}
-        </Authenticator>
-      </div>
-    </Router>
+    <Theme
+      accentColor="ruby"
+      grayColor="sage"
+      radius="large"
+      appearance={appearance}
+    >
+      <Layout>
+        <Routes>
+          <Route path="/" element={<GroceriesPage />} />
+          <Route path="/groceries/fill/plans" element={<PlansPage />} />
+          <Route path="/groceries/fill" element={<FillGroceriesPage />} />
+          <Route path="/groceries/plans" element={<PlansPage />} />
+          <Route path="/groceries" element={<GroceriesPage />} />
+          <Route path="/ideas" element={<IdeasPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="*" element={<UnknownPage />} />
+        </Routes>
+      </Layout>
+    </Theme>
   );
 }
 

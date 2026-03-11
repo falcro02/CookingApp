@@ -34,4 +34,3 @@ A minimal UI will provide easy access to the main sections/pages:
   requesting meal ideas;
 - a page for inserting extra info about user's eating habits and for performing
   other account actions.
-
