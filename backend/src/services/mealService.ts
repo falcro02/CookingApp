@@ -1,7 +1,12 @@
 import { mealRepository } from '../repositories/mealRepository';
+import { planRepository } from '../repositories/planRepository';
 import { CreateMealInput, UpdateMealInput, Meal } from '../models/meal';
 
 export const mealService = {
+    async getMeals(userId: string): Promise<Meal[]> {
+        return await mealRepository.findAllByUser(userId);
+    },
+
     async createMeal(userId: string, input: CreateMealInput): Promise<string> {
         // Validazione rigorosa come da contratto
         if (!input.description || !input.icon || input.weekDay === undefined || input.plan === undefined) {
@@ -31,6 +36,24 @@ export const mealService = {
         if (!meal) throw new Error('meal not found');
 
         await mealRepository.delete(userId, itemID);
+
+        // Check if this was the last meal in the plan
+        const remainingMeals = await mealRepository.findByPlan(userId, meal.plan);
+        if (remainingMeals.length === 0) {
+            // Plan is now empty — if it was the current plan, auto-switch
+            const currentPlan = await planRepository.getCurrentPlan(userId);
+            if (currentPlan === meal.plan) {
+                let newCurrent = 1; // default: plan 1 (even if empty)
+                for (let p = meal.plan - 1; p >= 1; p--) {
+                    const meals = await mealRepository.findByPlan(userId, p);
+                    if (meals.length > 0) {
+                        newCurrent = p;
+                        break;
+                    }
+                }
+                await planRepository.setCurrentPlan(userId, newCurrent);
+            }
+        }
     },
 
     async updateMeal(userId: string, itemID: string, updates: UpdateMealInput): Promise<void> {

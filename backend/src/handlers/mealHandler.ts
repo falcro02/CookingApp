@@ -28,6 +28,12 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             return buildResponse(200, '');
         }
 
+        // --- GET /meals ---
+        if (httpMethod === 'GET') {
+            const meals = await mealService.getMeals(userId);
+            return buildResponse(200, meals);
+        }
+
         // --- POST /meals ---
         if (httpMethod === 'POST') {
             try {

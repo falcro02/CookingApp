@@ -27,6 +27,12 @@ Resources:
         PasswordPolicy:
           MinimumLength: 8
 
+  CookingUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: cooking-app-auth
+      UserPoolId: !Ref CookingUserPool
+
   # --- NUOVO: PROVIDER GOOGLE PER COGNITO ---
   CookingUserPoolGoogleProvider:
     Type: AWS::Cognito::UserPoolIdentityProvider
@@ -35,8 +41,8 @@ Resources:
       ProviderName: Google
       ProviderType: Google
       ProviderDetails:
-        client_id: "CLIENT ID"
-        client_secret: "CLIENT SECRET"
+        client_id: "{{resolve:ssm:/cooking-app/google/client-id}}"
+        client_secret: "{{resolve:ssm:/cooking-app/google/client-secret}}"
         authorize_scopes: "profile email openid"
       AttributeMapping:
         email: email
@@ -56,6 +62,18 @@ Resources:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
       GenerateSecret: false # Must be false for Single Page Apps like React
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - profile
+        - openid
+      CallbackURLs:
+        - http://localhost:3000/
+      LogoutURLs:
+        - http://localhost:3000/
 
   # --- 3. SECURE API GATEWAY ---
   CookingApi:
@@ -71,7 +89,7 @@ Resources:
         AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           CognitoAuthorizer:
-            UserPoolArn: !GetAtt CookingUserPool.Arn
+            UserPoolArn: !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CookingUserPool}"
 
   # --- 4. DATABASE (Single Table Design) ---
   CookingAppTable:
@@ -109,19 +127,28 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref CookingAppTable
       Events:
+        GetMeals:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /meals
+            Method: get
         CreateMeal:
           Type: Api
           Properties:
+            RestApiId: !Ref CookingApi
             Path: /meals
             Method: post
         DeleteMeal:
           Type: Api
           Properties:
+            RestApiId: !Ref CookingApi
             Path: /meals/{itemID}
             Method: delete
         UpdateMeal:
           Type: Api
           Properties:
+            RestApiId: !Ref CookingApi
             Path: /meals/{itemID}
             Method: patch
     Metadata:
@@ -406,6 +433,48 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - src/handlers/ideaWorkerHandler.ts
+
+  PlanFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/planHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CookingAppTable
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CookingAppTable
+      Events:
+        GetPlans:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /plans
+            Method: get
+        SetCurrentPlan:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /plans/current
+            Method: patch
+        DeletePlan:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /plans/{planNR}
+            Method: delete
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/planHandler.ts
 
   # --- 6. MONITORING ---
   ApplicationResourceGroup:

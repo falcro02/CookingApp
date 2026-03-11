@@ -6,6 +6,7 @@ import {
     DeleteCommand,
     UpdateCommand,
     QueryCommand,
+    BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { Meal, UpdateMealInput } from '../models/meal';
 
@@ -90,5 +91,44 @@ export const mealRepository = {
             }),
         );
         return (result.Items as Meal[]) || [];
+    },
+
+    async findAllByUser(userId: string): Promise<Meal[]> {
+        const result = await docClient.send(
+            new QueryCommand({
+                TableName: TABLE_NAME,
+                KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+                ExpressionAttributeValues: {
+                    ':pk': userId,
+                    ':sk': 'MEAL#',
+                },
+            }),
+        );
+        return (result.Items as Meal[]) || [];
+    },
+
+    async deleteByPlan(userId: string, plan: number): Promise<void> {
+        const meals = await this.findByPlan(userId, plan);
+        if (meals.length === 0) return;
+
+        // DynamoDB BatchWrite supports max 25 items per batch
+        const batches = [];
+        for (let i = 0; i < meals.length; i += 25) {
+            batches.push(meals.slice(i, i + 25));
+        }
+
+        for (const batch of batches) {
+            await docClient.send(
+                new BatchWriteCommand({
+                    RequestItems: {
+                        [TABLE_NAME]: batch.map((meal) => ({
+                            DeleteRequest: {
+                                Key: { PK: meal.PK, SK: meal.SK },
+                            },
+                        })),
+                    },
+                }),
+            );
+        }
     },
 };
