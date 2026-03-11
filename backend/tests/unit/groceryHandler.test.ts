@@ -19,7 +19,7 @@ jest.mock('../../src/services/groceryService', () => ({
         updateGrocery: (...args: any[]) => mockUpdateGrocery(...args),
         checkAll: (...args: any[]) => mockCheckAll(...args),
         generateGroceries: (...args: any[]) => mockGenerateGroceries(...args),
-    }
+    },
 }));
 
 import { lambdaHandler } from '../../src/handlers/groceryHandler';
@@ -41,10 +41,27 @@ function makeEvent(overrides: Partial<APIGatewayProxyEvent> = {}): APIGatewayPro
             authorizer: { claims: { sub: 'test-cognito-id' } },
             httpMethod: 'GET',
             identity: {
-                accessKey: '', accountId: '', apiKey: '', apiKeyId: '', caller: '',
-                clientCert: { clientCertPem: '', issuerDN: '', serialNumber: '', subjectDN: '', validity: { notAfter: '', notBefore: '' } },
-                cognitoAuthenticationProvider: '', cognitoAuthenticationType: '', cognitoIdentityId: '',
-                cognitoIdentityPoolId: '', principalOrgId: '', sourceIp: '', user: '', userAgent: '', userArn: '',
+                accessKey: '',
+                accountId: '',
+                apiKey: '',
+                apiKeyId: '',
+                caller: '',
+                clientCert: {
+                    clientCertPem: '',
+                    issuerDN: '',
+                    serialNumber: '',
+                    subjectDN: '',
+                    validity: { notAfter: '', notBefore: '' },
+                },
+                cognitoAuthenticationProvider: '',
+                cognitoAuthenticationType: '',
+                cognitoIdentityId: '',
+                cognitoIdentityPoolId: '',
+                principalOrgId: '',
+                sourceIp: '',
+                user: '',
+                userAgent: '',
+                userArn: '',
             },
             path: '/groceries',
             protocol: 'HTTP/1.1',
@@ -61,7 +78,6 @@ function makeEvent(overrides: Partial<APIGatewayProxyEvent> = {}): APIGatewayPro
 }
 
 describe('groceryHandler', () => {
-
     beforeEach(() => {
         jest.clearAllMocks();
         delete process.env.AWS_SAM_LOCAL;
@@ -219,7 +235,9 @@ describe('groceryHandler', () => {
             });
             const result = await lambdaHandler(event);
             expect(result.statusCode).toBe(204);
-            expect(mockUpdateGrocery).toHaveBeenCalledWith('USER#test-cognito-id', 'item-123', { description: 'Updated item' });
+            expect(mockUpdateGrocery).toHaveBeenCalledWith('USER#test-cognito-id', 'item-123', {
+                description: 'Updated item',
+            });
         });
 
         it('updates grocery checked status and returns 204', async () => {

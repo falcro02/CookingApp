@@ -1,40 +1,19 @@
 {
-    "include": [
-        "src",
-        "../shared/src"
-    ],
-    "compilerOptions": {
-        "types": [
-            "vite/client"
-        ],
-        "module": "esnext",
-        "moduleResolution": "bundler",
-        "lib": [
-            "ES2022",
-            "DOM",
-            "DOM.Iterable"
-        ],
-        "jsx": "react-jsx",
-        "baseUrl": ".",
-        "paths": {
-            "@components/*": [
-                "src/components/*"
-            ],
-            "@pages/*": [
-                "src/pages/*"
-            ],
-            "@context/*": [
-                "src/context/*"
-            ],
-            "@hooks/*": [
-                "src/hooks/*"
-            ],
-            "@api/*": [
-                "src/api/*"
-            ],
-            "@shared/*": [
-                "../shared/src/*"
-            ]
-        }
+  "include": ["src", "../shared/src"],
+  "compilerOptions": {
+    "types": ["vite/client", "node"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@context/*": ["src/context/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@api/*": ["src/api/*"],
+      "@shared/*": ["../shared/src/*"]
     }
+  }
 }

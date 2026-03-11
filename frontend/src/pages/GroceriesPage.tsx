@@ -1,4 +1,4 @@
-import ShopingLists from "@components/ShoppingList";
+import ShoppingList from "@components/ShoppingList";
 import TodaysMenu from "@components/TodaysMenu";
 import {Heading} from "@radix-ui/themes";
 
@@ -13,7 +13,7 @@ const GroceriesPage = () => {
       <Heading mt="2" size="3">
         Your shopping list
       </Heading>
-      <ShopingLists />
+      <ShoppingList />
     </>
   );
 };

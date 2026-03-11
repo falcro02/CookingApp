@@ -30,7 +30,17 @@ interface Item {
   checked: boolean;
 }
 
-const ShopingLists = () => {
+const ShoppingList = () => (
+  <Card asChild my="4">
+    <Box width="100%" px="20px" py="20px">
+      <Flex direction="column" align="center">
+        <ShoppingListContent />
+      </Flex>
+    </Box>
+  </Card>
+);
+
+const ShoppingListContent = () => {
   const dispatch = useUserDispatch();
   const {groceries} = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -82,26 +92,24 @@ const ShopingLists = () => {
     loadGroceries();
   }, [groceries, loadGroceries]);
 
-  if (gotError) return "ERROR";
+  if (gotError) return "Error";
   if (isLoading) return <Spinner m="10px" />;
-  if (!groceries || !groceriesByDay) return;
-  if (Object.keys(groceries.groceries).length === 0) return;
+  if (!groceries || !groceriesByDay) return "Waiting for groceries to load";
+  if (Object.keys(groceries.groceries).length === 0) return "No groceries";
 
   return (
-    <Card asChild my="4">
-      <Box width="100%" px="20px" py="20px">
-        {[0, 1, 2, 3, 4, 5, 6]
-          .map((i) => (i + TODAY) % 7)
-          .map((day: number) => (
-            <DayList
-              key={day}
-              day={day}
-              items={groceriesByDay[day]}
-              today={day == TODAY}
-            />
-          ))}
-      </Box>
-    </Card>
+    <Box width="100%">
+      {[0, 1, 2, 3, 4, 5, 6]
+        .map((i) => (i + TODAY) % 7)
+        .map((day: number) => (
+          <DayList
+            key={day}
+            day={day}
+            items={groceriesByDay[day]}
+            today={day == TODAY}
+          />
+        ))}
+    </Box>
   );
 };
 
@@ -141,4 +149,4 @@ const DayList = ({day, items, today}: DayListProps) => {
   );
 };
 
-export default ShopingLists;
+export default ShoppingList;

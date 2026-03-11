@@ -6,7 +6,7 @@ const mockGetTaskStatus = jest.fn<(...args: any[]) => any>();
 jest.mock('../../src/services/taskService', () => ({
     taskService: {
         getTaskStatus: (...args: any[]) => mockGetTaskStatus(...args),
-    }
+    },
 }));
 
 import { lambdaHandler } from '../../src/handlers/taskHandler';
@@ -28,10 +28,27 @@ function makeEvent(overrides: Partial<APIGatewayProxyEvent> = {}): APIGatewayPro
             authorizer: { claims: { sub: 'test-cognito-id' } },
             httpMethod: 'GET',
             identity: {
-                accessKey: '', accountId: '', apiKey: '', apiKeyId: '', caller: '',
-                clientCert: { clientCertPem: '', issuerDN: '', serialNumber: '', subjectDN: '', validity: { notAfter: '', notBefore: '' } },
-                cognitoAuthenticationProvider: '', cognitoAuthenticationType: '', cognitoIdentityId: '',
-                cognitoIdentityPoolId: '', principalOrgId: '', sourceIp: '', user: '', userAgent: '', userArn: '',
+                accessKey: '',
+                accountId: '',
+                apiKey: '',
+                apiKeyId: '',
+                caller: '',
+                clientCert: {
+                    clientCertPem: '',
+                    issuerDN: '',
+                    serialNumber: '',
+                    subjectDN: '',
+                    validity: { notAfter: '', notBefore: '' },
+                },
+                cognitoAuthenticationProvider: '',
+                cognitoAuthenticationType: '',
+                cognitoIdentityId: '',
+                cognitoIdentityPoolId: '',
+                principalOrgId: '',
+                sourceIp: '',
+                user: '',
+                userAgent: '',
+                userArn: '',
             },
             path: '/tasks/task-123',
             protocol: 'HTTP/1.1',
@@ -48,7 +65,6 @@ function makeEvent(overrides: Partial<APIGatewayProxyEvent> = {}): APIGatewayPro
 }
 
 describe('taskHandler', () => {
-
     beforeEach(() => {
         jest.clearAllMocks();
         delete process.env.AWS_SAM_LOCAL;

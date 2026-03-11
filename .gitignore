@@ -7,6 +7,8 @@ site
 
 # Misc
 .env
+.env.*
+!.env.json
 .cache
 .DS_Store
 .out

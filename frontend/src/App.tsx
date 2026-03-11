@@ -4,8 +4,8 @@ import FillGroceriesPage from "@pages/FillGroceriesPage";
 import GroceriesPage from "@pages/GroceriesPage";
 import IdeasPage from "@pages/IdeasPage";
 import PlansPage from "@pages/PlansPage";
-import ProfilePage from "@pages/Profile";
-import UnknownPage from "@pages/Unknown";
+import ProfilePage from "@pages/ProfilePage";
+import UnknownPage from "@pages/UnknownPage";
 import {Theme} from "@radix-ui/themes";
 import {Route, Routes} from "react-router-dom";
 

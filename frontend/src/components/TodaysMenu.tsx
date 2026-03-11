@@ -56,13 +56,14 @@ const TodaysMenuContent = () => {
     loadPlans();
   }, [plans, loadPlans]);
 
-  if (gotError) return "ERROR";
+  if (gotError) return "Error";
   if (isLoading) return <Spinner m="10px" />;
-  if (!plans) return;
+  if (!plans) return "Waiting for plans to load";
 
   // Find the current plan selected
   const currPlan = plans.plans[plans.current];
-  if (Object.keys(currPlan).length === 0) return "Tap to create a plan";
+  if (!currPlan || Object.keys(currPlan).length === 0)
+    return "Tap to create a plan";
 
   return (
     <Flex justify="between" width="80%">
