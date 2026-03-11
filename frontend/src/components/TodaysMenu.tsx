@@ -1,15 +1,17 @@
 import {getPlans} from "@api/plans";
+import usePage from "@hooks/page";
 import useUser, {useUserDispatch} from "@hooks/user";
 import {Button, Card, Box, Flex, Spinner, Heading} from "@radix-ui/themes";
 import {useState, useCallback, useEffect} from "react";
 
 const TodaysMenu = () => {
+  const {updatePage} = usePage();
   return (
     <Button
       asChild
       my="4"
       style={{cursor: "var(--cursor-link)"}}
-      onClick={() => alert("PlansPage missing")}
+      onClick={() => updatePage("/groceries/plans")}
     >
       <Card asChild>
         <Box height="100%" width="100%" px="50px" py="20px">

@@ -1,7 +1,9 @@
 import Layout from "@components/Layout";
 import useAppearance from "@hooks/appearance";
+import FillGroceriesPage from "@pages/FillGroceriesPage";
 import GroceriesPage from "@pages/GroceriesPage";
 import IdeasPage from "@pages/IdeasPage";
+import PlansPage from "@pages/PlansPage";
 import ProfilePage from "@pages/Profile";
 import UnknownPage from "@pages/Unknown";
 import {Theme} from "@radix-ui/themes";
@@ -19,6 +21,9 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<GroceriesPage />} />
+          <Route path="/groceries/fill/plans" element={<PlansPage />} />
+          <Route path="/groceries/fill" element={<FillGroceriesPage />} />
+          <Route path="/groceries/plans" element={<PlansPage />} />
           <Route path="/groceries" element={<GroceriesPage />} />
           <Route path="/ideas" element={<IdeasPage />} />
           <Route path="/profile" element={<ProfilePage />} />

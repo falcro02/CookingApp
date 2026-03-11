@@ -1,39 +1,21 @@
-import usePage from "@hooks/page";
 import {ArrowRightIcon, CrossCircledIcon} from "@radix-ui/react-icons";
-import {Callout, Strong, Box, Flex, Button} from "@radix-ui/themes";
+import {Callout, Strong, Box, Flex, Link} from "@radix-ui/themes";
 
-const UnknownPage = () => {
-  const {updatePage} = usePage();
-  return (
-    <Callout.Root>
-      <Callout.Icon>
-        <CrossCircledIcon />
-      </Callout.Icon>
-      <Callout.Text>
-        <Flex>
-          <Strong>Unknown page</Strong>
-          <Box px="2" mt="3px">
-            {" "}
-            <ArrowRightIcon />{" "}
-          </Box>
-          Go back to the
-          <Button
-            ml="1"
-            variant="ghost"
-            onClick={() => updatePage("/")}
-            style={{
-              background: "none",
-              textDecoration: "underline",
-              cursor: "var(--cursor-link)",
-            }}
-          >
-            home page
-          </Button>
-          .
-        </Flex>
-      </Callout.Text>
-    </Callout.Root>
-  );
-};
+const UnknownPage = () => (
+  <Callout.Root>
+    <Callout.Icon>
+      <CrossCircledIcon />
+    </Callout.Icon>
+    <Callout.Text>
+      <Flex gap="1">
+        <Strong>Unknown page</Strong>
+        <Box mt="3px">
+          <ArrowRightIcon />
+        </Box>
+        Go back to the <Link href="/">home page</Link>.
+      </Flex>
+    </Callout.Text>
+  </Callout.Root>
+);
 
 export default UnknownPage;

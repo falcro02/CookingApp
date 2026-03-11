@@ -22,14 +22,17 @@ const FloatHeadCompact = () => (
 
 const PageButton = ({name, page, children}) => {
   const {currPage, updatePage} = usePage();
+  const lastSlash = currPage.indexOf("/", 1);
+  const selected = lastSlash <= 0 ? currPage : currPage.slice(0, lastSlash);
+
   return (
     <Tooltip content={name}>
       <IconButton
         variant="ghost"
         radius="full"
         style={{
-          background: page === currPage ? "var(--accent-9)" : undefined,
-          color: page === currPage ? "white" : "var(--gray-12)",
+          background: page === selected ? "var(--accent-9)" : undefined,
+          color: page === selected ? "white" : "var(--gray-12)",
           cursor: "var(--cursor-link)",
         }}
         onClick={() => updatePage(page)}
