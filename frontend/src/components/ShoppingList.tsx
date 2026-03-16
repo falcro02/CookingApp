@@ -1,7 +1,6 @@
 import {getGroceries} from "@api/groceries";
 import useUser, {useUserDispatch} from "@hooks/user";
 import {Box, Card, Heading, Flex, Spinner} from "@radix-ui/themes";
-import {GroceryItem} from "@shared/types/groceries";
 import {useState, useCallback, useEffect, useMemo} from "react";
 import GroceryItemCheckbox from "@components/GroceryItemCheckbox";
 
@@ -49,22 +48,16 @@ const ShoppingListContent = () => {
   // Generate a (memoized) support object used for easily display grocery items
   // on the different week day lists
   const groceriesByDay = useMemo<GroceriesByDay>(() => {
-    if (!groceries) return {};
-    const grouped: GroceriesByDay = {};
-    Object.keys(DAY_NAMES).forEach((weekDay: string) => {
-      grouped[(+weekDay + 6) % 7] = {};
-    });
-    Object.entries(groceries.groceries).forEach(
-      ([id, item]: [string, GroceryItem]) => {
-        const dayDict = grouped[item.weekDay];
-        dayDict[id] = {
-          description: item.description,
-          checked: item.checked,
-        };
-        grouped[item.weekDay] = dayDict;
-      },
-    );
-    return grouped;
+    if (!groceries?.groceries) return {};
+    return Object.entries(groceries.groceries).reduce((acc, [id, item]) => {
+      const day = (+item.weekDay + 6) % 7;
+      if (!acc[day]) acc[day] = {};
+      acc[day][id] = {
+        description: item.description,
+        checked: item.checked,
+      };
+      return acc;
+    }, {} as GroceriesByDay);
   }, [groceries]);
 
   // Prepare a callback function to call the get groceries endpoint and update
@@ -99,13 +92,13 @@ const ShoppingListContent = () => {
 
   return (
     <Box width="100%">
-      {[0, 1, 2, 3, 4, 5, 6]
-        .map((i) => (i + TODAY) % 7)
+      {Object.keys(DAY_NAMES)
+        .map((i) => (+i + TODAY) % 7)
         .map((day: number) => (
           <DayList
             key={day}
             day={day}
-            items={groceriesByDay[day]}
+            items={groceriesByDay[day] ?? {}}
             today={day == TODAY}
           />
         ))}
@@ -142,7 +135,12 @@ const DayList = ({day, items, today}: DayListProps) => {
       </Card>
       <Flex direction="column" px="4" my="10px" mb="15px" gap="2">
         {Object.entries(items).map(([id, item]: [string, Item]) => (
-          <GroceryItemCheckbox key={id} label={item.description} />
+          <GroceryItemCheckbox
+            key={id}
+            id={id}
+            checked={item.checked}
+            description={item.description}
+          />
         ))}
       </Flex>
     </>

@@ -16,15 +16,53 @@ interface User {
 }
 
 type UserAction =
+  | {action: "SET_GROCERIES"; groceries: Groceries}
+  | {action: "CHECK_GROCERY_ITEM"; id: string; checked: boolean}
+  | {action: "DELETE_GROCERY_ITEM"; id: string}
   | {action: "SET_PLANS"; plans: Plans; current: number}
-  | {action: "SET_CURRENT_PLAN"; current: number}
-  | {action: "SET_GROCERIES"; groceries: Groceries};
+  | {action: "SET_CURRENT_PLAN"; current: number};
 
 export function userReducer(
   state: User | null,
   action: UserAction,
 ): User | null {
   switch (action.action) {
+    case "SET_GROCERIES":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: action.groceries,
+        },
+      };
+    case "CHECK_GROCERY_ITEM": {
+      const curr = state?.groceries?.groceries[action.id];
+      if (!curr) return state;
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {
+            ...state?.groceries?.groceries,
+            [action.id]: {
+              ...curr,
+              checked: action.checked,
+            },
+          },
+        },
+      };
+    }
+    case "DELETE_GROCERY_ITEM": {
+      const {[action.id]: _, ...groceriesLeft} =
+        state?.groceries?.groceries || {};
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: groceriesLeft,
+        },
+      };
+    }
     case "SET_PLANS":
       return {
         ...state,
@@ -40,14 +78,6 @@ export function userReducer(
         plans: {
           ...state?.plans,
           current: action.current,
-        },
-      };
-    case "SET_GROCERIES":
-      return {
-        ...state,
-        groceries: {
-          ...state?.groceries,
-          groceries: action.groceries,
         },
       };
   }
