@@ -1,14 +1,14 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { pantryService } from '../services/pantryService';
 import { buildResponse } from '../utils/response';
-import { CreatePantryItemInput } from '../models/pantry';
+import { CreatePantryItemInput } from '@shared/types/pantry';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const method = event.httpMethod;
     let userId = 'UNKNOWN';
 
     if (process.env.AWS_SAM_LOCAL) {
-        userId = 'USER#LOCAL_MOCK_123';
+        userId = 'USER#LOCAL_TEST_ID';
     } else if (event.requestContext?.authorizer?.claims?.sub) {
         userId = `USER#${event.requestContext.authorizer.claims.sub}`;
     } else if (method !== 'OPTIONS') {
@@ -25,8 +25,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
         if (method === 'POST') {
             const body = JSON.parse(event.body || '{}') as CreatePantryItemInput;
-            const newItem = await pantryService.addPantryItem(userId, body);
-            return buildResponse(201, newItem);
+            const item = await pantryService.addPantryItem(userId, body);
+            return buildResponse(201, item);
         }
 
         if (method === 'DELETE') {

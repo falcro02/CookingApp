@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { mealService } from '../services/mealService';
 import { buildResponse } from '../utils/response';
+import { CreateMealInput, UpdateMealInput } from '@shared/types/plans';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
@@ -37,7 +38,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         // --- POST /meals ---
         if (httpMethod === 'POST') {
             try {
-                const body = JSON.parse(event.body || '{}');
+                const body = JSON.parse(event.body || '{}') as CreateMealInput;
                 const newItemID = await mealService.createMeal(userId, body);
                 return buildResponse(201, { itemID: newItemID });
             } catch (error: any) {
@@ -66,7 +67,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         // --- PATCH /meals/{itemID} ---
         if (httpMethod === 'PATCH' && itemID) {
             try {
-                const body = JSON.parse(event.body || '{}');
+                const body = JSON.parse(event.body || '{}') as UpdateMealInput;
                 await mealService.updateMeal(userId, itemID, body);
                 return buildResponse(204, '');
             } catch (error: any) {

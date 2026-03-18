@@ -1,5 +1,5 @@
 import { ideaWorkerService } from '../services/ideaWorkerService';
-import { IdeasWorkerPayload } from '../models/idea';
+import { IdeasWorkerPayload } from '../dto/ideaDto';
 
 export const lambdaHandler = async (event: IdeasWorkerPayload): Promise<void> => {
     console.log('IdeaWorker invoked for task:', event.taskID);

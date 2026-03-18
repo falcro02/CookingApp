@@ -1,8 +1,9 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
-import { CurrentPlan } from '../models/plan';
+import { CurrentPlanEntity } from '../entities/planEntity';
 
-const client = new DynamoDBClient({});
+import { getDynamoClient } from "../utils/db";
+const client = getDynamoClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = process.env.TABLE_NAME || '';
@@ -15,7 +16,7 @@ export const planRepository = {
                 Key: { PK: userId, SK: 'CURRENT_PLAN' },
             }),
         );
-        return result.Item ? (result.Item as CurrentPlan).current : 1;
+        return result.Item ? (result.Item as CurrentPlanEntity).current : 1;
     },
 
     async setCurrentPlan(userId: string, plan: number): Promise<void> {

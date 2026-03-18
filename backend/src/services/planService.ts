@@ -1,10 +1,9 @@
 import { mealRepository } from '../repositories/mealRepository';
 import { planRepository } from '../repositories/planRepository';
-import { PlansResponse, PlanItem } from '../models/plan';
-import { Meal } from '../models/meal';
+import { PlansState, PlanItem } from '@shared/types/plans';
 
 export const planService = {
-    async getPlans(userId: string): Promise<PlansResponse> {
+    async getPlans(userId: string): Promise<PlansState> {
         // 1. Fetch all meals and current plan in parallel
         const [allMeals, current] = await Promise.all([
             mealRepository.findAllByUser(userId),
@@ -25,63 +24,30 @@ export const planService = {
                 weekDay: meal.weekDay,
             };
         }
+        // 3. Ensure the current plan is always represented, even if empty
+        if (!plans[current]) {
+            plans[current] = {};
+        }
 
-        // 3. If all plans are empty, return current as 1 with empty plans
-        return { current, plans };
+        return {
+            current,
+            plans,
+        };
     },
 
     async setCurrentPlan(userId: string, plan: number): Promise<void> {
-        // Validate plan number
-        if (!Number.isInteger(plan) || plan < 1 || plan > 4) {
-            const error = new Error('invalid field');
-            (error as any).statusCode = 400;
-            throw error;
-        }
-
-        // Check plan is not empty
-        const meals = await mealRepository.findByPlan(userId, plan);
-        if (meals.length === 0) {
-            const error = new Error('plan not found (empty)');
-            (error as any).statusCode = 404;
-            throw error;
-        }
-
         await planRepository.setCurrentPlan(userId, plan);
     },
 
-    async deletePlan(userId: string, planNR: number): Promise<void> {
-        // Validate plan number
-        if (!Number.isInteger(planNR) || planNR < 1 || planNR > 4) {
-            const error = new Error('invalid field');
-            (error as any).statusCode = 400;
-            throw error;
-        }
+    async deletePlan(userId: string, plan: number): Promise<void> {
+        // 1. Delete all meals associated with this plan
+        await mealRepository.deleteByPlan(userId, plan);
 
-        // Delete all meals in this plan
-        await mealRepository.deleteByPlan(userId, planNR);
-
-        // Auto-select the new current plan:
-        // Find the first non-empty plan before the deleted one, or first non-empty overall
-        const current = await planRepository.getCurrentPlan(userId);
-
-        if (current === planNR) {
-            // Need to find a new current plan
-            let newCurrent = 1; // default fallback
-
-            // Check plans before the deleted one first (descending), then after
-            const searchOrder: number[] = [];
-            for (let i = planNR - 1; i >= 1; i--) searchOrder.push(i);
-            for (let i = planNR + 1; i <= 4; i++) searchOrder.push(i);
-
-            for (const p of searchOrder) {
-                const meals = await mealRepository.findByPlan(userId, p);
-                if (meals.length > 0) {
-                    newCurrent = p;
-                    break;
-                }
-            }
-
-            await planRepository.setCurrentPlan(userId, newCurrent);
+        // 2. Check if the plan being deleted is the current plan
+        const currentPlan = await planRepository.getCurrentPlan(userId);
+        if (currentPlan === plan) {
+            // Reset to plan 1 if we deleted the current plan
+            await planRepository.setCurrentPlan(userId, 1);
         }
     },
 };

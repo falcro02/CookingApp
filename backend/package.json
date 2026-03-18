@@ -1,16 +1,31 @@
 {
     "name": "backend",
     "version": "1.0.0",
+    "private": true,
+    "description": "cooking web app backend",
+    "main": "app.js",
+    "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
+    "author": "Alessio Caggiano, Francesco Ostidich, Matteo Bettiati",
+    "license": "MIT",
     "scripts": {
-        "unit": "jest",
-        "lint": "eslint '*.ts' --quiet --fix",
-        "compile": "tsc",
-        "test": "npm run compile && npm run unit"
+        "dev": "npm run db:start && npm run db:gui && npm run start",
+        "ship": "npm run build && npm run deploy",
+        "build": "cd .. && sam build",
+        "start": "cd .. && sam local start-api",
+        "deploy": "cd .. && sam deploy",
+        "test": "jest tests/unit",
+        "test:watch": "jest --watch tests/unit",
+        "test:coverage": "jest tests/unit --coverage",
+        "db:start": "cd .. && docker-compose up -d",
+        "db:stop": "cd .. && docker-compose stop",
+        "db:gui": "open http://localhost:8001",
+        "lint": "eslint 'src/**/*.ts' --quiet --fix",
+        "format": "prettier --write 'src/**/*.ts'"
     },
     "dependencies": {
+        "@aws-sdk/client-bedrock-runtime": "^3.1000.0",
         "@aws-sdk/client-dynamodb": "^3.1000.0",
         "@aws-sdk/client-lambda": "^3.1000.0",
-        "@aws-sdk/client-bedrock-runtime": "^3.1000.0",
         "@aws-sdk/lib-dynamodb": "^3.1000.0",
         "esbuild": "^0.27.2"
     },
@@ -28,6 +43,6 @@
         "prettier": "^2.5.1",
         "ts-jest": "^29.0.5",
         "ts-node": "^10.9.1",
-        "typescript": "^4.8.4"
+        "typescript": "^5.9.3"
     }
 }

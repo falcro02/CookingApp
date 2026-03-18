@@ -3,15 +3,17 @@ import { taskRepository } from '../repositories/taskRepository';
 import { mealRepository } from '../repositories/mealRepository';
 import { groceryRepository } from '../repositories/groceryRepository';
 import { counterRepository } from '../repositories/counterRepository';
-import { Task } from '../models/task';
+import { GroceryItemEntity } from '../entities/groceryEntity';
+import { TaskEntity } from '../entities/taskEntity';
 import {
-    GroceryItem,
-    GroceryMap,
+    GroceryWorkerPayload,
+    GroceryMap
+} from '../dto/groceryDto';
+import {
     GenerateGroceriesRequest,
     CreateGroceryRequest,
     UpdateGroceryRequest,
-    GroceryWorkerPayload,
-} from '../models/grocery';
+} from '@shared/types/groceries';
 
 const lambdaClient = new LambdaClient({});
 
@@ -43,7 +45,7 @@ export const groceryService = {
         }
 
         const itemID = Date.now().toString();
-        const item: GroceryItem = {
+        const item: GroceryItemEntity = {
             PK: userId,
             SK: `GROCERY#${itemID}`,
             itemID,
@@ -123,7 +125,7 @@ export const groceryService = {
 
         // Create task record
         const taskID = Date.now().toString();
-        const task: Task = {
+        const task: TaskEntity = {
             PK: userId,
             SK: `TASK#${taskID}`,
             taskID,

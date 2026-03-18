@@ -1,14 +1,14 @@
 import { mealRepository } from '../repositories/mealRepository';
 import { planRepository } from '../repositories/planRepository';
-import { CreateMealInput, UpdateMealInput, Meal } from '../models/meal';
+import { MealEntity } from '../entities/mealEntity';
+import { CreateMealInput, UpdateMealInput } from '@shared/types/plans';
 
 export const mealService = {
-    async getMeals(userId: string): Promise<Meal[]> {
+    async getMeals(userId: string): Promise<MealEntity[]> {
         return await mealRepository.findAllByUser(userId);
     },
 
     async createMeal(userId: string, input: CreateMealInput): Promise<string> {
-        // Validazione rigorosa come da contratto
         if (!input.description || !input.icon || input.weekDay === undefined || input.plan === undefined) {
             throw new Error('invalid field');
         }
@@ -17,7 +17,7 @@ export const mealService = {
 
         const itemID = Date.now().toString();
 
-        const newMeal: Meal = {
+        const newMealEntity: MealEntity = {
             PK: userId,
             SK: `MEAL#${itemID}`,
             itemID,
@@ -27,7 +27,7 @@ export const mealService = {
             plan: input.plan,
         };
 
-        await mealRepository.create(newMeal);
+        await mealRepository.create(newMealEntity);
         return itemID;
     },
 

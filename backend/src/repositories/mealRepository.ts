@@ -8,15 +8,17 @@ import {
     QueryCommand,
     BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { Meal, UpdateMealInput } from '../models/meal';
+import { MealEntity } from '../entities/mealEntity';
+import { UpdateMealInput } from '@shared/types/plans';
 
-const client = new DynamoDBClient({});
+import { getDynamoClient } from "../utils/db";
+const client = getDynamoClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = process.env.TABLE_NAME || '';
 
 export const mealRepository = {
-    async create(meal: Meal): Promise<void> {
+    async create(meal: MealEntity): Promise<void> {
         await docClient.send(
             new PutCommand({
                 TableName: TABLE_NAME,
@@ -25,14 +27,14 @@ export const mealRepository = {
         );
     },
 
-    async findById(userId: string, itemID: string): Promise<Meal | null> {
+    async findById(userId: string, itemID: string): Promise<MealEntity | null> {
         const result = await docClient.send(
             new GetCommand({
                 TableName: TABLE_NAME,
                 Key: { PK: userId, SK: `MEAL#${itemID}` },
             }),
         );
-        return (result.Item as Meal) || null;
+        return (result.Item as MealEntity) || null;
     },
 
     //TODO delete of the last meal in a plan have to check it and set the previous plan
@@ -76,7 +78,7 @@ export const mealRepository = {
         );
     },
 
-    async findByPlan(userId: string, plan: number): Promise<Meal[]> {
+    async findByPlan(userId: string, plan: number): Promise<MealEntity[]> {
         const result = await docClient.send(
             new QueryCommand({
                 TableName: TABLE_NAME,
@@ -90,10 +92,10 @@ export const mealRepository = {
                 },
             }),
         );
-        return (result.Items as Meal[]) || [];
+        return (result.Items as MealEntity[]) || [];
     },
 
-    async findAllByUser(userId: string): Promise<Meal[]> {
+    async findAllByUser(userId: string): Promise<MealEntity[]> {
         const result = await docClient.send(
             new QueryCommand({
                 TableName: TABLE_NAME,
@@ -104,7 +106,7 @@ export const mealRepository = {
                 },
             }),
         );
-        return (result.Items as Meal[]) || [];
+        return (result.Items as MealEntity[]) || [];
     },
 
     async deleteByPlan(userId: string, plan: number): Promise<void> {

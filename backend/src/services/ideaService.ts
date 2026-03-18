@@ -1,9 +1,10 @@
 import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
-import { Idea, IdeasWorkerPayload } from '../models/idea';
+import { IdeaItem } from '@shared/types/ideas';
+import { IdeasWorkerPayload } from '../dto/ideaDto';
 import { ideaRepository } from '../repositories/ideaRepository';
 import { counterRepository } from '../repositories/counterRepository';
 import { taskRepository } from '../repositories/taskRepository';
-import { Task } from '../models/task';
+import { TaskEntity } from '../entities/taskEntity';
 import { preferencesService } from './preferencesService';
 
 const lambdaClient = new LambdaClient({});
@@ -13,7 +14,7 @@ const WORKER_FUNCTION_NAME = process.env.IDEAS_WORKER_FUNCTION_NAME || '';
 const DAILY_GENERATION_LIMIT = 3;
 
 export const ideaService = {
-    async getIdeas(userId: string): Promise<Idea[]> {
+    async getIdeas(userId: string): Promise<IdeaItem[]> {
         const ideas = await ideaRepository.findByUser(userId);
         return ideas || [];
     },
@@ -45,7 +46,7 @@ export const ideaService = {
 
         // Create task record
         const taskID = Date.now().toString();
-        const task: Task = {
+        const task: TaskEntity = {
             PK: userId,
             SK: `TASK#${taskID}`,
             taskID,
@@ -62,10 +63,9 @@ export const ideaService = {
             taskID,
             ingredients,
             preferences: {
-                dietaryRestrictions: userPrefs.dietaryRestrictions,
+                dietary: userPrefs.dietary,
                 allergies: userPrefs.allergies,
-                dislikedIngredients: userPrefs.dislikedIngredients,
-                servingSize: userPrefs.servingSize,
+                disliked: userPrefs.disliked,
             },
         };
 

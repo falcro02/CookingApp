@@ -16,3 +16,15 @@ export interface PlansState {
   current: number;
   plans: Plans;
 }
+
+export interface CreateMealInput {
+  description: string;
+  icon: string;
+  weekDay: number;
+  plan: number;
+}
+
+export interface UpdateMealInput {
+  description?: string;
+  icon?: string;
+}

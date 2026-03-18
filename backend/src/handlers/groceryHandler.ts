@@ -6,7 +6,7 @@ import {
     CreateGroceryRequest,
     UpdateGroceryRequest,
     CheckAllRequest,
-} from '../models/grocery';
+} from '@shared/types/groceries';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
