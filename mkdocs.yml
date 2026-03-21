@@ -35,4 +35,7 @@ markdown_extensions:
   - pymdownx.superfences
 nav:
   - Home: index.md
+  - Architecture: architecture.md
+  - AWS Services: aws_services.md
+  - AWS SAM: sam.md
   - API: api.md
