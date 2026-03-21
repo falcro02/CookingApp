@@ -1,9 +1,9 @@
-import {addGroceryItem, getGroceries} from "@api/groceries";
+import {getGroceries} from "@api/groceries";
 import useUser, {useUserDispatch} from "@hooks/user";
 import {Box, Card, Heading, Flex, Spinner, IconButton} from "@radix-ui/themes";
 import {useState, useCallback, useEffect, useMemo} from "react";
 import GroceryItemCheckbox from "@components/GroceryItemCheckbox";
-import {PlusCircledIcon} from "@radix-ui/react-icons";
+import {PlusIcon} from "@radix-ui/react-icons";
 
 const TODAY: number = (new Date().getDay() + 6) % 7;
 
@@ -129,10 +129,11 @@ const DayNameCard = ({day, today}) => (
 const DayList = ({items, day}) => {
   const dispatch = useUserDispatch();
   return (
-    <Flex direction="column" px="4" my="10px" mb="15px" gap="2">
+    <Flex direction="column" px="4" my="10px" mb="15px">
       {Object.entries(items).map(([id, item]: [string, Item]) => (
         <GroceryItemCheckbox
           key={id}
+          day={day}
           id={id}
           checked={item.checked}
           description={item.description}
@@ -143,23 +144,18 @@ const DayList = ({items, day}) => {
           variant="ghost"
           radius="full"
           onClick={() => {
-            const item = {
-              description: "New item",
-              weekDay: day,
-            };
-            addGroceryItem(item).then((res) => {
-              dispatch({
-                action: "ADD_GROCERY_ITEM",
-                id: res.itemId,
-                item: {
-                  ...item,
-                  checked: false,
-                },
-              });
+            dispatch({
+              action: "ADD_GROCERY_ITEM",
+              id: "",
+              item: {
+                description: "",
+                weekDay: day,
+                checked: false,
+              },
             });
           }}
         >
-          <PlusCircledIcon />
+          <PlusIcon height="18" width="18" />
         </IconButton>
       </Flex>
     </Flex>

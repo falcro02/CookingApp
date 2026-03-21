@@ -15,10 +15,11 @@ interface User {
   preferences: PreferencesState;
 }
 
-type UserAction =
+export type UserAction =
   | {action: "SET_GROCERIES"; groceries: Groceries}
   | {action: "CHECK_GROCERY_ITEM"; id: string; checked: boolean}
   | {action: "ADD_GROCERY_ITEM"; id: string; item: GroceryItem}
+  | {action: "EDIT_GROCERY_ITEM"; id: string; item: Partial<GroceryItem>}
   | {action: "DELETE_GROCERY_ITEM"; id: string}
   | {action: "SET_PLANS"; plans: Plans; current: number}
   | {action: "SET_CURRENT_PLAN"; current: number};
@@ -61,6 +62,20 @@ export function userReducer(
           groceries: {
             ...state?.groceries?.groceries,
             [action.id]: action.item,
+          },
+        },
+      };
+    case "EDIT_GROCERY_ITEM":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {
+            ...state?.groceries?.groceries,
+            [action.id]: {
+              ...state?.groceries?.groceries[action.id],
+              ...action.item,
+            },
           },
         },
       };
