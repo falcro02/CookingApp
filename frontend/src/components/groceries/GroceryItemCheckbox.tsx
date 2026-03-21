@@ -15,8 +15,7 @@ const GroceryItemCheckbox = ({id, day, checked, description}) => {
       <Checkbox
         disabled={id === ""}
         variant="soft"
-        mr="1"
-        defaultChecked={!!checked}
+        checked={!!checked}
         onCheckedChange={(newValue: boolean | "indeterminate") => {
           if (newValue === "indeterminate") return;
           patchGroceryItem(id, {checked: newValue}).then(() => {
@@ -26,6 +25,7 @@ const GroceryItemCheckbox = ({id, day, checked, description}) => {
       />
       <Box width="100%" height="24px">
         <TextField.Root
+          id={"_" + id}
           placeholder="New item"
           size="1"
           defaultValue={description}

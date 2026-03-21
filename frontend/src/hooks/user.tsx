@@ -17,6 +17,8 @@ interface User {
 
 export type UserAction =
   | {action: "SET_GROCERIES"; groceries: Groceries}
+  | {action: "CLEAR_GROCERIES"}
+  | {action: "CHECK_ALL_GROCERIES"; check: boolean}
   | {action: "CHECK_GROCERY_ITEM"; id: string; checked: boolean}
   | {action: "ADD_GROCERY_ITEM"; id: string; item: GroceryItem}
   | {action: "EDIT_GROCERY_ITEM"; id: string; item: Partial<GroceryItem>}
@@ -35,6 +37,28 @@ export function userReducer(
         groceries: {
           ...state?.groceries,
           groceries: action.groceries,
+        },
+      };
+    case "CLEAR_GROCERIES":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {},
+        },
+      };
+    case "CHECK_ALL_GROCERIES":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: Object.entries(state?.groceries?.groceries).reduce(
+            (acc, [id, item]) => {
+              acc[id] = {...item, checked: action.check};
+              return acc;
+            },
+            {} as Groceries,
+          ),
         },
       };
     case "CHECK_GROCERY_ITEM": {
