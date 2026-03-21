@@ -23,6 +23,20 @@ export async function patchGroceryItem(id: string, item: Partial<GroceryItem>) {
   if (!res.ok) throw new Error("error while calling the server");
 }
 
+export async function addGroceryItem(
+  item: Partial<GroceryItem>,
+): Promise<{itemId: string}> {
+  console.log("adding grocery item");
+  const headers = await getHeaders();
+  const res = await fetch(`${API_URL}/groceries`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(item),
+  });
+  if (!res.ok) throw new Error("error while calling the server");
+  return await res.json();
+}
+
 export async function deleteGroceryItem(id: string) {
   console.log("deleting grocery item");
   const headers = await getHeaders();

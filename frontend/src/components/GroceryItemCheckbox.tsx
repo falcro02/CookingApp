@@ -17,8 +17,9 @@ const GroceryItemCheckbox = ({id, checked, description}) => {
           });
         }}
       />
-      <Text size="2">{description}</Text>
-      <Box width="100%" />
+      <Box width="100%">
+        <Text size="2">{description}</Text>
+      </Box>
       <IconButton
         variant="ghost"
         radius="full"

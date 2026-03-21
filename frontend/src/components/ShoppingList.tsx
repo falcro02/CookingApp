@@ -1,8 +1,9 @@
-import {getGroceries} from "@api/groceries";
+import {addGroceryItem, getGroceries} from "@api/groceries";
 import useUser, {useUserDispatch} from "@hooks/user";
-import {Box, Card, Heading, Flex, Spinner} from "@radix-ui/themes";
+import {Box, Card, Heading, Flex, Spinner, IconButton} from "@radix-ui/themes";
 import {useState, useCallback, useEffect, useMemo} from "react";
 import GroceryItemCheckbox from "@components/GroceryItemCheckbox";
+import {PlusCircledIcon} from "@radix-ui/react-icons";
 
 const TODAY: number = (new Date().getDay() + 6) % 7;
 
@@ -50,7 +51,7 @@ const ShoppingListContent = () => {
   const groceriesByDay = useMemo<GroceriesByDay>(() => {
     if (!groceries?.groceries) return {};
     return Object.entries(groceries.groceries).reduce((acc, [id, item]) => {
-      const day = (+item.weekDay + 6) % 7;
+      const day = item.weekDay;
       if (!acc[day]) acc[day] = {};
       acc[day][id] = {
         description: item.description,
@@ -95,55 +96,73 @@ const ShoppingListContent = () => {
       {Object.keys(DAY_NAMES)
         .map((i) => (+i + TODAY) % 7)
         .map((day: number) => (
-          <DayList
-            key={day}
-            day={day}
-            items={groceriesByDay[day] ?? {}}
-            today={day == TODAY}
-          />
+          <Box key={day}>
+            <DayNameCard day={day} today={day == TODAY} />
+            <DayList day={day} items={groceriesByDay[day] ?? {}} />
+          </Box>
         ))}
     </Box>
   );
 };
 
-interface DayListProps {
-  day: number;
-  items: DayItems;
-  today: boolean;
-}
+const DayNameCard = ({day, today}) => (
+  <Card>
+    <Flex direction="row" align="center">
+      <Heading size="2" trim="both">
+        {DAY_NAMES[day]}
+      </Heading>
+      {today && (
+        <Heading
+          size="2"
+          trim="both"
+          ml="2"
+          weight="light"
+          style={{color: "var(--gray-9)"}}
+        >
+          (today)
+        </Heading>
+      )}
+    </Flex>
+  </Card>
+);
 
-const DayList = ({day, items, today}: DayListProps) => {
+const DayList = ({items, day}) => {
+  const dispatch = useUserDispatch();
   return (
-    <>
-      <Card>
-        <Flex direction="row" align="center">
-          <Heading size="2" trim="both">
-            {DAY_NAMES[day]}
-          </Heading>
-          {today && (
-            <Heading
-              size="2"
-              trim="both"
-              ml="2"
-              weight="light"
-              style={{color: "var(--gray-9)"}}
-            >
-              (today)
-            </Heading>
-          )}
-        </Flex>
-      </Card>
-      <Flex direction="column" px="4" my="10px" mb="15px" gap="2">
-        {Object.entries(items).map(([id, item]: [string, Item]) => (
-          <GroceryItemCheckbox
-            key={id}
-            id={id}
-            checked={item.checked}
-            description={item.description}
-          />
-        ))}
+    <Flex direction="column" px="4" my="10px" mb="15px" gap="2">
+      {Object.entries(items).map(([id, item]: [string, Item]) => (
+        <GroceryItemCheckbox
+          key={id}
+          id={id}
+          checked={item.checked}
+          description={item.description}
+        />
+      ))}
+      <Flex justify="center">
+        <IconButton
+          variant="ghost"
+          radius="full"
+          onClick={() => {
+            const item = {
+              description: "New item",
+              weekDay: day,
+            };
+            addGroceryItem(item).then((res) => {
+              dispatch({
+                action: "ADD_GROCERY_ITEM",
+                id: res.itemId,
+                item: {
+                  ...item,
+                  checked: false,
+                },
+              });
+            });
+          }}
+        >
+          <PlusCircledIcon />
+        </IconButton>
       </Flex>
-    </>
+    </Flex>
   );
 };
 

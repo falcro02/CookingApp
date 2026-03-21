@@ -1,5 +1,5 @@
 import {createContext, useContext, useMemo} from "react";
-import {GroceriesState, Groceries} from "@shared/types/groceries";
+import {GroceriesState, Groceries, GroceryItem} from "@shared/types/groceries";
 import {IdeasState} from "@shared/types/ideas";
 import {IngredientsState} from "@shared/types/ingredients";
 import {Plans, PlansState} from "@shared/types/plans";
@@ -18,6 +18,7 @@ interface User {
 type UserAction =
   | {action: "SET_GROCERIES"; groceries: Groceries}
   | {action: "CHECK_GROCERY_ITEM"; id: string; checked: boolean}
+  | {action: "ADD_GROCERY_ITEM"; id: string; item: GroceryItem}
   | {action: "DELETE_GROCERY_ITEM"; id: string}
   | {action: "SET_PLANS"; plans: Plans; current: number}
   | {action: "SET_CURRENT_PLAN"; current: number};
@@ -52,6 +53,17 @@ export function userReducer(
         },
       };
     }
+    case "ADD_GROCERY_ITEM":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {
+            ...state?.groceries?.groceries,
+            [action.id]: action.item,
+          },
+        },
+      };
     case "DELETE_GROCERY_ITEM": {
       const {[action.id]: _, ...groceriesLeft} =
         state?.groceries?.groceries || {};
