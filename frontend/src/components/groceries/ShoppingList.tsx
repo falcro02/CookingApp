@@ -1,7 +1,6 @@
-import {getGroceries} from "@api/groceries";
-import useUser, {useUserDispatch} from "@hooks/user";
+import useUser from "@hooks/user";
 import {Box, Card, Flex, Spinner, Separator} from "@radix-ui/themes";
-import {useState, useCallback, useEffect, useMemo} from "react";
+import {useMemo} from "react";
 import DayList from "@components/groceries/DayList";
 import ClearAndCheckButtons from "@components/groceries/ClearAndCheckButtons";
 import GroceriesByDay from "@hooks/groceries";
@@ -29,10 +28,7 @@ const ShoppingList = () => (
 );
 
 const ShoppingListContent = () => {
-  const dispatch = useUserDispatch();
   const {groceries} = useUser();
-  const [isLoading, setIsLoading] = useState(false);
-  const [gotError, setGotError] = useState(false);
 
   // Generate a (memoized) support object used for easily display grocery items
   // on the different week day lists
@@ -49,35 +45,7 @@ const ShoppingListContent = () => {
     }, {} as GroceriesByDay);
   }, [groceries]);
 
-  // Prepare a callback function to call the get groceries endpoint and update
-  // the local representation of those
-  const loadGroceries = useCallback(async () => {
-    setIsLoading(true);
-    setGotError(false);
-    try {
-      const got = await getGroceries();
-      dispatch({
-        action: "SET_GROCERIES",
-        groceries: got.groceries,
-      });
-    } catch {
-      setGotError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dispatch]);
-
-  // If it is the first time opening the app (groceries were not populated
-  // before) load groceries (calling endpoint and populating representation)
-  useEffect(() => {
-    if (groceries !== undefined) return;
-    loadGroceries();
-  }, [groceries, loadGroceries]);
-
-  if (gotError) return "Error";
-  if (isLoading) return <Spinner m="10px" />;
-  if (!groceries || !groceriesByDay) return "Waiting for groceries to load";
-
+  if (!groceries || !groceriesByDay) return <Spinner />;
   return (
     <Box width="100%">
       {Object.keys(DAY_NAMES)

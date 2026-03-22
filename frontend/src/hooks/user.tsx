@@ -1,4 +1,4 @@
-import {createContext, useContext, useMemo} from "react";
+import {createContext, Dispatch, useContext, useMemo} from "react";
 import {GroceriesState, Groceries, GroceryItem} from "@shared/types/groceries";
 import {IdeasState} from "@shared/types/ideas";
 import {IngredientsState} from "@shared/types/ingredients";
@@ -138,10 +138,19 @@ export function userReducer(
 
 interface UserContextType {
   user: User | null;
-  dispatch: React.Dispatch<UserAction>;
+  dispatch: Dispatch<UserAction>;
 }
 
 export const UserContext = createContext<UserContextType | null>(null);
+
+export const useUserDispatch = () => {
+  const context = useContext(UserContext);
+  if (!context) throw new Error("useUser must be in UserProvider");
+
+  const d = context.dispatch;
+  if (!d) throw new Error("dispatch is not set");
+  return d;
+};
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -158,15 +167,6 @@ export const useUser = () => {
     }),
     [u?.groceries, u?.plans, u?.ingredients, u?.ideas, u?.preferences],
   );
-};
-
-export const useUserDispatch = () => {
-  const context = useContext(UserContext);
-  if (!context) throw new Error("useUser must be in UserProvider");
-
-  const d = context.dispatch;
-  if (!d) throw new Error("dispatch is not set");
-  return d;
 };
 
 export default useUser;
