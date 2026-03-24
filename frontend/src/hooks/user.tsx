@@ -2,7 +2,7 @@ import {createContext, Dispatch, useContext, useMemo} from "react";
 import {GroceriesState, Groceries, GroceryItem} from "@shared/types/groceries";
 import {IdeasState} from "@shared/types/ideas";
 import {IngredientsState} from "@shared/types/ingredients";
-import {Plans, PlansState} from "@shared/types/plans";
+import {PlanItem, Plans, PlansState} from "@shared/types/plans";
 import {PreferencesState} from "@shared/types/preferences";
 
 // ===== USER REDUCER ===== //
@@ -24,7 +24,11 @@ export type UserAction =
   | {action: "EDIT_GROCERY_ITEM"; id: string; item: Partial<GroceryItem>}
   | {action: "DELETE_GROCERY_ITEM"; id: string}
   | {action: "SET_PLANS"; plans: Plans; current: number}
-  | {action: "SET_CURRENT_PLAN"; current: number};
+  | {action: "SET_CURRENT_PLAN"; current: number}
+  | {action: "DELETE_PLAN"}
+  | {action: "ADD_MEAL"; id: string; meal: PlanItem}
+  | {action: "DELETE_MEAL"; id: string}
+  | {action: "EDIT_MEAL"; id: string; meal: Partial<PlanItem>};
 
 export function userReducer(
   state: User | null,
@@ -129,6 +133,62 @@ export function userReducer(
         plans: {
           ...state?.plans,
           current: action.current,
+        },
+      };
+    case "DELETE_PLAN": {
+      const {[state?.plans?.current]: _, ...plansLeft} =
+        state?.plans?.plans || {};
+      return {
+        ...state,
+        plans: {
+          ...state?.plans,
+          plans: plansLeft,
+        },
+      };
+    }
+    case "ADD_MEAL":
+      return {
+        ...state,
+        plans: {
+          ...state?.plans,
+          plans: {
+            ...state?.plans?.plans,
+            [state?.plans?.current ?? 1]: {
+              ...state?.plans?.plans[state?.plans?.current ?? 1],
+              [action.id]: action.meal,
+            },
+          },
+        },
+      };
+    case "DELETE_MEAL": {
+      const {[action.id]: _, ...mealsLeft} =
+        state?.plans?.plans[state?.plans?.current ?? 1] || {};
+      return {
+        ...state,
+        plans: {
+          ...state?.plans,
+          plans: {
+            ...state?.plans?.plans,
+            [state?.plans?.current ?? 1]: mealsLeft,
+          },
+        },
+      };
+    }
+    case "EDIT_MEAL":
+      return {
+        ...state,
+        plans: {
+          ...state?.plans,
+          plans: {
+            ...state?.plans?.plans,
+            [state?.plans?.current ?? 1]: {
+              ...state?.plans?.plans[state?.plans?.current ?? 1],
+              [action.id]: {
+                ...state?.plans?.plans[state?.plans?.current ?? 1][action.id],
+                ...action.meal,
+              },
+            },
+          },
         },
       };
   }

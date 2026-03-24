@@ -1,4 +1,4 @@
-import {API_URL, getHeaders} from "@hooks/apiHelper";
+import {API_URL, getHeaders} from "@hooks/api";
 import {PlansState} from "@shared/types/plans";
 
 export interface CurrentPlanRequest {
@@ -14,12 +14,22 @@ export async function getPlans(): Promise<PlansState> {
 }
 
 export async function setCurrentPlan(req: CurrentPlanRequest): Promise<void> {
-  console.log("setting current plans");
+  console.log("setting current plan");
   const headers = await getHeaders();
   const res = await fetch(`${API_URL}/plans/current`, {
     method: "PATCH",
     headers,
     body: JSON.stringify(req),
+  });
+  if (!res.ok) throw new Error("error while calling the server");
+}
+
+export async function deletePlan(planNr: number): Promise<void> {
+  console.log("deleting plan");
+  const headers = await getHeaders();
+  const res = await fetch(`${API_URL}/plans/${planNr}`, {
+    method: "DELETE",
+    headers,
   });
   if (!res.ok) throw new Error("error while calling the server");
 }

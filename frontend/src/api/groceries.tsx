@@ -1,4 +1,4 @@
-import {API_URL, getHeaders} from "@hooks/apiHelper";
+import {API_URL, getHeaders} from "@hooks/api";
 import {GroceriesState, GroceryItem} from "@shared/types/groceries";
 
 export interface CheckAllRequest {

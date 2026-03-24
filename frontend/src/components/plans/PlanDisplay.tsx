@@ -1,5 +1,10 @@
+import MealsByDay from "@hooks/plans";
 import useUser from "@hooks/user";
-import {Card, Text, Box, Flex, Spinner} from "@radix-ui/themes";
+import {DAY_NAMES, TODAY} from "@hooks/week";
+import {Card, Box, Flex, Spinner, Separator} from "@radix-ui/themes";
+import {useMemo} from "react";
+import DayMealsList from "@components/plans/DayMealsList";
+import DeletePlanButton from "@components/plans/DeletePlanButton";
 
 const PlanDisplay = () => (
   <Card asChild my="4">
@@ -13,22 +18,40 @@ const PlanDisplay = () => (
 
 const PlansContent = () => {
   const {plans} = useUser();
-  if (!plans) return <Spinner />;
 
-  // Find the current plan selected
-  const currPlan = plans.plans[plans.current];
-  if (!currPlan || Object.keys(currPlan).length === 0)
-    return "Tap to create a plan";
+  // Generate a (memoized) support object used for easily display current plan
+  // items on the different week day lists
+  const mealsByDay = useMemo<MealsByDay>(() => {
+    const currPlan = plans?.plans[plans.current] ?? {};
+    return Object.entries(currPlan).reduce((acc, [id, item]) => {
+      const day = item.weekDay;
+      if (!acc[day]) acc[day] = {};
+      acc[day][id] = {
+        description: item.description,
+        icon: item.icon,
+      };
+      return acc;
+    }, {} as MealsByDay);
+  }, [plans]);
+
+  if (!plans || !mealsByDay) return <Spinner />;
 
   return (
-    <Flex direction="column" gap="2" align="start" width="100%">
-      {Object.entries(currPlan).map(([id, item]) => (
-        <Flex gap="2" key={id}>
-          <Text size="5">{item.icon}</Text>
-          <Text>{item.description}</Text>
-        </Flex>
-      ))}
-    </Flex>
+    <Box width="100%">
+      {Object.keys(DAY_NAMES)
+        .map((i) => (+i + TODAY) % 7)
+        .map((day: number) => (
+          <DayMealsList
+            key={day}
+            day={day}
+            today={day == TODAY}
+            dayName={DAY_NAMES[day]}
+            items={mealsByDay[day] ?? {}}
+          />
+        ))}
+      <Separator size="4" />
+      <DeletePlanButton />
+    </Box>
   );
 };
 

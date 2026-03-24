@@ -6,17 +6,19 @@ const ClearAndCheckButtons = () => {
   const dispatch = useUserDispatch();
   const {groceries} = useUser();
 
-  // If all items are checked, the "check all" button needs to become "uncheck
-  // all"
-  const toCheck = Object.values(groceries.groceries).some(
+  // If all items are checked, the "check all" button needs to become "uncheck all"
+  const toCheck = Object.values(groceries?.groceries).some(
     (item) => !item.checked,
   );
+
+  // If list is empty the buttons should be disabled
+  const toDisable = Object.keys(groceries?.groceries ?? {}).length === 0;
 
   return (
     <Flex justify="between" mx="8px" mt="10px">
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button variant="ghost" size="1">
+          <Button variant="ghost" size="1" disabled={toDisable}>
             Clear
           </Button>
         </AlertDialog.Trigger>
@@ -52,6 +54,7 @@ const ClearAndCheckButtons = () => {
       <Button
         variant="ghost"
         size="1"
+        disabled={toDisable}
         onClick={() => {
           checkGroceries({check: toCheck}).then(() => {
             dispatch({action: "CHECK_ALL_GROCERIES", check: toCheck});

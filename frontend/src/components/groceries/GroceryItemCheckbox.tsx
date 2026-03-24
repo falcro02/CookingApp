@@ -38,6 +38,7 @@ const GroceryItemCheckbox = ({id, day, checked, description}) => {
           }}
           style={{
             background: "transparent",
+            textDecoration: checked ? "line-through" : "none",
           }}
         />
       </Box>
@@ -45,9 +46,11 @@ const GroceryItemCheckbox = ({id, day, checked, description}) => {
         variant="ghost"
         radius="full"
         onClick={() => {
-          deleteGroceryItem(id).then(() =>
-            dispatch({action: "DELETE_GROCERY_ITEM", id}),
-          );
+          const delAct = () => {
+            dispatch({action: "DELETE_GROCERY_ITEM", id});
+          };
+          if (id === "") delAct();
+          else deleteGroceryItem(id).then(delAct);
         }}
       >
         <Cross2Icon height="12" width="12" />
@@ -62,31 +65,49 @@ function onBlurUpdateItem(
   day: number,
   dispatch: Dispatch<UserAction>,
 ) {
+  const delAct = (actId: string) => {
+    dispatch({
+      action: "DELETE_GROCERY_ITEM",
+      id: actId,
+    });
+  };
+  const addAct = (actId: string) => {
+    dispatch({
+      action: "ADD_GROCERY_ITEM",
+      id: actId,
+      item: {
+        checked: false,
+        description: newVal,
+        weekDay: day,
+      },
+    });
+  };
+  const editAct = (actId: string) => {
+    dispatch({
+      action: "EDIT_GROCERY_ITEM",
+      id: actId,
+      item: {
+        description: newVal,
+        weekDay: day,
+      },
+    });
+  };
+
   if (newVal === "") {
-    const act = () => {
-      dispatch({action: "DELETE_GROCERY_ITEM", id});
-    };
-    if (id !== "") deleteGroceryItem(id).then(act);
-    else act();
-  } else {
-    const act = (actId: string) => {
-      dispatch({
-        action: "EDIT_GROCERY_ITEM",
-        id: actId,
-        item: {
-          description: newVal,
-          weekDay: day,
-        },
+    if (id === "") delAct(id);
+    else
+      deleteGroceryItem(id).then(() => {
+        delAct(id);
       });
-    };
-    if (id !== "")
-      patchGroceryItem(id, {description: newVal}).then(() => {
-        act(id);
+  } else {
+    if (id === "")
+      addGroceryItem({description: newVal, weekDay: day}).then((res) => {
+        addAct(res.itemId);
+        delAct(id);
       });
     else
-      addGroceryItem({description: newVal, weekDay: day}).then((res) => {
-        act(res.itemId);
-        dispatch({action: "DELETE_GROCERY_ITEM", id});
+      patchGroceryItem(id, {description: newVal}).then(() => {
+        editAct(id);
       });
   }
 }

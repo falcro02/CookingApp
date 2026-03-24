@@ -1,21 +1,10 @@
 import useUser from "@hooks/user";
 import {Box, Card, Flex, Spinner, Separator} from "@radix-ui/themes";
 import {useMemo} from "react";
-import DayList from "@components/groceries/DayList";
-import ClearAndCheckButtons from "@components/groceries/ClearAndCheckButtons";
+import DayGroceriesList from "@components/groceries/DayGroceriesList";
 import GroceriesByDay from "@hooks/groceries";
-
-const TODAY: number = (new Date().getDay() + 6) % 7;
-
-const DAY_NAMES = {
-  0: "Monday",
-  1: "Tuesday",
-  2: "Wednesday",
-  3: "Thursday",
-  4: "Friday",
-  5: "Saturday",
-  6: "Sunday",
-};
+import {DAY_NAMES, TODAY} from "@hooks/week";
+import ClearAndCheckButtons from "@components/groceries/ClearAndCheckButtons";
 
 const ShoppingList = () => (
   <Card asChild my="4">
@@ -46,12 +35,13 @@ const ShoppingListContent = () => {
   }, [groceries]);
 
   if (!groceries || !groceriesByDay) return <Spinner />;
+
   return (
     <Box width="100%">
       {Object.keys(DAY_NAMES)
         .map((i) => (+i + TODAY) % 7)
         .map((day: number) => (
-          <DayList
+          <DayGroceriesList
             key={day}
             day={day}
             today={day == TODAY}
