@@ -10,6 +10,7 @@ import {Dispatch} from "react";
 
 const GroceryItemCheckbox = ({id, day, checked, description}) => {
   const dispatch = useUserDispatch();
+
   return (
     <Flex direction="row" justify="start" align="center">
       <Checkbox

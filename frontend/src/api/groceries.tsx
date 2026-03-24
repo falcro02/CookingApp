@@ -5,6 +5,14 @@ export interface CheckAllRequest {
   check: boolean;
 }
 
+export interface FormFieldsRequest {
+  days: number[];
+  plan: number;
+  unplanned: string[];
+  extra: string;
+  replace: boolean;
+}
+
 export async function getGroceries(): Promise<GroceriesState> {
   console.log("fetching groceries");
   const headers = await getHeaders();
@@ -14,6 +22,17 @@ export async function getGroceries(): Promise<GroceriesState> {
   });
   if (!res.ok) throw new Error("error while calling the server");
   return await res.json();
+}
+
+export async function generateGroceries(req: FormFieldsRequest): Promise<void> {
+  console.log("generating groceries");
+  const headers = await getHeaders();
+  const res = await fetch(`${API_URL}/groceries/generate`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(req),
+  });
+  if (!res.ok) throw new Error("error while calling the server");
 }
 
 export async function clearGroceries(): Promise<void> {

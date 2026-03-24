@@ -1,4 +1,4 @@
-import {getPlans} from "@api/plans";
+import {getPlans, setCurrentPlan} from "@api/plans";
 import GoBackButton from "@components/GoBackButton";
 import CurrentPlanSelector from "@components/plans/CurrentPlanSelector";
 import PlanDisplay from "@components/plans/PlanDisplay";
@@ -24,7 +24,26 @@ const PlansPage = () => {
   return (
     <>
       <Heading>Meal plans</Heading>
-      <GoBackButton />
+      <GoBackButton
+        onClick={() => {
+          // Go on if it was last element in plan.
+          const thisLen = Object.keys(
+            plans?.plans[plans?.current] ?? {},
+          ).length;
+          if (thisLen > 0) return;
+
+          // Go back to last non-empty (or 1)
+          for (let i = 4; i > 0; i--) {
+            let len = Object.keys(plans?.plans[i] ?? {}).length;
+            if (len > 0 || i === 1) {
+              setCurrentPlan({current: i}).finally(() => {
+                dispatch({action: "SET_CURRENT_PLAN", current: i});
+              });
+              break;
+            }
+          }
+        }}
+      />
       <Heading mb="4" size="3">
         Selected plan
       </Heading>

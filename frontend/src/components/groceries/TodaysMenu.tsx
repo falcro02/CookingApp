@@ -13,9 +13,7 @@ const TodaysMenu = () => {
     >
       <Card asChild>
         <Box height="100%" width="100%" px="50px" py="20px">
-          <Flex justify="center">
-            <TodaysMenuContent />
-          </Flex>
+          <TodaysMenuContent />
         </Box>
       </Card>
     </Button>
@@ -32,7 +30,11 @@ const TodaysMenuContent = () => {
     return "Tap to create a plan";
 
   return (
-    <Flex justify="between" width="80%">
+    <Flex
+      justifySelf="center"
+      justify={Object.keys(currPlan).length == 1 ? "center" : "between"}
+      width="80%"
+    >
       {Object.entries(currPlan).map(([id, item]) => (
         <Heading size="7" key={id}>
           {item.icon}
