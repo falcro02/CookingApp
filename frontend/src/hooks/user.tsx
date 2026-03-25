@@ -1,8 +1,8 @@
-import {createContext, useContext, useMemo} from "react";
-import {GroceriesState, Groceries} from "@shared/types/groceries";
+import {createContext, Dispatch, useContext, useMemo} from "react";
+import {GroceriesState, Groceries, GroceryItem} from "@shared/types/groceries";
 import {IdeasState} from "@shared/types/ideas";
 import {IngredientsState} from "@shared/types/ingredients";
-import {Plans, PlansState} from "@shared/types/plans";
+import {PlanItem, Plans, PlansState} from "@shared/types/plans";
 import {PreferencesState} from "@shared/types/preferences";
 
 // ===== USER REDUCER ===== //
@@ -15,16 +15,109 @@ interface User {
   preferences: PreferencesState;
 }
 
-type UserAction =
+export type UserAction =
+  | {action: "SET_GROCERIES"; groceries: Groceries}
+  | {action: "CLEAR_GROCERIES"}
+  | {action: "CHECK_ALL_GROCERIES"; check: boolean}
+  | {action: "CHECK_GROCERY_ITEM"; id: string; checked: boolean}
+  | {action: "ADD_GROCERY_ITEM"; id: string; item: GroceryItem}
+  | {action: "EDIT_GROCERY_ITEM"; id: string; item: Partial<GroceryItem>}
+  | {action: "DELETE_GROCERY_ITEM"; id: string}
   | {action: "SET_PLANS"; plans: Plans; current: number}
   | {action: "SET_CURRENT_PLAN"; current: number}
-  | {action: "SET_GROCERIES"; groceries: Groceries};
+  | {action: "DELETE_PLAN"}
+  | {action: "ADD_MEAL"; id: string; meal: PlanItem}
+  | {action: "DELETE_MEAL"; id: string}
+  | {action: "EDIT_MEAL"; id: string; meal: Partial<PlanItem>};
 
 export function userReducer(
   state: User | null,
   action: UserAction,
 ): User | null {
   switch (action.action) {
+    case "SET_GROCERIES":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: action.groceries,
+        },
+      };
+    case "CLEAR_GROCERIES":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {},
+        },
+      };
+    case "CHECK_ALL_GROCERIES":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: Object.entries(state?.groceries?.groceries).reduce(
+            (acc, [id, item]) => {
+              acc[id] = {...item, checked: action.check};
+              return acc;
+            },
+            {} as Groceries,
+          ),
+        },
+      };
+    case "CHECK_GROCERY_ITEM": {
+      const curr = state?.groceries?.groceries[action.id];
+      if (!curr) return state;
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {
+            ...state?.groceries?.groceries,
+            [action.id]: {
+              ...curr,
+              checked: action.checked,
+            },
+          },
+        },
+      };
+    }
+    case "ADD_GROCERY_ITEM":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {
+            ...state?.groceries?.groceries,
+            [action.id]: action.item,
+          },
+        },
+      };
+    case "EDIT_GROCERY_ITEM":
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: {
+            ...state?.groceries?.groceries,
+            [action.id]: {
+              ...state?.groceries?.groceries[action.id],
+              ...action.item,
+            },
+          },
+        },
+      };
+    case "DELETE_GROCERY_ITEM": {
+      const {[action.id]: _, ...groceriesLeft} =
+        state?.groceries?.groceries || {};
+      return {
+        ...state,
+        groceries: {
+          ...state?.groceries,
+          groceries: groceriesLeft,
+        },
+      };
+    }
     case "SET_PLANS":
       return {
         ...state,
@@ -42,12 +135,60 @@ export function userReducer(
           current: action.current,
         },
       };
-    case "SET_GROCERIES":
+    case "DELETE_PLAN": {
+      const {[state?.plans?.current]: _, ...plansLeft} =
+        state?.plans?.plans || {};
       return {
         ...state,
-        groceries: {
-          ...state?.groceries,
-          groceries: action.groceries,
+        plans: {
+          ...state?.plans,
+          plans: plansLeft,
+        },
+      };
+    }
+    case "ADD_MEAL":
+      return {
+        ...state,
+        plans: {
+          ...state?.plans,
+          plans: {
+            ...state?.plans?.plans,
+            [state?.plans?.current ?? 1]: {
+              ...state?.plans?.plans[state?.plans?.current ?? 1],
+              [action.id]: action.meal,
+            },
+          },
+        },
+      };
+    case "DELETE_MEAL": {
+      const {[action.id]: _, ...mealsLeft} =
+        state?.plans?.plans[state?.plans?.current ?? 1] || {};
+      return {
+        ...state,
+        plans: {
+          ...state?.plans,
+          plans: {
+            ...state?.plans?.plans,
+            [state?.plans?.current ?? 1]: mealsLeft,
+          },
+        },
+      };
+    }
+    case "EDIT_MEAL":
+      return {
+        ...state,
+        plans: {
+          ...state?.plans,
+          plans: {
+            ...state?.plans?.plans,
+            [state?.plans?.current ?? 1]: {
+              ...state?.plans?.plans[state?.plans?.current ?? 1],
+              [action.id]: {
+                ...state?.plans?.plans[state?.plans?.current ?? 1][action.id],
+                ...action.meal,
+              },
+            },
+          },
         },
       };
   }
@@ -57,10 +198,19 @@ export function userReducer(
 
 interface UserContextType {
   user: User | null;
-  dispatch: React.Dispatch<UserAction>;
+  dispatch: Dispatch<UserAction>;
 }
 
 export const UserContext = createContext<UserContextType | null>(null);
+
+export const useUserDispatch = () => {
+  const context = useContext(UserContext);
+  if (!context) throw new Error("useUser must be in UserProvider");
+
+  const d = context.dispatch;
+  if (!d) throw new Error("dispatch is not set");
+  return d;
+};
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -77,15 +227,6 @@ export const useUser = () => {
     }),
     [u?.groceries, u?.plans, u?.ingredients, u?.ideas, u?.preferences],
   );
-};
-
-export const useUserDispatch = () => {
-  const context = useContext(UserContext);
-  if (!context) throw new Error("useUser must be in UserProvider");
-
-  const d = context.dispatch;
-  if (!d) throw new Error("dispatch is not set");
-  return d;
 };
 
 export default useUser;

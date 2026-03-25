@@ -29,22 +29,44 @@ Amplify.configure({
   },
 });
 
+export const AuthDev = ({children}) => {
+  if (import.meta.env.DEV)
+    return (
+      <AuthProvider
+        user={{
+          username: "DEV username",
+        }}
+        signOut={() => {
+          console.log("DEV: auth is bypassed");
+        }}
+      >
+        {children}
+      </AuthProvider>
+    );
+  else
+    return (
+      <Authenticator socialProviders={["google"]} variation="modal">
+        {({signOut, user}) => (
+          <AuthProvider user={user} signOut={signOut}>
+            {children}
+          </AuthProvider>
+        )}
+      </Authenticator>
+    );
+};
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Authenticator socialProviders={["google"]} variation="modal">
-      {({signOut, user}) => (
-        <AuthProvider user={user} signOut={signOut}>
-          <AppearanceProvider>
-            <UserProvider>
-              <BrowserRouter>
-                <PageProvider>
-                  <App />
-                </PageProvider>
-              </BrowserRouter>
-            </UserProvider>
-          </AppearanceProvider>
-        </AuthProvider>
-      )}
-    </Authenticator>
+    <AuthDev>
+      <AppearanceProvider>
+        <UserProvider>
+          <BrowserRouter>
+            <PageProvider>
+              <App />
+            </PageProvider>
+          </BrowserRouter>
+        </UserProvider>
+      </AppearanceProvider>
+    </AuthDev>
   </StrictMode>,
 );

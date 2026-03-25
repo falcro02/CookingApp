@@ -655,10 +655,18 @@ Generated ideas are not returned: to see the new ideas list use the
 To check the status of the task it is possible to poll the
 [get status](#get-task-status) request with the returned task ID.
 
+In the request schema, extra textual information is provided with a string.
+
 **Request**
 
 ```text
 POST /ideas/generate
+```
+
+```json
+{
+    "extra": string
+}
 ```
 
 **Response**
@@ -812,3 +820,4 @@ DELETE /user
 **Response**
 
 - 204: operation successful
+

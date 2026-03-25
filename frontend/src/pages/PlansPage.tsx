@@ -1,22 +1,57 @@
-import usePage from "@hooks/page";
-import {ArrowLeftIcon} from "@radix-ui/react-icons";
-import {Box, Flex, Heading, Link} from "@radix-ui/themes";
+import {getPlans, setCurrentPlan} from "@api/plans";
+import GoBackButton from "@components/GoBackButton";
+import CurrentPlanSelector from "@components/plans/CurrentPlanSelector";
+import PlanDisplay from "@components/plans/PlanDisplay";
+import useUser, {useUserDispatch} from "@hooks/user";
+import {Heading} from "@radix-ui/themes";
+import {useEffect} from "react";
 
 const PlansPage = () => {
-  const {currPage} = usePage();
-  const dir = currPage.slice(0, currPage.lastIndexOf("/"));
+  const dispatch = useUserDispatch();
+  const {plans} = useUser();
+
+  useEffect(() => {
+    if (plans !== undefined) return;
+    getPlans().then((got) => {
+      dispatch({
+        action: "SET_PLANS",
+        plans: got.plans,
+        current: got.current,
+      });
+    });
+  }, [plans, dispatch]);
 
   return (
     <>
-      <Heading>Plans Page</Heading>
-      <Link href={dir} my="2">
-        <Flex>
-          <Box m="2px">
-            <ArrowLeftIcon />
-          </Box>
-          Back
-        </Flex>
-      </Link>
+      <Heading>Meal plans</Heading>
+      <GoBackButton
+        onClick={() => {
+          // Go on if it was last element in plan.
+          const thisLen = Object.keys(
+            plans?.plans[plans?.current] ?? {},
+          ).length;
+          if (thisLen > 0) return;
+
+          // Go back to last non-empty (or 1)
+          for (let i = 4; i > 0; i--) {
+            const len = Object.keys(plans?.plans[i] ?? {}).length;
+            if (len > 0 || i === 1) {
+              setCurrentPlan({current: i}).finally(() => {
+                dispatch({action: "SET_CURRENT_PLAN", current: i});
+              });
+              break;
+            }
+          }
+        }}
+      />
+      <Heading mb="4" size="3">
+        Selected plan
+      </Heading>
+      <CurrentPlanSelector />
+      <Heading mt="6" size="3">
+        Plan details
+      </Heading>
+      <PlanDisplay />
     </>
   );
 };
