@@ -26,9 +26,9 @@ const PlanMealRow = ({id, day, icon, description}) => {
           defaultValue={description}
           variant="soft"
           onBlur={(e) => {
+            const newVal = e.target.value;
             const curr = plans?.current ?? 1;
             const len = Object.keys(plans?.plans[curr] ?? {}).length;
-            const newVal = e.target.value;
             onBlurUpdateItem(newVal, id, len, curr, day, icon, dispatch);
           }}
           onKeyDown={(e) => {

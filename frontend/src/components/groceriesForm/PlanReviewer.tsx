@@ -1,7 +1,8 @@
+import {setCurrentPlan} from "@api/plans";
 import useUser, {useUserDispatch} from "@hooks/user";
 import {Box, Text, RadioCards} from "@radix-ui/themes";
 
-const PlanReviewer = () => {
+const PlanReviewer = ({onValueChange}) => {
   const {plans} = useUser();
   const dispatch = useUserDispatch();
 
@@ -15,7 +16,10 @@ const PlanReviewer = () => {
         columns="2"
         value={planIsEmpty(plans?.current) ? "" : plans?.current?.toString()}
         onValueChange={(newVal) => {
-          dispatch({action: "SET_CURRENT_PLAN", current: +newVal});
+          onValueChange(+newVal);
+          setCurrentPlan({current: +newVal}).then(() => {
+            dispatch({action: "SET_CURRENT_PLAN", current: +newVal});
+          });
         }}
       >
         {[1, 2, 3, 4].map((i) => (

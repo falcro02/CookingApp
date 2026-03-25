@@ -13,7 +13,9 @@ const TodaysMenu = () => {
     >
       <Card asChild>
         <Box height="100%" width="100%" px="50px" py="20px">
-          <TodaysMenuContent />
+          <Flex justify="center">
+            <TodaysMenuContent />
+          </Flex>
         </Box>
       </Card>
     </Button>
@@ -31,7 +33,6 @@ const TodaysMenuContent = () => {
 
   return (
     <Flex
-      justifySelf="center"
       justify={Object.keys(currPlan).length == 1 ? "center" : "between"}
       width="80%"
     >

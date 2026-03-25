@@ -21,7 +21,7 @@ const UnplannedMeals = ({onValueChange}) => {
     <Box width="100%">
       <Card>
         <DayNameCard
-          dayName="Unplanned"
+          dayName="Unplanned meals"
           today={false}
           onPlusClick={() => {
             if (Object.values(items).includes("")) return;

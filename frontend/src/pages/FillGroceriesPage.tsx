@@ -1,4 +1,4 @@
-import {FormFieldsRequest} from "@api/groceries";
+import {FormFieldsRequest, getGroceries} from "@api/groceries";
 import {getPlans} from "@api/plans";
 import GoBackButton from "@components/GoBackButton";
 import DaysSelector from "@components/groceriesForm/DaysSelector";
@@ -8,12 +8,24 @@ import usePage from "@hooks/page";
 import useUser, {useUserDispatch} from "@hooks/user";
 import {Pencil1Icon} from "@radix-ui/react-icons";
 import {Button, Flex, Heading} from "@radix-ui/themes";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import ExtrasText from "@components/groceriesForm/ExtrasText";
+import FillGroceriesButton from "@components/groceriesForm/FillGroceriesButton";
 
 const FillGroceriesPage = () => {
   const dispatch = useUserDispatch();
-  const {plans} = useUser();
+  const {groceries, plans} = useUser();
   const {updatePage} = usePage();
+
+  useEffect(() => {
+    if (groceries !== undefined) return;
+    getGroceries().then((got) => {
+      dispatch({
+        action: "SET_GROCERIES",
+        groceries: got.groceries,
+      });
+    });
+  }, [groceries, dispatch]);
 
   useEffect(() => {
     if (plans !== undefined) return;
@@ -26,15 +38,25 @@ const FillGroceriesPage = () => {
     });
   }, [plans, dispatch]);
 
+  const planIsEmpty = (planNr: number) => {
+    return Object.keys(plans?.plans[planNr?.toString()] ?? {}).length === 0;
+  };
+
   // This is the temporary storage for all the form information before calling
   // the generate groceries api
-  let formFields: FormFieldsRequest = {
+  const [formFields, setFormFields] = useState<Partial<FormFieldsRequest>>({
     days: [],
-    plan: plans?.current ?? 1,
+    plan: null,
     unplanned: [],
     extra: "",
     replace: false,
-  };
+  });
+
+  // Set current plan (if not empty) when it gets loaded the first time
+  useEffect(() => {
+    const plan = planIsEmpty(plans?.current) ? null : plans?.current;
+    setFormFields({...formFields, plan});
+  }, [plans]);
 
   return (
     <>
@@ -45,7 +67,7 @@ const FillGroceriesPage = () => {
       </Heading>
       <DaysSelector
         onValueChange={(newVal) => {
-          formFields.days = newVal;
+          setFormFields({...formFields, days: newVal});
         }}
       />
       <Flex
@@ -67,16 +89,27 @@ const FillGroceriesPage = () => {
           Edit plans
         </Button>
       </Flex>
-      <PlanReviewer />
+      <PlanReviewer
+        onValueChange={(newVal: number) => {
+          setFormFields({...formFields, plan: newVal});
+        }}
+      />
       <Heading mt="8" mb="4" size="3">
         Other details
       </Heading>
       <UnplannedMeals
         onValueChange={(newVal: string[]) => {
-          formFields.unplanned = newVal;
+          setFormFields({...formFields, unplanned: newVal});
         }}
       />
-      {/* TODO: set curr plan before sending */}
+      <ExtrasText
+        onNewValue={(newVal: string) => {
+          setFormFields({...formFields, extra: newVal});
+        }}
+      />
+      <Flex width="100%" justify="center" my="6">
+        <FillGroceriesButton formData={formFields} />
+      </Flex>
     </>
   );
 };

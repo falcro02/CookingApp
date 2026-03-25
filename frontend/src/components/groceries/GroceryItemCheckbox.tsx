@@ -32,7 +32,8 @@ const GroceryItemCheckbox = ({id, day, checked, description}) => {
           defaultValue={description}
           variant="soft"
           onBlur={(e) => {
-            onBlurUpdateItem(e.target.value, id, day, dispatch);
+            const newVal = e.target.value;
+            onBlurUpdateItem(newVal, id, day, dispatch);
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === "Escape") e.currentTarget.blur();

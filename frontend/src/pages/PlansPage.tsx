@@ -34,7 +34,7 @@ const PlansPage = () => {
 
           // Go back to last non-empty (or 1)
           for (let i = 4; i > 0; i--) {
-            let len = Object.keys(plans?.plans[i] ?? {}).length;
+            const len = Object.keys(plans?.plans[i] ?? {}).length;
             if (len > 0 || i === 1) {
               setCurrentPlan({current: i}).finally(() => {
                 dispatch({action: "SET_CURRENT_PLAN", current: i});

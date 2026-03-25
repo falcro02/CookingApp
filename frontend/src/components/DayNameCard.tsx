@@ -3,22 +3,23 @@ import {Card, Flex, Heading, Box, IconButton} from "@radix-ui/themes";
 
 const DayNameCard = ({dayName, today, onPlusClick}) => (
   <Card>
-    <Flex direction="row" align="center">
-      <Heading size="2" trim="both">
-        {dayName}
-      </Heading>
-      {today && (
-        <Heading
-          size="2"
-          trim="both"
-          ml="2"
-          weight="light"
-          style={{color: "var(--gray-9)"}}
-        >
-          (today)
+    <Flex direction="row" justify="between" align="center">
+      <Flex direction="row" width="100%">
+        <Heading size="2" trim="both">
+          {dayName}
         </Heading>
-      )}
-      <Box width="100%" />
+        {today && (
+          <Heading
+            size="2"
+            trim="both"
+            ml="2"
+            weight="light"
+            style={{color: "var(--gray-9)"}}
+          >
+            (today)
+          </Heading>
+        )}
+      </Flex>
       <AddItemButton onClick={onPlusClick} />
     </Flex>
   </Card>

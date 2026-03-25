@@ -24,7 +24,9 @@ export async function getGroceries(): Promise<GroceriesState> {
   return await res.json();
 }
 
-export async function generateGroceries(req: FormFieldsRequest): Promise<void> {
+export async function generateGroceries(
+  req: FormFieldsRequest,
+): Promise<{taskId: string}> {
   console.log("generating groceries");
   const headers = await getHeaders();
   const res = await fetch(`${API_URL}/groceries/generate`, {
@@ -33,6 +35,7 @@ export async function generateGroceries(req: FormFieldsRequest): Promise<void> {
     body: JSON.stringify(req),
   });
   if (!res.ok) throw new Error("error while calling the server");
+  return await res.json();
 }
 
 export async function clearGroceries(): Promise<void> {
