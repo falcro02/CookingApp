@@ -1664,8 +1664,13 @@ Old ideas are deleted.</p>
 <a href="#get-ideas">get ideas</a> request when the operation concludes.
 To check the status of the task it is possible to poll the
 <a href="#get-task-status">get status</a> request with the returned task ID.</p>
+<p>In the request schema, extra textual information is provided with a string.</p>
 <p><strong>Request</strong></p>
 <div class="highlight"><pre><span></span><code>POST /ideas/generate
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="p">}</span>
 </code></pre></div>
 <p><strong>Response</strong></p>
 <ul>
