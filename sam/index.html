@@ -9,26 +9,28 @@
       
       
       
+        <link rel="prev" href="../aws_services/">
       
-        <link rel="next" href="architecture/">
+      
+        <link rel="next" href="../api/">
       
       
         
       
       
-      <link rel="icon" href="icon.webp">
+      <link rel="icon" href="../icon.webp">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Cooking</title>
+        <title>AWS SAM - Cooking</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -47,7 +49,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -72,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cooking" class="md-skip">
+        <a href="#aws-sam-serverless-application-model" class="md-skip">
           Skip to content
         </a>
       
@@ -88,9 +90,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cooking" class="md-header__button md-logo" aria-label="Cooking" data-md-component="logo">
+    <a href=".." title="Cooking" class="md-header__button md-logo" aria-label="Cooking" data-md-component="logo">
       
-  <img src="icon.webp" alt="logo">
+  <img src="../icon.webp" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -107,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              AWS SAM
             
           </span>
         </div>
@@ -223,9 +225,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cooking" class="md-nav__button md-logo" aria-label="Cooking" data-md-component="logo">
+    <a href=".." title="Cooking" class="md-nav__button md-logo" aria-label="Cooking" data-md-component="logo">
       
-  <img src="icon.webp" alt="logo">
+  <img src="../icon.webp" alt="logo">
 
     </a>
     Cooking
@@ -249,37 +251,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -295,76 +270,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Features
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grocery-generation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Grocery generation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#suggestions-creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Suggestions creation
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Usage
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -376,7 +281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/" class="md-nav__link">
+      <a href="../architecture/" class="md-nav__link">
         
   
   
@@ -403,7 +308,7 @@
   
   
     <li class="md-nav__item">
-      <a href="aws_services/" class="md-nav__link">
+      <a href="../aws_services/" class="md-nav__link">
         
   
   
@@ -427,10 +332,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="sam/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS SAM
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -446,6 +378,59 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-sam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why SAM?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-core-templateyaml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Core: template.yaml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-samconfigtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration: samconfig.toml
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -457,7 +442,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -504,49 +489,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#why-sam" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        Why SAM?
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grocery-generation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Grocery generation
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#suggestions-creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Suggestions creation
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#the-core-templateyaml" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        The Core: template.yaml
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-samconfigtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration: samconfig.toml
       
     </span>
   </a>
@@ -573,35 +541,25 @@
   
 
 
-<h1 id="cooking">Cooking</h1>
-<h2 id="features">Features</h2>
-<h3 id="grocery-generation">Grocery generation</h3>
-<p>Users can set up a list of all the meals they intend to consume during the week.
-This comprehends breakfast, launch, and dinner, and additional snacks.
-Moreover, the user can also select a set of week days in which it is available
-to go and buy groceries.</p>
-<p>The AI assistant then takes over, generating a groceries list for each of the
-selected days, so that what's bought will fulfill the whole preparation of the
-days-after meals, ingredient-wise.</p>
-<h3 id="suggestions-creation">Suggestions creation</h3>
-<p>Often times people forget to plan ahead what to eat, and what's home feels
-either insufficient or unenjoyable.
-It is possible for users to prompt the AI assistant telling which ingredients
-are available in the house, for then receiving a set of possible meal ideas
-plausible to prepare and eat.</p>
-<h2 id="usage">Usage</h2>
-<p>The user will be able to use the app via the browser, and therefore it must be
-connected to the internet to be able to interact with the AI assistant, and to
-view its data.
-A minimal UI will provide easy access to the main sections/pages:</p>
+<h1 id="aws-sam-serverless-application-model">AWS SAM (Serverless Application Model)</h1>
+<p>The Cooking Web App uses <strong>AWS SAM</strong> to manage infrastructure as code (IaC). SAM is an open-source framework that extends AWS CloudFormation, providing a simplified syntax for defining serverless resources.</p>
+<h2 id="why-sam">Why SAM?</h2>
+<p>Instead of complex CloudFormation templates, SAM allows us to define:</p>
 <ul>
-<li>a page for inserting the week's meals and generating/viewing the groceries
-  list;</li>
-<li>a page for inserting which ingredients the user has available and for then
-  requesting meal ideas;</li>
-<li>a page for inserting extra info about user's eating habits and for performing
-  other account actions.</li>
+<li><strong>Functions</strong>: Lambda functions with simple event triggers.</li>
+<li><strong>APIs</strong>: Restful endpoints with built-in CORS and Auth.</li>
+<li><strong>Tables</strong>: DynamoDB tables with high-level properties.</li>
 </ul>
+<h2 id="the-core-templateyaml">The Core: <code>template.yaml</code></h2>
+<p>The <code>template.yaml</code> file in the root directory is the "blueprint" of the entire application. It defines:</p>
+<ul>
+<li><strong>Parameters</strong>: Dynamic values like <code>TableName</code> and <code>AppRegion</code>.</li>
+<li><strong>Globals</strong>: Shared settings for all Lambda functions (e.g., Timeout, Memory, Environment Variables).</li>
+<li><strong>Resources</strong>: The actual AWS components (Cognito User Pool, API Gateway, DynamoDB Table, and all Lambda functions).</li>
+<li><strong>Outputs</strong>: Key information generated after deployment (e.g., the final API URL).</li>
+</ul>
+<h2 id="configuration-samconfigtoml">Configuration: <code>samconfig.toml</code></h2>
+<p>The <code>samconfig.toml</code> file stores your deployment preferences. It remembers things like your stack name (<code>cooking-web-stack</code>), your S3 bucket for code storage, and your region (<code>eu-south-1</code>). This ensures that everyone working on the project uses the same deployment settings.</p>
 
 
 
@@ -636,15 +594,31 @@ A minimal UI will provide easy access to the main sections/pages:</p>
       
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
+          
+          <a href="../aws_services/" class="md-footer__link md-footer__link--prev" aria-label="Previous: AWS Services">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                AWS Services
+              </div>
+            </div>
+          </a>
+        
         
           
-          <a href="architecture/" class="md-footer__link md-footer__link--next" aria-label="Next: Architecture">
+          <a href="../api/" class="md-footer__link md-footer__link--next" aria-label="Next: API">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Architecture
+                API
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -681,10 +655,10 @@ A minimal UI will provide easy access to the main sections/pages:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "navigation.expand", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "navigation.expand", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

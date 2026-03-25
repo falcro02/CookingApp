@@ -9,26 +9,28 @@
       
       
       
+        <link rel="prev" href="..">
       
-        <link rel="next" href="architecture/">
+      
+        <link rel="next" href="../aws_services/">
       
       
         
       
       
-      <link rel="icon" href="icon.webp">
+      <link rel="icon" href="../icon.webp">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Cooking</title>
+        <title>Architecture - Cooking</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -47,7 +49,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -72,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cooking" class="md-skip">
+        <a href="#backend-architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -88,9 +90,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cooking" class="md-header__button md-logo" aria-label="Cooking" data-md-component="logo">
+    <a href=".." title="Cooking" class="md-header__button md-logo" aria-label="Cooking" data-md-component="logo">
       
-  <img src="icon.webp" alt="logo">
+  <img src="../icon.webp" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -107,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Architecture
             
           </span>
         </div>
@@ -223,9 +225,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cooking" class="md-nav__button md-logo" aria-label="Cooking" data-md-component="logo">
+    <a href=".." title="Cooking" class="md-nav__button md-logo" aria-label="Cooking" data-md-component="logo">
       
-  <img src="icon.webp" alt="logo">
+  <img src="../icon.webp" alt="logo">
 
     </a>
     Cooking
@@ -244,6 +246,33 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
       
       
@@ -268,7 +297,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    Architecture
   
 
     
@@ -279,14 +308,14 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="." class="md-nav__link md-nav__link--active">
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
     
   
-    Home
+    Architecture
   
 
     
@@ -312,22 +341,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#requestresponse-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        Request/Response Lifecycle
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Features">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modular-layered-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modular Layered Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#single-table-design-dynamodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single-Table Design (DynamoDB)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Single-Table Design (DynamoDB)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#grocery-generation" class="md-nav__link">
+  <a href="#identity-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grocery generation
+        Identity Pattern
       
     </span>
   </a>
@@ -335,10 +386,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#suggestions-creation" class="md-nav__link">
+  <a href="#sk-mapping-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Suggestions creation
+        SK Mapping Table
       
     </span>
   </a>
@@ -351,10 +402,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#specialized-worker-pattern-async-ai" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Specialized Worker Pattern (Async AI)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-development-mocking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Development &amp; Mocking
       
     </span>
   </a>
@@ -376,34 +438,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="aws_services/" class="md-nav__link">
+      <a href="../aws_services/" class="md-nav__link">
         
   
   
@@ -430,7 +465,7 @@
   
   
     <li class="md-nav__item">
-      <a href="sam/" class="md-nav__link">
+      <a href="../sam/" class="md-nav__link">
         
   
   
@@ -457,7 +492,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -504,22 +539,44 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#requestresponse-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        Request/Response Lifecycle
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Features">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modular-layered-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modular Layered Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#single-table-design-dynamodb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single-Table Design (DynamoDB)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Single-Table Design (DynamoDB)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#grocery-generation" class="md-nav__link">
+  <a href="#identity-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grocery generation
+        Identity Pattern
       
     </span>
   </a>
@@ -527,10 +584,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#suggestions-creation" class="md-nav__link">
+  <a href="#sk-mapping-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Suggestions creation
+        SK Mapping Table
       
     </span>
   </a>
@@ -543,10 +600,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#specialized-worker-pattern-async-ai" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Specialized Worker Pattern (Async AI)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#local-development-mocking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Development &amp; Mocking
       
     </span>
   </a>
@@ -573,34 +641,91 @@
   
 
 
-<h1 id="cooking">Cooking</h1>
-<h2 id="features">Features</h2>
-<h3 id="grocery-generation">Grocery generation</h3>
-<p>Users can set up a list of all the meals they intend to consume during the week.
-This comprehends breakfast, launch, and dinner, and additional snacks.
-Moreover, the user can also select a set of week days in which it is available
-to go and buy groceries.</p>
-<p>The AI assistant then takes over, generating a groceries list for each of the
-selected days, so that what's bought will fulfill the whole preparation of the
-days-after meals, ingredient-wise.</p>
-<h3 id="suggestions-creation">Suggestions creation</h3>
-<p>Often times people forget to plan ahead what to eat, and what's home feels
-either insufficient or unenjoyable.
-It is possible for users to prompt the AI assistant telling which ingredients
-are available in the house, for then receiving a set of possible meal ideas
-plausible to prepare and eat.</p>
-<h2 id="usage">Usage</h2>
-<p>The user will be able to use the app via the browser, and therefore it must be
-connected to the internet to be able to interact with the AI assistant, and to
-view its data.
-A minimal UI will provide easy access to the main sections/pages:</p>
+<h1 id="backend-architecture">Backend Architecture</h1>
+<p>The Cooking Web App backend is a high-performance, <strong>Serverless Micro-services</strong> ecosystem built on AWS. It is designed for maximum scalability while maintaining a clean separation of concerns through a layered architectural pattern.</p>
+<h2 id="requestresponse-lifecycle">Request/Response Lifecycle</h2>
+<p>Every request follows a standardized journey through the system:</p>
+<ol>
+<li><strong>Ingress</strong>: The request hits <strong>Amazon API Gateway</strong>.</li>
+<li><strong>Authentication</strong>: The <strong>Cognito Authorizer</strong> validates the JWT token in the <code>Authorization</code> header.</li>
+<li><strong>Bypass (Local)</strong>: If running locally (<code>AWS_SAM_LOCAL</code>), the handler bypasses Cognito and uses a mock user ID (<code>USER#LOCAL_TEST_ID</code>).</li>
+<li><strong>Routing</strong>: The specific <strong>Lambda Handler</strong> receives the event, parses the <code>httpMethod</code> and <code>pathParameters</code>, and routes to the appropriate service method.</li>
+<li><strong>Business Logic</strong>: The <strong>Service Layer</strong> executes domain logic, validates input (e.g., <code>weekDay</code> range), and coordinates between different repositories.</li>
+<li><strong>Data Access</strong>: The <strong>Repository Layer</strong> interacts with <strong>DynamoDB</strong> using the <code>AWS SDK V3</code>.</li>
+<li><strong>Exit</strong>: A standardized response is built using the <code>buildResponse</code> utility, ensuring consistent CORS headers and JSON formatting.</li>
+</ol>
+<h2 id="modular-layered-pattern">Modular Layered Pattern</h2>
+<p>The codebase is strictly organized to ensure maintainability:</p>
 <ul>
-<li>a page for inserting the week's meals and generating/viewing the groceries
-  list;</li>
-<li>a page for inserting which ingredients the user has available and for then
-  requesting meal ideas;</li>
-<li>a page for inserting extra info about user's eating habits and for performing
-  other account actions.</li>
+<li><strong>Handlers (<code>/src/handlers</code>)</strong>: The "entry points". They are lean and only handle HTTP-related concerns (parsing, status codes).</li>
+<li><strong>Services (<code>/src/services</code>)</strong>: The "brain". This is where business rules live. Services are reusable and independent of the transport layer (HTTP/Events).</li>
+<li><strong>Repositories (<code>/src/repositories</code>)</strong>: The "data gatekeepers". They abstract DynamoDB complexities.</li>
+<li><strong>Entities (<code>/src/entities</code>)</strong>: Define the structure of data as it exists in DynamoDB.</li>
+<li><strong>DTOs (<code>/src/dto</code>)</strong>: Data Transfer Objects for specific cross-service communications (e.g., IA worker payloads).</li>
+</ul>
+<h2 id="single-table-design-dynamodb">Single-Table Design (DynamoDB)</h2>
+<p>We use a single DynamoDB table (<code>CookingAppData</code>) to store all application entities. This minimizes round-trips and simplifies resource management.</p>
+<h3 id="identity-pattern">Identity Pattern</h3>
+<ul>
+<li><strong>Partition Key (PK)</strong>: <code>USER#&lt;cognito_sub_guid&gt;</code></li>
+<li><strong>Sort Key (SK)</strong>: Used for item typing and relationships.</li>
+</ul>
+<h3 id="sk-mapping-table">SK Mapping Table</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Entity</th>
+<th style="text-align: left;">SK Pattern</th>
+<th style="text-align: left;">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Meal</strong></td>
+<td style="text-align: left;"><code>MEAL#&lt;timestamp_id&gt;</code></td>
+<td style="text-align: left;"><code>MEAL#1710765432000</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Grocery Item</strong></td>
+<td style="text-align: left;"><code>GROCERY#&lt;id&gt;</code></td>
+<td style="text-align: left;"><code>GROCERY#1710765432000_1</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>User Preference</strong></td>
+<td style="text-align: left;"><code>PREFERENCES</code></td>
+<td style="text-align: left;"><code>PREFERENCES</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Current Plan</strong></td>
+<td style="text-align: left;"><code>CURRENT_PLAN</code></td>
+<td style="text-align: left;"><code>CURRENT_PLAN</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Background Task</strong></td>
+<td style="text-align: left;"><code>TASK#&lt;task_id&gt;</code></td>
+<td style="text-align: left;"><code>TASK#abc-123</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Generation Counter</strong></td>
+<td style="text-align: left;"><code>COUNTER#&lt;date&gt;</code></td>
+<td style="text-align: left;"><code>COUNTER#2024-03-22</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="specialized-worker-pattern-async-ai">Specialized Worker Pattern (Async AI)</h2>
+<p>For long-running tasks like AI generation, we use an <strong>Asynchronous Worker Pattern</strong>:</p>
+<ol>
+<li>The User requests a generation (e.g., <code>/groceries/generate</code>).</li>
+<li>The <strong>Main Lambda</strong> creates a <code>TASK</code> record in DynamoDB with status <code>0</code> (Running) and returns the <code>taskID</code> immediately.</li>
+<li>The <strong>Main Lambda</strong> invokes the <strong>Worker Lambda</strong> asynchronously.</li>
+<li>The <strong>Worker Lambda</strong> communicates with <strong>Amazon Bedrock</strong>, processes the result, updates the database, and finally marks the <code>TASK</code> as <code>1</code> (Completed) or <code>-1</code> (Failed).</li>
+<li>The Frontend polls the <code>/tasks/{taskID}</code> endpoint to track progress.</li>
+</ol>
+<h2 id="local-development-mocking">Local Development &amp; Mocking</h2>
+<p>The system detects environmental flags to facilitate development:</p>
+<ul>
+<li><strong><code>AWS_SAM_LOCAL</code></strong>: Bypasses Cognito authentication.</li>
+<li><strong><code>USE_LOCAL_DYNAMODB</code></strong>: Redirects traffic to <code>http://host.docker.internal:8000</code> for local testing.</li>
 </ul>
 
 
@@ -636,15 +761,31 @@ A minimal UI will provide easy access to the main sections/pages:</p>
       
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
+          
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Home
+              </div>
+            </div>
+          </a>
+        
         
           
-          <a href="architecture/" class="md-footer__link md-footer__link--next" aria-label="Next: Architecture">
+          <a href="../aws_services/" class="md-footer__link md-footer__link--next" aria-label="Next: AWS Services">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Architecture
+                AWS Services
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -681,10 +822,10 @@ A minimal UI will provide easy access to the main sections/pages:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "navigation.expand", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "navigation.expand", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

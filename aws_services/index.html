@@ -9,26 +9,28 @@
       
       
       
+        <link rel="prev" href="../architecture/">
       
-        <link rel="next" href="architecture/">
+      
+        <link rel="next" href="../sam/">
       
       
         
       
       
-      <link rel="icon" href="icon.webp">
+      <link rel="icon" href="../icon.webp">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Cooking</title>
+        <title>AWS Services - Cooking</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -47,7 +49,7 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -72,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cooking" class="md-skip">
+        <a href="#aws-services-technical-details" class="md-skip">
           Skip to content
         </a>
       
@@ -88,9 +90,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Cooking" class="md-header__button md-logo" aria-label="Cooking" data-md-component="logo">
+    <a href=".." title="Cooking" class="md-header__button md-logo" aria-label="Cooking" data-md-component="logo">
       
-  <img src="icon.webp" alt="logo">
+  <img src="../icon.webp" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -107,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              AWS Services
             
           </span>
         </div>
@@ -223,9 +225,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Cooking" class="md-nav__button md-logo" aria-label="Cooking" data-md-component="logo">
+    <a href=".." title="Cooking" class="md-nav__button md-logo" aria-label="Cooking" data-md-component="logo">
       
-  <img src="icon.webp" alt="logo">
+  <img src="../icon.webp" alt="logo">
 
     </a>
     Cooking
@@ -244,6 +246,60 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
       
       
@@ -268,7 +324,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    AWS Services
   
 
     
@@ -279,14 +335,14 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="." class="md-nav__link md-nav__link--active">
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
     
   
-    Home
+    AWS Services
   
 
     
@@ -312,22 +368,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#compute-aws-lambda-the-engine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        Compute: AWS Lambda (The Engine)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Features">
+    <nav class="md-nav" aria-label="Compute: AWS Lambda (The Engine)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#grocery-generation" class="md-nav__link">
+  <a href="#architecture-the-micro-lambda-approach" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grocery generation
+        Architecture: The "Micro-Lambda" Approach
       
     </span>
   </a>
@@ -335,10 +391,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#suggestions-creation" class="md-nav__link">
+  <a href="#how-they-work-api-gateway-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Suggestions creation
+        How they work: API Gateway &amp; Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-vs-api-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worker vs. API Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment &amp; Configuration
       
     </span>
   </a>
@@ -351,10 +429,94 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#data-amazon-dynamodb" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Data: Amazon DynamoDB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data: Amazon DynamoDB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intelligence-amazon-bedrock-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intelligence: Amazon Bedrock (AI)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Intelligence: Amazon Bedrock (AI)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ai-workflow-grocery-ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Workflow (Grocery &amp; Ideas)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-amazon-cognito" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security: Amazon Cognito
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security: Amazon Cognito">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observability-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observability &amp; Management
       
     </span>
   </a>
@@ -376,61 +538,7 @@
   
   
     <li class="md-nav__item">
-      <a href="architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="aws_services/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AWS Services
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="sam/" class="md-nav__link">
+      <a href="../sam/" class="md-nav__link">
         
   
   
@@ -457,7 +565,7 @@
   
   
     <li class="md-nav__item">
-      <a href="api/" class="md-nav__link">
+      <a href="../api/" class="md-nav__link">
         
   
   
@@ -504,22 +612,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#compute-aws-lambda-the-engine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        Compute: AWS Lambda (The Engine)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Features">
+    <nav class="md-nav" aria-label="Compute: AWS Lambda (The Engine)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#grocery-generation" class="md-nav__link">
+  <a href="#architecture-the-micro-lambda-approach" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grocery generation
+        Architecture: The "Micro-Lambda" Approach
       
     </span>
   </a>
@@ -527,10 +635,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#suggestions-creation" class="md-nav__link">
+  <a href="#how-they-work-api-gateway-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Suggestions creation
+        How they work: API Gateway &amp; Handlers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worker-vs-api-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worker vs. API Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment &amp; Configuration
       
     </span>
   </a>
@@ -543,10 +673,94 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#data-amazon-dynamodb" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Data: Amazon DynamoDB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data: Amazon DynamoDB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#table-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intelligence-amazon-bedrock-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Intelligence: Amazon Bedrock (AI)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Intelligence: Amazon Bedrock (AI)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ai-workflow-grocery-ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI Workflow (Grocery &amp; Ideas)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-amazon-cognito" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security: Amazon Cognito
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security: Amazon Cognito">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authentication-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observability-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observability &amp; Management
       
     </span>
   </a>
@@ -573,34 +787,70 @@
   
 
 
-<h1 id="cooking">Cooking</h1>
-<h2 id="features">Features</h2>
-<h3 id="grocery-generation">Grocery generation</h3>
-<p>Users can set up a list of all the meals they intend to consume during the week.
-This comprehends breakfast, launch, and dinner, and additional snacks.
-Moreover, the user can also select a set of week days in which it is available
-to go and buy groceries.</p>
-<p>The AI assistant then takes over, generating a groceries list for each of the
-selected days, so that what's bought will fulfill the whole preparation of the
-days-after meals, ingredient-wise.</p>
-<h3 id="suggestions-creation">Suggestions creation</h3>
-<p>Often times people forget to plan ahead what to eat, and what's home feels
-either insufficient or unenjoyable.
-It is possible for users to prompt the AI assistant telling which ingredients
-are available in the house, for then receiving a set of possible meal ideas
-plausible to prepare and eat.</p>
-<h2 id="usage">Usage</h2>
-<p>The user will be able to use the app via the browser, and therefore it must be
-connected to the internet to be able to interact with the AI assistant, and to
-view its data.
-A minimal UI will provide easy access to the main sections/pages:</p>
+<h1 id="aws-services-technical-details">AWS Services Technical Details</h1>
+<p>This document provides a deep dive into the configuration and implementation of AWS services within the Cooking Web App.</p>
+<h2 id="compute-aws-lambda-the-engine">Compute: AWS Lambda (The Engine)</h2>
+<p>In this project, <strong>AWS Lambda</strong> is not just a place to run code; it's the core of our "Micro-Lambda" architecture. Instead of one large backend, we've broken down the logic into independent, specialized functions.</p>
+<h3 id="architecture-the-micro-lambda-approach">Architecture: The "Micro-Lambda" Approach</h3>
+<p>Each major feature (Meals, Pantry, Groceries, Ideas, Plans) has its own dedicated Lambda function.
+- <strong>Isolation</strong>: A bug in the <code>PantryFunction</code> won't crash the <code>MealFunction</code>.
+- <strong>Granularity</strong>: If users are checking their grocery lists frequently, only the <code>GroceryFunction</code> scales up, saving costs.
+- <strong>Specialized Resources</strong>: AI-heavy functions (like <code>GroceryWorker</code>) have more memory and longer timeouts than simple CRUD functions.</p>
+<h3 id="how-they-work-api-gateway-handlers">How they work: API Gateway &amp; Handlers</h3>
+<ol>
+<li><strong>Proxy Integration</strong>: API Gateway acts as a "proxy". It takes the entire HTTP request and passes it as a JSON <code>event</code> to the Lambda function.</li>
+<li><strong>The Handler</strong>: Every function starts at a <code>lambdaHandler</code> (in <code>/src/handlers</code>). This handler is responsible for:<ul>
+<li>Extracting the <code>userId</code> from the Cognito context (claims).</li>
+<li>Routing the request based on <code>httpMethod</code> (GET, POST, etc.).</li>
+<li>Returning a standardized JSON response using the <code>buildResponse</code> utility.</li>
+</ul>
+</li>
+</ol>
+<h3 id="worker-vs-api-functions">Worker vs. API Functions</h3>
+<p>We distinguish between two types of Lambdas:
+-   <strong>API Functions</strong>: Triggered directly by the user via HTTP. They must be fast (low timeout) to keep the UI responsive.
+-   <strong>Worker Functions</strong>: Triggered internally by API Functions. They handle the "heavy lifting" like AI generation. This allows the API to return a <code>taskID</code> immediately while the Worker runs in the background.</p>
+<h3 id="environment-configuration">Environment &amp; Configuration</h3>
 <ul>
-<li>a page for inserting the week's meals and generating/viewing the groceries
-  list;</li>
-<li>a page for inserting which ingredients the user has available and for then
-  requesting meal ideas;</li>
-<li>a page for inserting extra info about user's eating habits and for performing
-  other account actions.</li>
+<li><strong>Runtime</strong>: Node.js 24.x (using modern ESM syntax).</li>
+<li><strong>Environment Variables</strong>: We use <code>TABLE_NAME</code> to ensure each function knows exactly which DynamoDB table to talk to.</li>
+<li><strong>Bundling</strong>: We use <strong>esbuild</strong> to "tree-shake" the code, removing unused libraries and minifying the final package. This keeps "cold starts" extremely fast.</li>
+</ul>
+<hr />
+<h2 id="data-amazon-dynamodb">Data: Amazon DynamoDB</h2>
+<p>We utilize DynamoDB for its millisecond latency and seamless scaling.</p>
+<h3 id="table-configuration">Table Configuration</h3>
+<ul>
+<li><strong>Billing Mode</strong>: <code>PAY_PER_REQUEST</code> (On-demand), ensuring zero cost when idle and infinite scaling during meal-planning rushes.</li>
+<li><strong>Data Lifecycle</strong>: <strong>Time-to-Live (TTL)</strong> is enabled on the <code>ttl</code> attribute, allowing for automatic cleanup of transient data without manual overhead (e.g. counter of generated meals for the day).</li>
+<li><strong>SDK</strong>: Built with <code>@aws-sdk/lib-dynamodb</code>, leveraging the <code>DynamoDBDocumentClient</code> to automatically handle JSON-to-AttributeValue marshaling.</li>
+</ul>
+<hr />
+<h2 id="intelligence-amazon-bedrock-ai">Intelligence: Amazon Bedrock (AI)</h2>
+<p>The "Smart" features of the app are powered by <strong>Amazon Bedrock</strong>, orchestrating the <strong>Anthropic Claude Haiku 3.5</strong> model.</p>
+<h3 id="ai-workflow-grocery-ideas">AI Workflow (Grocery &amp; Ideas)</h3>
+<ol>
+<li><strong>Context Assembly</strong>: The service fetches User Preferences (dietary, allergies), current Pantry items, and Planned Meals.</li>
+<li><strong>Prompt Engineering</strong>: A structured system prompt is generated, instructing the model to return <strong>only</strong> a valid JSON array of specific objects.</li>
+<li><strong>Strict JSON Enforcement</strong>: The prompt includes specific examples and constraints (e.g., "Assign each ingredient to the latest shopping day BEFORE the meal").</li>
+<li><strong>Error Handling</strong>: If the AI returns invalid JSON, the system catches the error, marks the background Task as failed, and logs it to CloudWatch for debugging.</li>
+</ol>
+<hr />
+<h2 id="security-amazon-cognito">Security: Amazon Cognito</h2>
+<p>User identity is managed by a dedicated <strong>Cognito User Pool</strong>.</p>
+<h3 id="authentication-features">Authentication Features</h3>
+<ul>
+<li><strong>Social Integration</strong>: Integrated with <strong>Google Identity Provider</strong> via Hosted UI and OAuth 2.0.</li>
+<li><strong>Hosted UI Domain</strong>: <code>cooking-app-auth</code> manages the login/signup flow.</li>
+<li><strong>Attribute Mapping</strong>: Google <code>email</code> and <code>sub</code> (unique ID) are mapped directly to Cognito attributes.</li>
+<li><strong>JWT Authorization</strong>: API Gateway validates the ID Token and injects the <code>sub</code> into the Lambda <code>event.requestContext</code>, ensuring every DB query is scoped to the correct user.</li>
+</ul>
+<hr />
+<h2 id="observability-management">Observability &amp; Management</h2>
+<ul>
+<li><strong>CloudWatch Logs</strong>: All Handlers and Workers log structured JSON, including request IDs and detailed error stacks.</li>
+<li><strong>Application Insights</strong>: Automatically monitors Lambda throttles, DynamoDB latencies, and API Gateway 5xx errors, providing a holistic dashboard for system health.</li>
+<li><strong>AWS SAM &amp; CloudFormation</strong>: The entire stack is defined in <code>template.yaml</code>, enabling "Infrastructure as Code" (IaC) for consistent deployments across environments.</li>
 </ul>
 
 
@@ -636,15 +886,31 @@ A minimal UI will provide easy access to the main sections/pages:</p>
       
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
+          
+          <a href="../architecture/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Architecture">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Architecture
+              </div>
+            </div>
+          </a>
+        
         
           
-          <a href="architecture/" class="md-footer__link md-footer__link--next" aria-label="Next: Architecture">
+          <a href="../sam/" class="md-footer__link md-footer__link--next" aria-label="Next: AWS SAM">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Architecture
+                AWS SAM
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -681,10 +947,10 @@ A minimal UI will provide easy access to the main sections/pages:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "navigation.expand", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "navigation.footer", "navigation.expand", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
