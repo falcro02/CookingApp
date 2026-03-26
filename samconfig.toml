@@ -21,6 +21,7 @@ stack_name = "cooking-web-stack"
 s3_prefix = "cooking-web-stack"
 disable_rollback = true
 image_repositories = []
+parameter_overrides = "TableName=\"CookingAppData\" AppRegion=\"eu-south-1\""
 
 [default.package.parameters]
 resolve_s3 = true
