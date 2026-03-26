@@ -46,8 +46,21 @@ export const planService = {
         // 2. Check if the plan being deleted is the current plan
         const currentPlan = await planRepository.getCurrentPlan(userId);
         if (currentPlan === plan) {
-            // Reset to plan 1 if we deleted the current plan
-            await planRepository.setCurrentPlan(userId, 1);
+            // Find the highest non-empty plan (4 down to 1)
+            const allMeals = await mealRepository.findAllByUser(userId);
+            const planCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
+            for (const m of allMeals) {
+                planCounts[m.plan]++;
+            }
+
+            let nextPlan = 1;
+            for (let i = 4; i > 0; i--) {
+                if (planCounts[i] > 0) {
+                    nextPlan = i;
+                    break;
+                }
+            }
+            await planRepository.setCurrentPlan(userId, nextPlan);
         }
     },
 };

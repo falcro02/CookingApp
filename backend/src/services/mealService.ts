@@ -37,21 +37,26 @@ export const mealService = {
 
         await mealRepository.delete(userId, itemId);
 
-        // Check if this was the last meal in the plan
-        const remainingMeals = await mealRepository.findByPlan(userId, meal.plan);
-        if (remainingMeals.length === 0) {
-            // Plan is now empty — if it was the current plan, auto-switch
-            const currentPlan = await planRepository.getCurrentPlan(userId);
-            if (currentPlan === meal.plan) {
-                let newCurrent = 1; // default: plan 1 (even if empty)
-                for (let p = meal.plan - 1; p >= 1; p--) {
-                    const meals = await mealRepository.findByPlan(userId, p);
-                    if (meals.length > 0) {
-                        newCurrent = p;
+        // Check if this was the last meal in the current plan
+        const currentPlan = await planRepository.getCurrentPlan(userId);
+        if (meal.plan === currentPlan) {
+            const remainingMeals = await mealRepository.findByPlan(userId, meal.plan);
+            if (remainingMeals.length === 0) {
+                // Find the highest non-empty plan (4 down to 1)
+                const allMeals = await mealRepository.findAllByUser(userId);
+                const planCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0 };
+                for (const m of allMeals) {
+                    planCounts[m.plan]++;
+                }
+
+                let nextPlan = 1;
+                for (let i = 4; i > 0; i--) {
+                    if (planCounts[i] > 0) {
+                        nextPlan = i;
                         break;
                     }
                 }
-                await planRepository.setCurrentPlan(userId, newCurrent);
+                await planRepository.setCurrentPlan(userId, nextPlan);
             }
         }
     },
