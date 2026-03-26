@@ -820,4 +820,3 @@ DELETE /user
 **Response**
 
 - 204: operation successful
-

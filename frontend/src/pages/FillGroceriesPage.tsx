@@ -9,7 +9,7 @@ import useUser, {useUserDispatch} from "@hooks/user";
 import {Pencil1Icon} from "@radix-ui/react-icons";
 import {Button, Flex, Heading} from "@radix-ui/themes";
 import {useEffect, useState} from "react";
-import ExtrasText from "@components/groceriesForm/ExtrasText";
+import ExtrasText from "@components/ExtrasText";
 import FillGroceriesButton from "@components/groceriesForm/FillGroceriesButton";
 
 const FillGroceriesPage = () => {

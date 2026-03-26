@@ -4,7 +4,8 @@ import {
   importIngredients,
 } from "@api/ingredients";
 import useUser, {useUserDispatch} from "@hooks/user";
-import {AlertDialog, Button, Flex} from "@radix-ui/themes";
+import {Text, AlertDialog, Button, Flex, Spinner} from "@radix-ui/themes";
+import {useState} from "react";
 
 const DeleteAndImportButtons = () => {
   return (
@@ -64,6 +65,86 @@ const DeleteButton = () => {
 
 const ImportButton = () => {
   const dispatch = useUserDispatch();
+  const [status, setStatus] = useState<Status>("before");
+
+  const contentViews = {
+    before: (
+      <Flex gap="3" mt="4" justify="end">
+        <AlertDialog.Cancel>
+          <Button variant="soft" color="gray">
+            Cancel
+          </Button>
+        </AlertDialog.Cancel>
+        <Button
+          variant="solid"
+          onClick={() => {
+            setStatus("while");
+            importIngredients()
+              .then(() => {
+                getIngredients()
+                  .then((got) => {
+                    dispatch({
+                      action: "SET_INGREDIENTS",
+                      ingredients: got.ingredients,
+                    });
+                    setStatus("after");
+                  })
+                  .catch(() => {
+                    setStatus("error");
+                  });
+              })
+              .catch(() => {
+                setStatus("error");
+              });
+          }}
+        >
+          Import
+        </Button>
+      </Flex>
+    ),
+    while: (
+      <Flex mt="4" justify="center">
+        <Spinner size="3" my="6px" />
+      </Flex>
+    ),
+    after: (
+      <Flex gap="3" mt="4" align="center" justify="end">
+        <Text
+          size="2"
+          style={{
+            color: "var(--accent-indicator)",
+          }}
+        >
+          Done!
+        </Text>
+        <AlertDialog.Cancel>
+          <Button
+            onClick={() => {
+              setStatus("before");
+            }}
+          >
+            Back
+          </Button>
+        </AlertDialog.Cancel>
+      </Flex>
+    ),
+    error: (
+      <Flex gap="3" mt="4" align="center" justify="end">
+        <Text color="red" size="2">
+          Error
+        </Text>
+        <AlertDialog.Cancel>
+          <Button
+            onClick={() => {
+              setStatus("before");
+            }}
+          >
+            Back
+          </Button>
+        </AlertDialog.Cancel>
+      </Flex>
+    ),
+  };
 
   return (
     <Flex justify="between" mx="8px" mt="10px">
@@ -79,35 +160,13 @@ const ImportButton = () => {
             Add all the groceries currently checked as new ingredients in the
             pantry.
           </AlertDialog.Description>
-
-          <Flex gap="3" mt="4" justify="end">
-            <AlertDialog.Cancel>
-              <Button variant="soft" color="gray">
-                Cancel
-              </Button>
-            </AlertDialog.Cancel>
-            <AlertDialog.Action>
-              <Button
-                variant="solid"
-                onClick={() => {
-                  importIngredients().then(() => {
-                    getIngredients().then((got) => {
-                      dispatch({
-                        action: "SET_INGREDIENTS",
-                        ingredients: got.ingredients,
-                      });
-                    });
-                  });
-                }}
-              >
-                Import
-              </Button>
-            </AlertDialog.Action>
-          </Flex>
+          {contentViews[status]}
         </AlertDialog.Content>
       </AlertDialog.Root>
     </Flex>
   );
 };
+
+type Status = "before" | "while" | "after" | "error";
 
 export default DeleteAndImportButtons;
