@@ -2,7 +2,7 @@ import {useUserDispatch} from "@hooks/user";
 import {Box, Flex} from "@radix-ui/themes";
 import GroceryItemCheckbox from "./GroceryItemCheckbox";
 import {Item, DayItems} from "@hooks/groceries";
-import DayNameCard from "@components/DayNameCard";
+import TitleCard from "@components/DayNameCard";
 
 const DayGroceriesList = ({
   day,
@@ -18,9 +18,9 @@ const DayGroceriesList = ({
   const dispatch = useUserDispatch();
   return (
     <Box key={day}>
-      <DayNameCard
+      <TitleCard
         today={today}
-        dayName={dayName}
+        name={dayName}
         onPlusClick={() => {
           dispatch({
             action: "ADD_GROCERY_ITEM",

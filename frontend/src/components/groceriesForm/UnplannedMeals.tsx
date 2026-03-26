@@ -1,4 +1,4 @@
-import DayNameCard from "@components/DayNameCard";
+import TitleCard from "@components/DayNameCard";
 import {Cross2Icon} from "@radix-ui/react-icons";
 import {Box, Card, Flex, IconButton, TextField} from "@radix-ui/themes";
 import {useState} from "react";
@@ -20,9 +20,8 @@ const UnplannedMeals = ({onValueChange}) => {
   return (
     <Box width="100%">
       <Card>
-        <DayNameCard
-          dayName="Unplanned meals"
-          today={false}
+        <TitleCard
+          name="Unplanned meals"
           onPlusClick={() => {
             if (Object.values(items).includes("")) return;
             editItems({...items, [uuid()]: ""});

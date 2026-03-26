@@ -1,4 +1,4 @@
-import DayNameCard from "@components/DayNameCard";
+import TitleCard from "@components/DayNameCard";
 import {DayMeals, Meal} from "@hooks/plans";
 import {Box, Flex} from "@radix-ui/themes";
 import PlanMealRow from "@components/plans/PlanMealRow";
@@ -18,9 +18,9 @@ const DayMealsList = ({
   const dispatch = useUserDispatch();
   return (
     <Box key={day}>
-      <DayNameCard
+      <TitleCard
         today={today}
-        dayName={dayName}
+        name={dayName}
         onPlusClick={() => {
           dispatch({
             action: "ADD_MEAL",

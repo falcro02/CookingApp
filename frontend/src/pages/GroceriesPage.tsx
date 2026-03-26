@@ -36,7 +36,7 @@ const GroceriesPage = () => {
 
   return (
     <>
-      <Heading mb="4">Groceries list</Heading>
+      <Heading mb="4">Your groceries</Heading>
       <Heading mt="2" size="3">
         Today's menu
       </Heading>

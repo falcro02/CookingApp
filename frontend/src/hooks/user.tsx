@@ -1,7 +1,11 @@
 import {createContext, Dispatch, useContext, useMemo} from "react";
 import {GroceriesState, Groceries, GroceryItem} from "@shared/types/groceries";
-import {IdeasState} from "@shared/types/ideas";
-import {IngredientsState} from "@shared/types/ingredients";
+import {IdeaItem, IdeasState} from "@shared/types/ideas";
+import {
+  IngredientItem,
+  Ingredients,
+  IngredientsState,
+} from "@shared/types/ingredients";
 import {PlanItem, Plans, PlansState} from "@shared/types/plans";
 import {PreferencesState} from "@shared/types/preferences";
 
@@ -28,7 +32,14 @@ export type UserAction =
   | {action: "DELETE_PLAN"}
   | {action: "ADD_MEAL"; id: string; meal: PlanItem}
   | {action: "DELETE_MEAL"; id: string}
-  | {action: "EDIT_MEAL"; id: string; meal: Partial<PlanItem>};
+  | {action: "EDIT_MEAL"; id: string; meal: Partial<PlanItem>}
+  | {action: "SET_IDEAS"; ideas: IdeaItem[]}
+  | {action: "CLEAR_IDEAS"}
+  | {action: "SET_INGREDIENTS"; ingredients: Ingredients}
+  | {action: "CLEAR_INGREDIENTS"}
+  | {action: "ADD_INGREDIENT"; id: string; item: IngredientItem}
+  | {action: "DELETE_INGREDIENT"; id: string}
+  | {action: "EDIT_INGREDIENT"; id: string; item: Partial<IngredientItem>};
 
 export function userReducer(
   state: User | null,
@@ -56,7 +67,7 @@ export function userReducer(
         ...state,
         groceries: {
           ...state?.groceries,
-          groceries: Object.entries(state?.groceries?.groceries).reduce(
+          groceries: Object.entries(state?.groceries?.groceries || {}).reduce(
             (acc, [id, item]) => {
               acc[id] = {...item, checked: action.check};
               return acc;
@@ -187,6 +198,74 @@ export function userReducer(
                 ...state?.plans?.plans[state?.plans?.current ?? 1][action.id],
                 ...action.meal,
               },
+            },
+          },
+        },
+      };
+    case "SET_IDEAS":
+      return {
+        ...state,
+        ideas: {
+          ...state?.ideas,
+          ideas: action.ideas,
+        },
+      };
+    case "CLEAR_IDEAS":
+      return {
+        ...state,
+        ideas: {
+          ...state?.ideas,
+          ideas: [],
+        },
+      };
+    case "SET_INGREDIENTS":
+      return {
+        ...state,
+        ingredients: {
+          ...state?.ingredients,
+          ingredients: action.ingredients,
+        },
+      };
+    case "CLEAR_INGREDIENTS":
+      return {
+        ...state,
+        ingredients: {
+          ...state?.ingredients,
+          ingredients: {},
+        },
+      };
+    case "ADD_INGREDIENT":
+      return {
+        ...state,
+        ingredients: {
+          ...state?.ingredients,
+          ingredients: {
+            ...state?.ingredients?.ingredients,
+            [action.id]: action.item,
+          },
+        },
+      };
+    case "DELETE_INGREDIENT": {
+      const {[action.id]: _, ...ingredientsLeft} =
+        state?.ingredients?.ingredients || {};
+      return {
+        ...state,
+        ingredients: {
+          ...state?.ingredients,
+          ingredients: ingredientsLeft,
+        },
+      };
+    }
+    case "EDIT_INGREDIENT":
+      return {
+        ...state,
+        ingredients: {
+          ...state?.ingredients,
+          ingredients: {
+            ...state?.ingredients?.ingredients,
+            [action.id]: {
+              ...state?.ingredients?.ingredients[action.id],
+              ...action.item,
             },
           },
         },

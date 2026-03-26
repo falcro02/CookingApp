@@ -76,8 +76,11 @@ const FillGroceriesButton = ({
       <PanelBeforeGenerating
         generate={(replace: boolean) => {
           setStatus("while");
-          formData.replace = replace;
-          generateGroceries(formData as FormFieldsRequest)
+          const req: FormFieldsRequest = {
+            ...(formData as FormFieldsRequest),
+            replace: replace,
+          };
+          generateGroceries(req)
             .then((res) => {
               setTask(res.taskId);
             })
@@ -124,6 +127,7 @@ const PanelAfterGenerating = ({gotError}: GotErrorProp) => {
             onClick={() => {
               updatePage("/groceries");
             }}
+            style={{cursor: "var(--cursor-link)"}}
           >
             See groceries
           </Button>

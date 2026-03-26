@@ -38,25 +38,15 @@ const FillGroceriesPage = () => {
     });
   }, [plans, dispatch]);
 
-  const planIsEmpty = (planNr: number) => {
-    return Object.keys(plans?.plans[planNr?.toString()] ?? {}).length === 0;
-  };
-
   // This is the temporary storage for all the form information before calling
   // the generate groceries api
   const [formFields, setFormFields] = useState<Partial<FormFieldsRequest>>({
     days: [],
-    plan: null,
+    plan: plans?.current,
     unplanned: [],
     extra: "",
     replace: false,
   });
-
-  // Set current plan (if not empty) when it gets loaded the first time
-  useEffect(() => {
-    const plan = planIsEmpty(plans?.current) ? null : plans?.current;
-    setFormFields({...formFields, plan});
-  }, [plans]);
 
   return (
     <>
