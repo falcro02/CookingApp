@@ -9,7 +9,7 @@ const FloatHeadCompact = () => (
         <PageButton name="Groceries list" page="/groceries">
           <CheckboxIcon {...iconSize} />
         </PageButton>
-        <PageButton name="Meal ideas" page="/ideas">
+        <PageButton name="Meal ideas" page="/ingredients">
           <StackIcon {...iconSize} />
         </PageButton>
         <PageButton name="Profile" page="/profile">

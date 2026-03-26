@@ -1,6 +1,6 @@
 import {Box, TextArea} from "@radix-ui/themes";
 
-const ExtrasText = ({onNewValue}) => (
+const ExtrasText = ({onNewValue}: {onNewValue: (newVal: string) => void}) => (
   <Box width="100%">
     <TextArea
       id="extras"

@@ -1,12 +1,18 @@
 import {PlusIcon} from "@radix-ui/react-icons";
-import {Card, Flex, Heading, Box, IconButton} from "@radix-ui/themes";
+import {Card, Flex, Heading, IconButton} from "@radix-ui/themes";
 
-const DayNameCard = ({dayName, today, onPlusClick}) => (
+export interface TitleCardProps {
+  name: string;
+  today?: boolean;
+  onPlusClick: () => void;
+}
+
+const TitleCard = ({name, today = false, onPlusClick}: TitleCardProps) => (
   <Card>
     <Flex direction="row" justify="between" align="center">
       <Flex direction="row" width="100%">
         <Heading size="2" trim="both">
-          {dayName}
+          {name}
         </Heading>
         {today && (
           <Heading
@@ -35,4 +41,4 @@ const AddItemButton = ({onClick}) => {
   );
 };
 
-export default DayNameCard;
+export default TitleCard;

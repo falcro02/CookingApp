@@ -23,7 +23,7 @@ const PlansPage = () => {
 
   return (
     <>
-      <Heading>Meal plans</Heading>
+      <Heading>Meals plans</Heading>
       <GoBackButton
         onClick={() => {
           // Go on if it was last element in plan.

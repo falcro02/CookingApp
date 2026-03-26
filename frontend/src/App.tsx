@@ -1,6 +1,7 @@
 import Layout from "@components/Layout";
 import useAppearance from "@hooks/appearance";
 import FillGroceriesPage from "@pages/FillGroceriesPage";
+import IngredientsPage from "@pages/IngredientsPage";
 import GroceriesPage from "@pages/GroceriesPage";
 import IdeasPage from "@pages/IdeasPage";
 import PlansPage from "@pages/PlansPage";
@@ -25,7 +26,8 @@ function App() {
           <Route path="/groceries/fill" element={<FillGroceriesPage />} />
           <Route path="/groceries/plans" element={<PlansPage />} />
           <Route path="/groceries" element={<GroceriesPage />} />
-          <Route path="/ideas" element={<IdeasPage />} />
+          <Route path="/ingredients/ideas" element={<IdeasPage />} />
+          <Route path="/ingredients" element={<IngredientsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<UnknownPage />} />
         </Routes>

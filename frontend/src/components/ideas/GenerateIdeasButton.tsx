@@ -1,25 +1,15 @@
-import {
-  FormFieldsRequest,
-  generateGroceries,
-  getGroceries,
-} from "@api/groceries";
+import {generateIdeas, getIdeas} from "@api/ideas";
 import {getTaskStatus} from "@api/tasks";
-import usePage from "@hooks/page";
+import ExtrasText from "@components/ExtrasText";
 import useUser, {useUserDispatch} from "@hooks/user";
 import {Button, Dialog, Flex, Spinner} from "@radix-ui/themes";
 import {useEffect, useState} from "react";
 
 type Status = "before" | "while" | "after" | "error";
-type GenerateFuncProp = {generate: (replace: boolean) => void};
+type GenerateFuncProp = {generate: (extras: string) => void};
 
-const FillGroceriesButton = ({
-  formData,
-}: {
-  formData: Partial<FormFieldsRequest>;
-}) => {
+const GenerateIdeasButton = () => {
   const dispatch = useUserDispatch();
-  const {updatePage} = usePage();
-
   const [status, setStatus] = useState<Status>("before");
   const [task, setTask] = useState<string | null>(null);
 
@@ -43,11 +33,11 @@ const FillGroceriesButton = ({
             break;
           case 1:
             try {
-              const res = await getGroceries();
+              const res = await getIdeas();
               if (isMounted) {
                 dispatch({
-                  action: "SET_GROCERIES",
-                  groceries: res.groceries,
+                  action: "SET_IDEAS",
+                  ideas: res.ideas,
                 });
                 setStatus("after");
               }
@@ -75,13 +65,9 @@ const FillGroceriesButton = ({
   const contentViews = {
     before: (
       <PanelBeforeGenerating
-        generate={(replace: boolean) => {
+        generate={(extra: string) => {
           setStatus("while");
-          const req: FormFieldsRequest = {
-            ...(formData as FormFieldsRequest),
-            replace: replace,
-          };
-          generateGroceries(req)
+          generateIdeas({extra})
             .then((res) => {
               setTask(res.taskId);
             })
@@ -97,7 +83,6 @@ const FillGroceriesButton = ({
         gotError={false}
         onClick={() => {
           setStatus("before");
-          updatePage("/groceries");
         }}
       />
     ),
@@ -106,7 +91,6 @@ const FillGroceriesButton = ({
         gotError={true}
         onClick={() => {
           setStatus("before");
-          updatePage("/groceries");
         }}
       />
     ),
@@ -115,12 +99,7 @@ const FillGroceriesButton = ({
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button
-          size="2"
-          disabled={formData.days?.length === 0 || formData.plan === null}
-        >
-          Generate groceries
-        </Button>
+        <Button size="2">Generate ideas</Button>
       </Dialog.Trigger>
       {contentViews[status]}
     </Dialog.Root>
@@ -130,17 +109,15 @@ const FillGroceriesButton = ({
 const PanelAfterGenerating = ({gotError, onClick}) => {
   return (
     <Dialog.Content>
-      <Dialog.Title>Generate groceries with AI</Dialog.Title>
+      <Dialog.Title>Generate ideas with AI</Dialog.Title>
       <Dialog.Description>
         {gotError
-          ? "Error encountered while generating groceries."
-          : "Groceries generated successfully!"}
+          ? "Error encountered while generating ideas."
+          : "Ideas generated successfully!"}
       </Dialog.Description>
       <Flex gap="3" mt="6" justify="center">
         <Dialog.Close>
-          <Button onClick={onClick} style={{cursor: "var(--cursor-link)"}}>
-            See groceries
-          </Button>
+          <Button onClick={onClick}>See ideas</Button>
         </Dialog.Close>
       </Flex>
     </Dialog.Content>
@@ -150,9 +127,9 @@ const PanelAfterGenerating = ({gotError, onClick}) => {
 const PanelWhileGenerating = () => {
   return (
     <Dialog.Content>
-      <Dialog.Title>Generate groceries with AI</Dialog.Title>
+      <Dialog.Title>Generate ideas with AI</Dialog.Title>
       <Dialog.Description>
-        Please wait while generating groceries.
+        Please wait while generating ideas.
       </Dialog.Description>
       <Flex gap="3" mt="6" justify="center">
         <Spinner size="3" mb="4" />
@@ -162,61 +139,43 @@ const PanelWhileGenerating = () => {
 };
 
 const PanelBeforeGenerating = ({generate}: GenerateFuncProp) => {
-  const {groceries} = useUser();
-  const hasGroceries = Object.keys(groceries?.groceries ?? {}).length !== 0;
+  const {ideas} = useUser();
+  const [extras, setExtras] = useState<string>("");
+  const hasIdeas = Object.keys(ideas?.ideas ?? {}).length !== 0;
 
   return (
     <Dialog.Content>
-      <Dialog.Title>Generate groceries with AI</Dialog.Title>
+      <Dialog.Title>Generate ideas with AI</Dialog.Title>
       <Dialog.Description>
-        {hasGroceries
-          ? "What do you want to do with the newly generated groceries?"
-          : "Ask the AI to fill your groceries."}
-      </Dialog.Description>
-      <Flex gap="3" mt="6" justify="center">
-        {hasGroceries ? (
+        {"Ask the AI to give you meal ideas."}
+        {hasIdeas && (
           <>
-            <Dialog.Close>
-              <Button variant="soft" color="gray">
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Button
-              onClick={() => {
-                generate(true);
-              }}
-            >
-              Replace
-            </Button>
-            <Button
-              onClick={() => {
-                generate(false);
-              }}
-            >
-              Append
-            </Button>
-          </>
-        ) : (
-          <>
-            <Dialog.Close>
-              <Button variant="soft" color="gray">
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Dialog.Close>
-              <Button
-                onClick={() => {
-                  generate(false);
-                }}
-              >
-                Generate
-              </Button>
-            </Dialog.Close>
+            <br />
+            Generating new ideas will delete the old ones.
           </>
         )}
+      </Dialog.Description>
+      <ExtrasText
+        onNewValue={(newVal: string) => {
+          setExtras(newVal);
+        }}
+      />
+      <Flex gap="3" mt="6" justify="center">
+        <Dialog.Close>
+          <Button variant="soft" color="gray">
+            Cancel
+          </Button>
+        </Dialog.Close>
+        <Button
+          onClick={() => {
+            generate(extras);
+          }}
+        >
+          Generate
+        </Button>
       </Flex>
     </Dialog.Content>
   );
 };
 
-export default FillGroceriesButton;
+export default GenerateIdeasButton;

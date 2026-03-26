@@ -9,7 +9,7 @@ const FloatHead = () => (
         <Separator size="4" my="2" />
         <Flex direction="column" align="start" gap="4" p="4">
           <PageLink name="Groceries list" page="/groceries" />
-          <PageLink name="Meal ideas" page="/ideas" />
+          <PageLink name="Meal ideas" page="/ingredients" />
           <PageLink name="Profile" page="/profile" />
         </Flex>
         <Box height="3em" />
