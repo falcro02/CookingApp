@@ -1,13 +1,14 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, QueryCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
-import { PantryItem } from '../models/pantry';
+import { PantryItemEntity } from '../entities/pantryEntity';
 
-const client = new DynamoDBClient({});
+import { getDynamoClient } from "../utils/db";
+const client = getDynamoClient();
 const docClient = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = process.env.TABLE_NAME || '';
 
 export const pantryRepository = {
-    async findAllByUserId(userId: string): Promise<PantryItem[]> {
+    async findAllByUserId(userId: string): Promise<PantryItemEntity[]> {
         const result = await docClient.send(
             new QueryCommand({
                 TableName: TABLE_NAME,
@@ -18,10 +19,10 @@ export const pantryRepository = {
                 },
             }),
         );
-        return (result.Items as PantryItem[]) || [];
+        return (result.Items as PantryItemEntity[]) || [];
     },
 
-    async save(item: PantryItem): Promise<void> {
+    async save(item: PantryItemEntity): Promise<void> {
         await docClient.send(
             new PutCommand({
                 TableName: TABLE_NAME,

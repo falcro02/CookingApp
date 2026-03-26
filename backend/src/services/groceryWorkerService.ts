@@ -3,9 +3,10 @@ import { mealRepository } from '../repositories/mealRepository';
 import { groceryRepository } from '../repositories/groceryRepository';
 import { taskRepository } from '../repositories/taskRepository';
 import { preferenceRepository } from '../repositories/preferenceRepository';
-import { GroceryWorkerPayload, GroceryItem, AiGroceryItem } from '../models/grocery';
-import { Meal } from '../models/meal';
-import { UserPreferences } from '../models/preferences';
+import { GroceryWorkerPayload, AiGroceryItem } from '../dto/groceryDto';
+import { GroceryItemEntity } from '../entities/groceryEntity';
+import { MealEntity } from '../entities/mealEntity';
+import { UserPreferencesEntity } from '../entities/preferenceEntity';
 import { counterRepository } from '../repositories/counterRepository';
 
 const bedrockClient = new BedrockRuntimeClient({});
@@ -14,14 +15,14 @@ const MODEL_ID = 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 export const groceryWorkerService = {
     async execute(payload: GroceryWorkerPayload): Promise<void> {
-        const { userId, taskID, days, plan, unplanned, extra, replace } = payload;
+        const { userId, taskId, days, plan, unplanned, extra, replace } = payload;
 
         try {
             // 1. Fetch all meals for the plan
-            const allMealsInPlan: Meal[] = await mealRepository.findByPlan(userId, plan);
+            const allMealsInPlan: MealEntity[] = await mealRepository.findByPlan(userId, plan);
 
             // 2. Fetch user preferences
-            const preferences: UserPreferences | null = await preferenceRepository.getPreferences(userId);
+            const preferences: UserPreferencesEntity | null = await preferenceRepository.getPreferences(userId);
 
             // 3. Build the prompt
             const prompt = this.buildPrompt(allMealsInPlan, unplanned, days, preferences, extra);
@@ -38,10 +39,10 @@ export const groceryWorkerService = {
             }
 
             // 7. Write new grocery items
-            const dbItems: GroceryItem[] = groceryItems.map((item, index) => ({
+            const dbItems: GroceryItemEntity[] = groceryItems.map((item, index) => ({
                 PK: userId,
                 SK: `GROCERY#${Date.now()}_${index}`,
-                itemID: `${Date.now()}_${index}`,
+                itemId: `${Date.now()}_${index}`,
                 description: item.description,
                 weekDay: item.weekDay,
                 checked: false,
@@ -54,18 +55,18 @@ export const groceryWorkerService = {
             await counterRepository.incrementCount(userId, today);
 
             // 9. Mark task as completed
-            await taskRepository.updateStatus(userId, taskID, 1);
+            await taskRepository.updateStatus(userId, taskId, 1);
         } catch (error: any) {
             console.error('GroceryWorker FAILED:', error);
-            await taskRepository.updateStatus(userId, taskID, -1, error.message || 'Unknown error');
+            await taskRepository.updateStatus(userId, taskId, -1, error.message || 'Unknown error');
         }
     },
 
     buildPrompt(
-        meals: Meal[],
+        meals: MealEntity[],
         unplanned: string[],
         days: number[],
-        preferences: UserPreferences | null,
+        preferences: UserPreferencesEntity | null,
         extra: string,
     ): string {
         const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -78,17 +79,14 @@ export const groceryWorkerService = {
         let preferencesBlock = 'No preferences set.';
         if (preferences) {
             const parts: string[] = [];
-            if (preferences.dietaryRestrictions.length > 0) {
-                parts.push(`Dietary restrictions: ${preferences.dietaryRestrictions.join(', ')}`);
+            if (preferences.dietary.trim().length > 0) {
+                parts.push(`Dietary restrictions: ${preferences.dietary}`);
             }
-            if (preferences.allergies.length > 0) {
-                parts.push(`Allergies (MUST AVOID): ${preferences.allergies.join(', ')}`);
+            if (preferences.allergies.trim().length > 0) {
+                parts.push(`Allergies (MUST AVOID): ${preferences.allergies}`);
             }
-            if (preferences.dislikedIngredients.length > 0) {
-                parts.push(`Disliked ingredients (avoid if possible): ${preferences.dislikedIngredients.join(', ')}`);
-            }
-            if (preferences.servingSize) {
-                parts.push(`Serving size: ${preferences.servingSize} people`);
+            if (preferences.disliked.trim().length > 0) {
+                parts.push(`Disliked ingredients (avoid if possible): ${preferences.disliked}`);
             }
             if (parts.length > 0) {
                 preferencesBlock = parts.join('\n');
@@ -120,7 +118,6 @@ INSTRUCTIONS:
 - If no shopping day falls before the meal day, assign it to the earliest shopping day.
 - If an ingredient is needed for multiple meals, combine it into one entry with the total quantity, assigned to the earliest relevant shopping day.
 - Include the quantity in the description (e.g., "Chicken breast - 1kg", "Onions - 3 medium").
-- Provide realistic quantities for the specified serving size.
 - Respect all allergies strictly -- never include allergens.
 - Respect dietary restrictions (e.g., no meat for vegetarian).
 - Avoid disliked ingredients where possible.

@@ -3,10 +3,20 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   cooking_web_app - Backend with DynamoDB for meal management
 
+Parameters:
+  TableName:
+    Type: String
+    Default: CookingAppData
+  AppRegion:
+    Type: String
+    Default: eu-south-1
+
 Globals:
   Function:
     Timeout: 10
     MemorySize: 128
+    Environment:
+      Variables:
   Api:
     Cors:
       AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
@@ -82,7 +92,7 @@ Resources:
       StageName: Prod
       Cors:
         AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
-        AllowHeaders: "'Content-Type,Authorization'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
@@ -122,10 +132,10 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
       Events:
         GetMeals:
           Type: Api
@@ -143,20 +153,20 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /meals/{itemID}
+            Path: /meals/{itemId}
             Method: delete
         UpdateMeal:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /meals/{itemID}
+            Path: /meals/{itemId}
             Method: patch
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/mealHandler.ts
 
@@ -170,10 +180,10 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
       Events:
         PantryApi:
           Type: Api
@@ -186,7 +196,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/pantryHandler.ts
 
@@ -200,10 +210,10 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
       Events:
         PreferencesApi:
           Type: Api
@@ -216,7 +226,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/preferencesHandler.ts
 
@@ -230,23 +240,23 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
       Events:
         GetTask:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /tasks/{taskID}
+            Path: /tasks/{taskId}
             Method: get
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/taskHandler.ts
 
@@ -260,11 +270,11 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
           GROCERY_WORKER_FUNCTION_NAME: !Ref GroceryWorkerFunction
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
         - Statement:
             Effect: Allow
             Action:
@@ -293,13 +303,13 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /groceries/{itemID}
+            Path: /groceries/{itemId}
             Method: delete
         UpdateGrocery:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /groceries/{itemID}
+            Path: /groceries/{itemId}
             Method: patch
         GenerateGroceries:
           Type: Api
@@ -318,7 +328,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/groceryHandler.ts
 
@@ -334,10 +344,10 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
         - Statement:
             Effect: Allow
             Action:
@@ -350,7 +360,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/groceryWorkerHandler.ts
 
@@ -364,11 +374,11 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
           IDEAS_WORKER_FUNCTION_NAME: !Ref IdeasWorkerFunction
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
         - Statement:
             Effect: Allow
             Action:
@@ -398,7 +408,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/ideaHandler.ts
 
@@ -414,10 +424,10 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
         - Statement:
             Effect: Allow
             Action:
@@ -430,7 +440,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/ideaWorkerHandler.ts
 
@@ -444,10 +454,10 @@ Resources:
         - x86_64
       Environment:
         Variables:
-          TABLE_NAME: !Ref CookingAppTable
+          TABLE_NAME: !Ref TableName
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: !Ref CookingAppTable
+            TableName: !Ref TableName
       Events:
         GetPlans:
           Type: Api
@@ -472,7 +482,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/planHandler.ts
 

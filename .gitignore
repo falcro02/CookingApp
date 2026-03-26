@@ -24,3 +24,5 @@ logs
 .dynamodb
 .aws-sam
 
+# Coverage
+coverage/

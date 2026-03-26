@@ -1,14 +1,15 @@
 import { pantryRepository } from '../repositories/pantryRepository';
-import { CreatePantryItemInput, PantryItem } from '../models/pantry';
+import { PantryItemEntity } from '../entities/pantryEntity';
+import { CreatePantryItemInput } from '@shared/types/pantry';
 
 export const pantryService = {
-    async getPantryItems(userId: string): Promise<PantryItem[]> {
+    async getPantryItems(userId: string): Promise<PantryItemEntity[]> {
         return await pantryRepository.findAllByUserId(userId);
     },
 
-    async addPantryItem(userId: string, input: CreatePantryItemInput): Promise<PantryItem> {
+    async addPantryItem(userId: string, input: CreatePantryItemInput): Promise<PantryItemEntity> {
         const itemId = Date.now().toString();
-        const item: PantryItem = {
+        const item: PantryItemEntity = {
             PK: userId,
             SK: `ITEM#${itemId}`,
             name: input.name,

@@ -1,9 +1,10 @@
 import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
-import { Idea, IdeasWorkerPayload } from '../models/idea';
+import { IdeaItem } from '@shared/types/ideas';
+import { IdeasWorkerPayload } from '../dto/ideaDto';
 import { ideaRepository } from '../repositories/ideaRepository';
 import { counterRepository } from '../repositories/counterRepository';
 import { taskRepository } from '../repositories/taskRepository';
-import { Task } from '../models/task';
+import { TaskEntity } from '../entities/taskEntity';
 import { preferencesService } from './preferencesService';
 
 const lambdaClient = new LambdaClient({});
@@ -13,7 +14,7 @@ const WORKER_FUNCTION_NAME = process.env.IDEAS_WORKER_FUNCTION_NAME || '';
 const DAILY_GENERATION_LIMIT = 3;
 
 export const ideaService = {
-    async getIdeas(userId: string): Promise<Idea[]> {
+    async getIdeas(userId: string): Promise<IdeaItem[]> {
         const ideas = await ideaRepository.findByUser(userId);
         return ideas || [];
     },
@@ -44,11 +45,11 @@ export const ideaService = {
         const userPrefs = await preferencesService.getPreferences(userId);
 
         // Create task record
-        const taskID = Date.now().toString();
-        const task: Task = {
+        const taskId = Date.now().toString();
+        const task: TaskEntity = {
             PK: userId,
-            SK: `TASK#${taskID}`,
-            taskID,
+            SK: `TASK#${taskId}`,
+            taskId,
             status: 0,
             type: 'IDEA_GENERATION',
             createdAt: new Date().toISOString(),
@@ -59,13 +60,12 @@ export const ideaService = {
         // Invoke worker Lambda asynchronously
         const workerPayload: IdeasWorkerPayload = {
             userId,
-            taskID,
+            taskId,
             ingredients,
             preferences: {
-                dietaryRestrictions: userPrefs.dietaryRestrictions,
-                allergies: userPrefs.allergies,
-                dislikedIngredients: userPrefs.dislikedIngredients,
-                servingSize: userPrefs.servingSize,
+                dietary: userPrefs.preferences.dietary,
+                allergies: userPrefs.preferences.allergies,
+                disliked: userPrefs.preferences.disliked,
             },
         };
 
@@ -77,6 +77,6 @@ export const ideaService = {
             }),
         );
 
-        return taskID;
+        return taskId;
     },
 };

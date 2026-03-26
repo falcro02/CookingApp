@@ -8,8 +8,8 @@
   ],
   "scripts": {
     "fmt": "prettier -w .",
-    "backend:dev": "sam build && sam local start-api --env-vars env.json",
-    "backend:deploy": "sam build && sam deploy",
+    "backend:dev": "cd backend && npm run dev",
+    "backend:deploy": "cd backend && npm run deploy",
     "frontend:dev": "cd frontend && npm run dev",
     "frontend:build": "cd frontend && npm run build",
     "frontend:lint": "cd frontend && npm run lint",

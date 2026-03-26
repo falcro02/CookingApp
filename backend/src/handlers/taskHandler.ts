@@ -21,15 +21,15 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
         // --- 2. ROUTING PREPARATION ---
         const httpMethod = event.httpMethod;
-        const taskID = event.pathParameters?.taskID;
+        const taskId = event.pathParameters?.taskId;
 
         if (httpMethod === 'OPTIONS') {
             return buildResponse(200, '');
         }
 
-        // --- GET /tasks/{taskID} ---
-        if (httpMethod === 'GET' && taskID) {
-            const status = await taskService.getTaskStatus(userId, taskID);
+        // --- GET /tasks/{taskId} ---
+        if (httpMethod === 'GET' && taskId) {
+            const status = await taskService.getTaskStatus(userId, taskId);
             if (status === null) {
                 return buildResponse(404, { error: 'task not found' });
             }
@@ -39,6 +39,6 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         return buildResponse(404, { message: 'Route not found' });
     } catch (globalError: any) {
         console.error('FATAL HANDLER ERROR:', globalError);
-        return buildResponse(500, { message: 'Internal server error' });
+        return buildResponse(500, { message: 'Fatal server error' });
     }
 };

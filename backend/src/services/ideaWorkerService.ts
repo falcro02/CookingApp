@@ -2,8 +2,9 @@ import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedroc
 import { ideaRepository } from '../repositories/ideaRepository';
 import { taskRepository } from '../repositories/taskRepository';
 import { counterRepository } from '../repositories/counterRepository';
-import { IdeasWorkerPayload, Idea } from '../models/idea';
-import { UserPreferencesPayload } from '../models/idea';
+import { IdeasWorkerPayload } from '../dto/ideaDto';
+import { UserPreferencesPayload } from '@shared/types/preferences';
+import { IdeaItem } from '@shared/types/ideas';
 
 const bedrockClient = new BedrockRuntimeClient({});
 
@@ -11,7 +12,7 @@ const MODEL_ID = 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 export const ideaWorkerService = {
     async execute(payload: IdeasWorkerPayload): Promise<void> {
-        const { userId, taskID, ingredients, preferences } = payload;
+        const { userId, taskId, ingredients, preferences } = payload;
 
         try {
             // 1. Build the prompt
@@ -21,7 +22,7 @@ export const ideaWorkerService = {
             const aiResponse = await this.callBedrock(prompt);
 
             // 3. Parse AI response
-            const ideas: Idea[] = this.parseAiResponse(aiResponse);
+            const ideas: IdeaItem[] = this.parseAiResponse(aiResponse);
 
             // 4. Delete old ideas
             await ideaRepository.delete(userId);
@@ -34,10 +35,10 @@ export const ideaWorkerService = {
             await counterRepository.incrementCount(userId, today);
 
             // 7. Mark task as completed
-            await taskRepository.updateStatus(userId, taskID, 1);
+            await taskRepository.updateStatus(userId, taskId, 1);
         } catch (error: any) {
-            console.error('IdeaWorker FAILED:', error);
-            await taskRepository.updateStatus(userId, taskID, -1, error.message || 'Unknown error');
+            console.error('IdeaItemWorker FAILED:', error);
+            await taskRepository.updateStatus(userId, taskId, -1, error.message || 'Unknown error');
         }
     },
 
@@ -46,17 +47,14 @@ export const ideaWorkerService = {
 
         let preferencesBlock = 'No preferences set.';
         const parts: string[] = [];
-        if (preferences.dietaryRestrictions.length > 0) {
-            parts.push(`Dietary restrictions: ${preferences.dietaryRestrictions.join(', ')}`);
+        if (preferences.dietary.trim().length > 0) {
+            parts.push(`Dietary restrictions: ${preferences.dietary}`);
         }
-        if (preferences.allergies.length > 0) {
-            parts.push(`Allergies (MUST AVOID): ${preferences.allergies.join(', ')}`);
+        if (preferences.allergies.trim().length > 0) {
+            parts.push(`Allergies (MUST AVOID): ${preferences.allergies}`);
         }
-        if (preferences.dislikedIngredients.length > 0) {
-            parts.push(`Disliked ingredients (avoid if possible): ${preferences.dislikedIngredients.join(', ')}`);
-        }
-        if (preferences.servingSize) {
-            parts.push(`Serving size: ${preferences.servingSize} people`);
+        if (preferences.disliked.trim().length > 0) {
+            parts.push(`Disliked ingredients (avoid if possible): ${preferences.disliked}`);
         }
         if (parts.length > 0) {
             preferencesBlock = parts.join('\n');
@@ -79,7 +77,6 @@ INSTRUCTIONS:
 - Respect all allergies strictly — never suggest a meal containing allergens.
 - Respect dietary restrictions (e.g., no meat for vegetarian).
 - Avoid disliked ingredients where possible.
-- Adjust portions for the specified serving size.
 
 Respond ONLY with a valid JSON array. Each element must have exactly these fields:
 - "name": string (short catchy meal name)
@@ -120,7 +117,7 @@ Do not include any text before or after the JSON array.`;
         return responseBody.content[0].text;
     },
 
-    parseAiResponse(responseText: string): Idea[] {
+    parseAiResponse(responseText: string): IdeaItem[] {
         let cleaned = responseText.trim();
 
         // Remove markdown code fences if present

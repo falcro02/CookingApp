@@ -1,14 +1,15 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
-import { Idea } from '../models/idea';
+import { IdeaItem } from '@shared/types/ideas';
 
-const client = new DynamoDBClient({});
+import { getDynamoClient } from "../utils/db";
+const client = getDynamoClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = process.env.TABLE_NAME || '';
 
 export const ideaRepository = {
-    async findByUser(userId: string): Promise<Idea[] | null> {
+    async findByUser(userId: string): Promise<IdeaItem[] | null> {
         const result = await docClient.send(
             new GetCommand({
                 TableName: TABLE_NAME,
@@ -18,7 +19,7 @@ export const ideaRepository = {
         return result.Item ? (result.Item as any).ideas : null;
     },
 
-    async save(userId: string, ideas: Idea[]): Promise<void> {
+    async save(userId: string, ideas: IdeaItem[]): Promise<void> {
         await docClient.send(
             new PutCommand({
                 TableName: TABLE_NAME,
