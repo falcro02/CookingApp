@@ -8,10 +8,10 @@
     "author": "Alessio Caggiano, Francesco Ostidich, Matteo Bettiati",
     "license": "MIT",
     "scripts": {
-        "dev": "npm run db:start && npm run db:gui && npm run start",
+        "dev": "npm run build && npm run db:start && npm run db:gui && npm run start",
         "ship": "npm run build && npm run deploy",
         "build": "cd .. && sam build",
-        "start": "cd .. && sam local start-api",
+        "start": "cd .. && sam local start-api --warm-containers EAGER",
         "deploy": "cd .. && sam deploy",
         "test": "jest tests/unit",
         "test:watch": "jest --watch tests/unit",

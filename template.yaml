@@ -92,7 +92,7 @@ Resources:
       StageName: Prod
       Cors:
         AllowMethods: "'GET,POST,PUT,PATCH,DELETE,OPTIONS'"
-        AllowHeaders: "'Content-Type,Authorization'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
       Auth:
         DefaultAuthorizer: CognitoAuthorizer
@@ -166,7 +166,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/mealHandler.ts
 
@@ -196,7 +196,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/pantryHandler.ts
 
@@ -226,7 +226,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/preferencesHandler.ts
 
@@ -256,7 +256,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/taskHandler.ts
 
@@ -328,7 +328,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/groceryHandler.ts
 
@@ -360,7 +360,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/groceryWorkerHandler.ts
 
@@ -408,7 +408,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/ideaHandler.ts
 
@@ -440,7 +440,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/ideaWorkerHandler.ts
 
@@ -482,7 +482,7 @@ Resources:
       BuildProperties:
         Minify: true
         Target: "es2020"
-        Sourcemap: true
+        Sourcemap: false
         EntryPoints:
           - src/handlers/planHandler.ts
 
