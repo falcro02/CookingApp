@@ -1,8 +1,6 @@
 # REST API contracts
 
-> [`POST /signin/apple`](#apple-sign-in)
-> <br>[`POST /signin/google`](#google-sign-in)
-> <br>[`GET /groceries`](#get-groceries-list)
+> [`GET /groceries`](#get-groceries-list)
 > <br>[`DELETE /groceries`](#clear-groceries)
 > <br>[`POST /groceries`](#add-new-item)
 > <br>[`DELETE /groceries/{itemID}`](#delete-item)
@@ -27,67 +25,6 @@
 > <br>[`GET /preferences`](#get-user-preferences)
 > <br>[`PATCH /preferences`](#update-user-preferences)
 > <br>[`GET /tasks/{taskID}`](#get-task-status)
-> <br>[`DELETE /data`](#clear-all-user-data)
-> <br>[`DELETE /sessions`](#delete-all-active-sessions)
-> <br>[`DELETE /user`](#delete-user-account)
-
-## Sign in
-
-### Apple sign in
-
-Send ID token received from Apple ID provider and, if valid, get back a JWT
-token relative to the newly created session for the user.
-
-**Request**
-
-```text
-POST /signin/apple
-```
-
-```json
-{
-    "idToken": string
-}
-```
-
-**Response**
-
-- 200: user authenticated successfully
-- 400: invalid ID token
-
-```json
-{
-    "jwtToken": string
-}
-```
-
-### Google sign in
-
-Send ID token received from Google ID provider and, if valid, get back a JWT
-token relative to the newly created session for the user.
-
-**Request**
-
-```text
-POST /signin/google
-```
-
-```json
-{
-    "idToken": string
-}
-```
-
-**Response**
-
-- 200: user authenticated successfully
-- 400: invalid ID token
-
-```json
-{
-    "jwtToken": string
-}
-```
 
 ## Groceries
 
@@ -770,53 +707,3 @@ GET /tasks/{taskID}
 }
 ```
 
-## Account
-
-### Clear all user data
-
-Delete all content registered with the user profile (without deleting the
-account itself).
-This is a way to "reset" a user profile.
-This request is idempotent: it doesn't fail if user profile is already clear of
-all its data.
-
-**Request**
-
-```text
-DELETE /data
-```
-
-**Response**
-
-- 204: operation successful
-
-### Delete all active sessions
-
-All active sessions of the user are deleted for all devices in which it had
-signed in, essentially making all previously issued JWT tokens of the user
-invalid.
-This means that the user is required to authenticate again on all devices.
-
-**Request**
-
-```text
-DELETE /sessions
-```
-
-**Response**
-
-- 204: operation successful
-
-### Delete user account
-
-The user profile is deleted alongside all its data.
-
-**Request**
-
-```text
-DELETE /user
-```
-
-**Response**
-
-- 204: operation successful
