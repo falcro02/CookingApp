@@ -15,7 +15,7 @@ const MODEL_ID = 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 export const groceryWorkerService = {
     async execute(payload: GroceryWorkerPayload): Promise<void> {
-        const { userId, taskID, days, plan, unplanned, extra, replace } = payload;
+        const { userId, taskId, days, plan, unplanned, extra, replace } = payload;
 
         try {
             // 1. Fetch all meals for the plan
@@ -42,7 +42,7 @@ export const groceryWorkerService = {
             const dbItems: GroceryItemEntity[] = groceryItems.map((item, index) => ({
                 PK: userId,
                 SK: `GROCERY#${Date.now()}_${index}`,
-                itemID: `${Date.now()}_${index}`,
+                itemId: `${Date.now()}_${index}`,
                 description: item.description,
                 weekDay: item.weekDay,
                 checked: false,
@@ -55,10 +55,10 @@ export const groceryWorkerService = {
             await counterRepository.incrementCount(userId, today);
 
             // 9. Mark task as completed
-            await taskRepository.updateStatus(userId, taskID, 1);
+            await taskRepository.updateStatus(userId, taskId, 1);
         } catch (error: any) {
             console.error('GroceryWorker FAILED:', error);
-            await taskRepository.updateStatus(userId, taskID, -1, error.message || 'Unknown error');
+            await taskRepository.updateStatus(userId, taskId, -1, error.message || 'Unknown error');
         }
     },
 

@@ -1,7 +1,7 @@
 export interface GroceryItemEntity {
     PK: string; // USER#<cognitoId>
-    SK: string; // GROCERY#<itemID>
-    itemID: string;
+    SK: string; // GROCERY#<itemId>
+    itemId: string;
     description: string;
     weekDay: number;
     checked: boolean;

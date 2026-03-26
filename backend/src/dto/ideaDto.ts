@@ -2,7 +2,7 @@ import { UserPreferencesPayload } from '@shared/types/preferences';
 
 export interface IdeasWorkerPayload {
     userId: string;
-    taskID: string;
+    taskId: string;
     ingredients: string[];
     preferences: UserPreferencesPayload;
 }

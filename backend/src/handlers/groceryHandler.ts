@@ -28,7 +28,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         // --- 2. ROUTING ---
         const httpMethod = event.httpMethod;
         const resource = event.resource;
-        const itemID = event.pathParameters?.itemID;
+        const itemId = event.pathParameters?.itemId;
 
         if (httpMethod === 'OPTIONS') {
             return buildResponse(200, '');
@@ -44,8 +44,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         if (httpMethod === 'POST' && resource === '/groceries/generate') {
             try {
                 const body = JSON.parse(event.body || '{}') as GenerateGroceriesRequest;
-                const taskID = await groceryService.generateGroceries(userId, body);
-                return buildResponse(202, { taskID });
+                const taskId = await groceryService.generateGroceries(userId, body);
+                return buildResponse(202, { taskId });
             } catch (error: any) {
                 const statusCode = (error as any).statusCode;
                 if (statusCode === 404) return buildResponse(404, { error: error.message });
@@ -72,8 +72,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         if (httpMethod === 'POST' && resource === '/groceries') {
             try {
                 const body = JSON.parse(event.body || '{}') as CreateGroceryRequest;
-                const itemID = await groceryService.createGrocery(userId, body);
-                return buildResponse(201, { itemID });
+                const itemId = await groceryService.createGrocery(userId, body);
+                return buildResponse(201, { itemId });
             } catch (error: any) {
                 if (error.message === 'invalid field') return buildResponse(400, { error: 'invalid field' });
                 return buildResponse(500, { error: 'Internal server error' });
@@ -86,10 +86,10 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             return buildResponse(204, '');
         }
 
-        // --- DELETE /groceries/{itemID} ---
-        if (httpMethod === 'DELETE' && resource === '/groceries/{itemID}' && itemID) {
+        // --- DELETE /groceries/{itemId} ---
+        if (httpMethod === 'DELETE' && resource === '/groceries/{itemId}' && itemId) {
             try {
-                await groceryService.deleteGrocery(userId, itemID);
+                await groceryService.deleteGrocery(userId, itemId);
                 return buildResponse(204, '');
             } catch (error: any) {
                 if (error.message === 'item not found') return buildResponse(404, { error: 'item not found' });
@@ -97,11 +97,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             }
         }
 
-        // --- PATCH /groceries/{itemID} ---
-        if (httpMethod === 'PATCH' && resource === '/groceries/{itemID}' && itemID) {
+        // --- PATCH /groceries/{itemId} ---
+        if (httpMethod === 'PATCH' && resource === '/groceries/{itemId}' && itemId) {
             try {
                 const body = JSON.parse(event.body || '{}') as UpdateGroceryRequest;
-                await groceryService.updateGrocery(userId, itemID, body);
+                await groceryService.updateGrocery(userId, itemId, body);
                 return buildResponse(204, '');
             } catch (error: any) {
                 if (error.message === 'invalid field') return buildResponse(400, { error: 'invalid field' });

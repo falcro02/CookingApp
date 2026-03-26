@@ -41,8 +41,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                     return buildResponse(404, { error: 'Ingredients not found (empty list)' });
                 }
                 const ingredients: string[] = body.ingredients.map((item: any) => String(item));
-                const taskID = await ideaService.generateIdea(userId, ingredients);
-                return buildResponse(202, { taskID });
+                const taskId = await ideaService.generateIdea(userId, ingredients);
+                return buildResponse(202, { taskId });
             } catch (error: any) {
                 const statusCode = (error as any).statusCode;
                 if (statusCode === 409) return buildResponse(409, { error: error.message });

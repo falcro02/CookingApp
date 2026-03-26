@@ -5,5 +5,5 @@ export interface IdeaItem {
 }
 
 export interface IdeasState {
-  ideas: [IdeaItem];
+  ideas: IdeaItem[];
 }

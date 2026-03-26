@@ -1,7 +1,7 @@
 export interface MealEntity {
     PK: string;
     SK: string;
-    itemID: string;
+    itemId: string;
     description: string;
     icon: string;
     weekDay: number;

@@ -18,7 +18,7 @@ export const planService = {
             if (!plans[planKey]) {
                 plans[planKey] = {};
             }
-            plans[planKey][meal.itemID] = {
+            plans[planKey][meal.itemId] = {
                 description: meal.description,
                 icon: meal.icon,
                 weekDay: meal.weekDay,

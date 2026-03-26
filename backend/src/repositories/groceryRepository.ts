@@ -11,7 +11,7 @@ import {
 import { GroceryItemEntity } from '../entities/groceryEntity';
 import { UpdateGroceryRequest } from '@shared/types/groceries';
 
-import { getDynamoClient } from "../utils/db";
+import { getDynamoClient } from '../utils/db';
 const client = getDynamoClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
@@ -27,21 +27,21 @@ export const groceryRepository = {
         );
     },
 
-    async findById(userId: string, itemID: string): Promise<GroceryItemEntity | null> {
+    async findById(userId: string, itemId: string): Promise<GroceryItemEntity | null> {
         const result = await docClient.send(
             new GetCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+                Key: { PK: userId, SK: `GROCERY#${itemId}` },
             }),
         );
         return (result.Item as GroceryItemEntity) || null;
     },
 
-    async delete(userId: string, itemID: string): Promise<void> {
+    async delete(userId: string, itemId: string): Promise<void> {
         await docClient.send(
             new DeleteCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+                Key: { PK: userId, SK: `GROCERY#${itemId}` },
             }),
         );
     },
@@ -84,7 +84,7 @@ export const groceryRepository = {
         }
     },
 
-    async update(userId: string, itemID: string, updates: UpdateGroceryRequest): Promise<void> {
+    async update(userId: string, itemId: string, updates: UpdateGroceryRequest): Promise<void> {
         const expressionParts: string[] = [];
         const attributeNames: Record<string, string> = {};
         const attributeValues: Record<string, any> = {};
@@ -105,7 +105,7 @@ export const groceryRepository = {
         await docClient.send(
             new UpdateCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+                Key: { PK: userId, SK: `GROCERY#${itemId}` },
                 UpdateExpression: `SET ${expressionParts.join(', ')}`,
                 ExpressionAttributeNames: attributeNames,
                 ExpressionAttributeValues: attributeValues,

@@ -15,12 +15,12 @@ export const mealService = {
         if (input.weekDay < 0 || input.weekDay > 6) throw new Error('weekDay must be between 0 and 6');
         if (input.plan < 1 || input.plan > 4) throw new Error('plan must be between 1 and 4');
 
-        const itemID = Date.now().toString();
+        const itemId = Date.now().toString();
 
         const newMealEntity: MealEntity = {
             PK: userId,
-            SK: `MEAL#${itemID}`,
-            itemID,
+            SK: `MEAL#${itemId}`,
+            itemId,
             description: input.description,
             icon: input.icon,
             weekDay: input.weekDay,
@@ -28,14 +28,14 @@ export const mealService = {
         };
 
         await mealRepository.create(newMealEntity);
-        return itemID;
+        return itemId;
     },
 
-    async deleteMeal(userId: string, itemID: string): Promise<void> {
-        const meal = await mealRepository.findById(userId, itemID);
+    async deleteMeal(userId: string, itemId: string): Promise<void> {
+        const meal = await mealRepository.findById(userId, itemId);
         if (!meal) throw new Error('meal not found');
 
-        await mealRepository.delete(userId, itemID);
+        await mealRepository.delete(userId, itemId);
 
         // Check if this was the last meal in the plan
         const remainingMeals = await mealRepository.findByPlan(userId, meal.plan);
@@ -56,12 +56,12 @@ export const mealService = {
         }
     },
 
-    async updateMeal(userId: string, itemID: string, updates: UpdateMealInput): Promise<void> {
+    async updateMeal(userId: string, itemId: string, updates: UpdateMealInput): Promise<void> {
         if (!updates.description && !updates.icon) return;
 
-        const meal = await mealRepository.findById(userId, itemID);
+        const meal = await mealRepository.findById(userId, itemId);
         if (!meal) throw new Error('meal not found');
 
-        await mealRepository.update(userId, itemID, updates);
+        await mealRepository.update(userId, itemId, updates);
     },
 };

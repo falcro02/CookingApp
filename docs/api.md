@@ -5,28 +5,28 @@
 > <br>[`GET /groceries`](#get-groceries-list)
 > <br>[`DELETE /groceries`](#clear-groceries)
 > <br>[`POST /groceries`](#add-new-item)
-> <br>[`DELETE /groceries/{itemID}`](#delete-item)
-> <br>[`PATCH /groceries/{itemID}`](#edit-item-state)
+> <br>[`DELETE /groceries/{itemId}`](#delete-item)
+> <br>[`PATCH /groceries/{itemId}`](#edit-item-state)
 > <br>[`POST /groceries/check`](#check-or-uncheck-all-items)
 > <br>[`POST /groceries/generate`](#generate-items-with-ai)
 > <br>[`GET /plans`](#get-plans)
 > <br>[`PATCH /plans/current`](#set-current-plan)
 > <br>[`DELETE /plans/{planNR}`](#delete-plan)
 > <br>[`POST /meals`](#add-meal-to-plan)
-> <br>[`DELETE /meals/{itemID}`](#delete-meal-from-plan)
-> <br>[`PATCH /meals/{itemID}`](#edit-meal-state)
+> <br>[`DELETE /meals/{itemId}`](#delete-meal-from-plan)
+> <br>[`PATCH /meals/{itemId}`](#edit-meal-state)
 > <br>[`GET /ingredients`](#get-pantry-ingredients)
 > <br>[`DELETE /ingredients`](#clear-pantry-ingredients)
 > <br>[`POST /ingredients`](#add-new-ingredient)
-> <br>[`DELETE /ingredients/{itemID}`](#delete-ingredient)
-> <br>[`PATCH /ingredients/{itemID}`](#edit-ingredient-state)
+> <br>[`DELETE /ingredients/{itemId}`](#delete-ingredient)
+> <br>[`PATCH /ingredients/{itemId}`](#edit-ingredient-state)
 > <br>[`POST /ingredients/import`](#import-from-groceries)
 > <br>[`POST /ideas/generate`](#generate-ideas-with-ai)
 > <br>[`GET /ideas`](#get-ideas)
 > <br>[`DELETE /ideas`](#clear-ideas)
 > <br>[`GET /preferences`](#get-user-preferences)
 > <br>[`PATCH /preferences`](#update-user-preferences)
-> <br>[`GET /tasks/{taskID}`](#get-task-status)
+> <br>[`GET /tasks/{taskId}`](#get-task-status)
 > <br>[`DELETE /data`](#clear-all-user-data)
 > <br>[`DELETE /sessions`](#delete-all-active-sessions)
 > <br>[`DELETE /user`](#delete-user-account)
@@ -167,7 +167,7 @@ POST /groceries
 
 ```json
 {
-    "itemID": string
+    "itemId": string
 }
 ```
 
@@ -178,7 +178,7 @@ Delete an item from the groceries list.
 **Request**
 
 ```text
-DELETE /groceries/{itemID}
+DELETE /groceries/{itemId}
 ```
 
 **Response**
@@ -195,7 +195,7 @@ Omitted fields are ignored (not updated).
 **Request**
 
 ```text
-PATCH /groceries/{itemID}
+PATCH /groceries/{itemId}
 ```
 
 ```json
@@ -280,7 +280,7 @@ POST /groceries/generate
 
 ```json
 {
-    "taskID": string
+    "taskId": string
 }
 ```
 
@@ -415,7 +415,7 @@ POST /meals
 
 ```json
 {
-    "itemID": string
+    "itemId": string
 }
 ```
 
@@ -431,7 +431,7 @@ empty.
 **Request**
 
 ```text
-DELETE /meals/{itemID}
+DELETE /meals/{itemId}
 ```
 
 **Response**
@@ -447,7 +447,7 @@ Omitted fields are ignored (not updated).
 **Request**
 
 ```text
-PATCH /meals/{itemID}
+PATCH /meals/{itemId}
 ```
 
 ```json
@@ -533,7 +533,7 @@ POST /ingredients
 
 ```json
 {
-    "itemID": string
+    "itemId": string
 }
 ```
 
@@ -544,7 +544,7 @@ Delete an item from the pantry ingredients list.
 **Request**
 
 ```text
-DELETE /ingredients/{itemID}
+DELETE /ingredients/{itemId}
 ```
 
 **Response**
@@ -559,7 +559,7 @@ Edit the description of an item in the pantry ingredients list.
 **Request**
 
 ```text
-PATCH /ingredients/{itemID}
+PATCH /ingredients/{itemId}
 ```
 
 ```json
@@ -678,7 +678,7 @@ POST /ideas/generate
 
 ```json
 {
-    "taskID": string
+    "taskId": string
 }
 ```
 
@@ -756,7 +756,7 @@ The status of a task is represented by an integer.
 **Request**
 
 ```text
-GET /tasks/{taskID}
+GET /tasks/{taskId}
 ```
 
 **Response**
@@ -820,4 +820,3 @@ DELETE /user
 **Response**
 
 - 204: operation successful
-

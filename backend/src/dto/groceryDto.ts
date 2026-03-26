@@ -1,12 +1,12 @@
 import { GroceryItem } from '@shared/types/groceries';
 
 export interface GroceryMap {
-    [itemID: string]: GroceryItem;
+    [itemId: string]: GroceryItem;
 }
 
 export interface GroceryWorkerPayload {
     userId: string;
-    taskID: string;
+    taskId: string;
     days: number[];
     plan: number;
     unplanned: string[];

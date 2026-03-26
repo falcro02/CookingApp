@@ -45,11 +45,11 @@ export const ideaService = {
         const userPrefs = await preferencesService.getPreferences(userId);
 
         // Create task record
-        const taskID = Date.now().toString();
+        const taskId = Date.now().toString();
         const task: TaskEntity = {
             PK: userId,
-            SK: `TASK#${taskID}`,
-            taskID,
+            SK: `TASK#${taskId}`,
+            taskId,
             status: 0,
             type: 'IDEA_GENERATION',
             createdAt: new Date().toISOString(),
@@ -60,12 +60,12 @@ export const ideaService = {
         // Invoke worker Lambda asynchronously
         const workerPayload: IdeasWorkerPayload = {
             userId,
-            taskID,
+            taskId,
             ingredients,
             preferences: {
-                dietary: userPrefs.dietary,
-                allergies: userPrefs.allergies,
-                disliked: userPrefs.disliked,
+                dietary: userPrefs.preferences.dietary,
+                allergies: userPrefs.preferences.allergies,
+                disliked: userPrefs.preferences.disliked,
             },
         };
 
@@ -77,6 +77,6 @@ export const ideaService = {
             }),
         );
 
-        return taskID;
+        return taskId;
     },
 };

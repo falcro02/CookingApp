@@ -12,7 +12,7 @@ const MODEL_ID = 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 export const ideaWorkerService = {
     async execute(payload: IdeasWorkerPayload): Promise<void> {
-        const { userId, taskID, ingredients, preferences } = payload;
+        const { userId, taskId, ingredients, preferences } = payload;
 
         try {
             // 1. Build the prompt
@@ -35,10 +35,10 @@ export const ideaWorkerService = {
             await counterRepository.incrementCount(userId, today);
 
             // 7. Mark task as completed
-            await taskRepository.updateStatus(userId, taskID, 1);
+            await taskRepository.updateStatus(userId, taskId, 1);
         } catch (error: any) {
             console.error('IdeaItemWorker FAILED:', error);
-            await taskRepository.updateStatus(userId, taskID, -1, error.message || 'Unknown error');
+            await taskRepository.updateStatus(userId, taskId, -1, error.message || 'Unknown error');
         }
     },
 

@@ -22,7 +22,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
         // --- 2. ROUTING PREPARATION ---
         const httpMethod = event.httpMethod;
-        const itemID = event.pathParameters?.itemID;
+        const itemId = event.pathParameters?.itemId;
 
         // Automatically handle browser preflight requests for React
         if (httpMethod === 'OPTIONS') {
@@ -39,8 +39,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         if (httpMethod === 'POST') {
             try {
                 const body = JSON.parse(event.body || '{}') as CreateMealInput;
-                const newItemID = await mealService.createMeal(userId, body);
-                return buildResponse(201, { itemID: newItemID });
+                const itemId = await mealService.createMeal(userId, body);
+                return buildResponse(201, { itemId });
             } catch (error: any) {
                 console.error('POST /meals Error:', error);
 
@@ -52,26 +52,26 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             }
         }
 
-        // --- DELETE /meals/{itemID} ---
-        if (httpMethod === 'DELETE' && itemID) {
+        // --- DELETE /meals/{itemId} ---
+        if (httpMethod === 'DELETE' && itemId) {
             try {
-                await mealService.deleteMeal(userId, itemID);
+                await mealService.deleteMeal(userId, itemId);
                 return buildResponse(204, '');
             } catch (error: any) {
-                console.error(`DELETE /meals/${itemID} Error:`, error);
+                console.error(`DELETE /meals/${itemId} Error:`, error);
                 if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
                 return buildResponse(500, { error: 'Internal server error' });
             }
         }
 
-        // --- PATCH /meals/{itemID} ---
-        if (httpMethod === 'PATCH' && itemID) {
+        // --- PATCH /meals/{itemId} ---
+        if (httpMethod === 'PATCH' && itemId) {
             try {
                 const body = JSON.parse(event.body || '{}') as UpdateMealInput;
-                await mealService.updateMeal(userId, itemID, body);
+                await mealService.updateMeal(userId, itemId, body);
                 return buildResponse(204, '');
             } catch (error: any) {
-                console.error(`PATCH /meals/${itemID} Error:`, error);
+                console.error(`PATCH /meals/${itemId} Error:`, error);
                 if (error.message === 'meal not found') return buildResponse(404, { error: 'meal not found' });
                 if (error.message?.includes('invalid field')) return buildResponse(400, { error: 'invalid field' });
                 return buildResponse(500, { error: 'Internal server error' });

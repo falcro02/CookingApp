@@ -2,18 +2,18 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { TaskEntity } from '../entities/taskEntity';
 
-import { getDynamoClient } from "../utils/db";
+import { getDynamoClient } from '../utils/db';
 const client = getDynamoClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = process.env.TABLE_NAME || '';
 
 export const taskRepository = {
-    async findById(userId: string, taskID: string): Promise<TaskEntity | null> {
+    async findById(userId: string, taskId: string): Promise<TaskEntity | null> {
         const result = await docClient.send(
             new GetCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `TASK#${taskID}` },
+                Key: { PK: userId, SK: `TASK#${taskId}` },
             }),
         );
         return (result.Item as TaskEntity) || null;
@@ -28,7 +28,7 @@ export const taskRepository = {
         );
     },
 
-    async updateStatus(userId: string, taskID: string, status: number, errorMessage?: string): Promise<void> {
+    async updateStatus(userId: string, taskId: string, status: number, errorMessage?: string): Promise<void> {
         let updateExpression = 'SET #status = :status';
         const expressionAttributeNames: Record<string, string> = { '#status': 'status' };
         const expressionAttributeValues: Record<string, any> = { ':status': status };
@@ -42,7 +42,7 @@ export const taskRepository = {
         await docClient.send(
             new UpdateCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `TASK#${taskID}` },
+                Key: { PK: userId, SK: `TASK#${taskId}` },
                 UpdateExpression: updateExpression,
                 ExpressionAttributeNames: expressionAttributeNames,
                 ExpressionAttributeValues: expressionAttributeValues,

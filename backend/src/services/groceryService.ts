@@ -5,15 +5,8 @@ import { groceryRepository } from '../repositories/groceryRepository';
 import { counterRepository } from '../repositories/counterRepository';
 import { GroceryItemEntity } from '../entities/groceryEntity';
 import { TaskEntity } from '../entities/taskEntity';
-import {
-    GroceryWorkerPayload,
-    GroceryMap
-} from '../dto/groceryDto';
-import {
-    GenerateGroceriesRequest,
-    CreateGroceryRequest,
-    UpdateGroceryRequest,
-} from '@shared/types/groceries';
+import { GroceryWorkerPayload, GroceryMap } from '../dto/groceryDto';
+import { GenerateGroceriesRequest, CreateGroceryRequest, UpdateGroceryRequest } from '@shared/types/groceries';
 
 const lambdaClient = new LambdaClient({});
 
@@ -26,7 +19,7 @@ export const groceryService = {
         const items = await groceryRepository.findAllByUser(userId);
         const result: GroceryMap = {};
         for (const item of items) {
-            result[item.itemID] = {
+            result[item.itemId] = {
                 description: item.description,
                 weekDay: item.weekDay,
                 checked: item.checked,
@@ -44,18 +37,18 @@ export const groceryService = {
             throw new Error('invalid week day');
         }
 
-        const itemID = Date.now().toString();
+        const itemId = Date.now().toString();
         const item: GroceryItemEntity = {
             PK: userId,
-            SK: `GROCERY#${itemID}`,
-            itemID,
+            SK: `GROCERY#${itemId}`,
+            itemId,
             description: input.description,
             weekDay: input.weekDay,
             checked: false,
         };
 
         await groceryRepository.create(item);
-        return itemID;
+        return itemId;
     },
 
     // --- DELETE /groceries ---
@@ -63,15 +56,15 @@ export const groceryService = {
         await groceryRepository.deleteAllByUser(userId);
     },
 
-    // --- DELETE /groceries/{itemID} ---
-    async deleteGrocery(userId: string, itemID: string): Promise<void> {
-        const item = await groceryRepository.findById(userId, itemID);
+    // --- DELETE /groceries/{itemId} ---
+    async deleteGrocery(userId: string, itemId: string): Promise<void> {
+        const item = await groceryRepository.findById(userId, itemId);
         if (!item) throw new Error('item not found');
-        await groceryRepository.delete(userId, itemID);
+        await groceryRepository.delete(userId, itemId);
     },
 
-    // --- PATCH /groceries/{itemID} ---
-    async updateGrocery(userId: string, itemID: string, updates: UpdateGroceryRequest): Promise<void> {
+    // --- PATCH /groceries/{itemId} ---
+    async updateGrocery(userId: string, itemId: string, updates: UpdateGroceryRequest): Promise<void> {
         if (updates.description !== undefined && typeof updates.description !== 'string') {
             throw new Error('invalid description');
         }
@@ -80,10 +73,10 @@ export const groceryService = {
         }
         if (updates.description === undefined && updates.checked === undefined) return;
 
-        const item = await groceryRepository.findById(userId, itemID);
+        const item = await groceryRepository.findById(userId, itemId);
         if (!item) throw new Error('item not found');
 
-        await groceryRepository.update(userId, itemID, updates);
+        await groceryRepository.update(userId, itemId, updates);
     },
 
     // --- POST /groceries/check ---
@@ -124,11 +117,11 @@ export const groceryService = {
         }
 
         // Create task record
-        const taskID = Date.now().toString();
+        const taskId = Date.now().toString();
         const task: TaskEntity = {
             PK: userId,
-            SK: `TASK#${taskID}`,
-            taskID,
+            SK: `TASK#${taskId}`,
+            taskId,
             status: 0,
             type: 'GROCERY_GENERATION',
             createdAt: new Date().toISOString(),
@@ -139,7 +132,7 @@ export const groceryService = {
         // Invoke worker Lambda asynchronously
         const workerPayload: GroceryWorkerPayload = {
             userId,
-            taskID,
+            taskId,
             days: request.days,
             plan: request.plan,
             unplanned: request.unplanned,
@@ -155,7 +148,7 @@ export const groceryService = {
             }),
         );
 
-        return taskID;
+        return taskId;
     },
 
     validateGenerateRequest(request: GenerateGroceriesRequest): void {

@@ -1,7 +1,7 @@
 export interface TaskEntity {
     PK: string;
-    SK: string; 
-    taskID: string;
+    SK: string;
+    taskId: string;
     status: number;
     type: string;
     createdAt: string;

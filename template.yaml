@@ -153,13 +153,13 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /meals/{itemID}
+            Path: /meals/{itemId}
             Method: delete
         UpdateMeal:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /meals/{itemID}
+            Path: /meals/{itemId}
             Method: patch
     Metadata:
       BuildMethod: esbuild
@@ -249,7 +249,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /tasks/{taskID}
+            Path: /tasks/{taskId}
             Method: get
     Metadata:
       BuildMethod: esbuild
@@ -303,13 +303,13 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /groceries/{itemID}
+            Path: /groceries/{itemId}
             Method: delete
         UpdateGrocery:
           Type: Api
           Properties:
             RestApiId: !Ref CookingApi
-            Path: /groceries/{itemID}
+            Path: /groceries/{itemId}
             Method: patch
         GenerateGroceries:
           Type: Api
