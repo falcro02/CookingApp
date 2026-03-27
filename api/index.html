@@ -420,45 +420,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sign-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sign in
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sign in">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#apple-sign-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Apple sign in
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#google-sign-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Google sign in
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#groceries" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -841,56 +802,6 @@
     <span class="md-ellipsis">
       
         Get task status
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#account" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Account
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Account">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#clear-all-user-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Clear all user data
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delete-all-active-sessions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Delete all active sessions
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delete-user-account" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Delete user account
       
     </span>
   </a>
@@ -937,45 +848,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#sign-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Sign in
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Sign in">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#apple-sign-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Apple sign in
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#google-sign-in" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Google sign in
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#groceries" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1369,56 +1241,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#account" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Account
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Account">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#clear-all-user-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Clear all user data
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delete-all-active-sessions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Delete all active sessions
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delete-user-account" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Delete user account
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1441,76 +1263,32 @@
 
 <h1 id="rest-api-contracts">REST API contracts</h1>
 <blockquote>
-<p><a href="#apple-sign-in"><code>POST /signin/apple</code></a>
-<br><a href="#google-sign-in"><code>POST /signin/google</code></a>
-<br><a href="#get-groceries-list"><code>GET /groceries</code></a>
+<p><a href="#get-groceries-list"><code>GET /groceries</code></a>
 <br><a href="#clear-groceries"><code>DELETE /groceries</code></a>
 <br><a href="#add-new-item"><code>POST /groceries</code></a>
-<br><a href="#delete-item"><code>DELETE /groceries/{itemID}</code></a>
-<br><a href="#edit-item-state"><code>PATCH /groceries/{itemID}</code></a>
+<br><a href="#delete-item"><code>DELETE /groceries/{itemId}</code></a>
+<br><a href="#edit-item-state"><code>PATCH /groceries/{itemId}</code></a>
 <br><a href="#check-or-uncheck-all-items"><code>POST /groceries/check</code></a>
 <br><a href="#generate-items-with-ai"><code>POST /groceries/generate</code></a>
 <br><a href="#get-plans"><code>GET /plans</code></a>
 <br><a href="#set-current-plan"><code>PATCH /plans/current</code></a>
 <br><a href="#delete-plan"><code>DELETE /plans/{planNR}</code></a>
 <br><a href="#add-meal-to-plan"><code>POST /meals</code></a>
-<br><a href="#delete-meal-from-plan"><code>DELETE /meals/{itemID}</code></a>
-<br><a href="#edit-meal-state"><code>PATCH /meals/{itemID}</code></a>
+<br><a href="#delete-meal-from-plan"><code>DELETE /meals/{itemId}</code></a>
+<br><a href="#edit-meal-state"><code>PATCH /meals/{itemId}</code></a>
 <br><a href="#get-pantry-ingredients"><code>GET /ingredients</code></a>
 <br><a href="#clear-pantry-ingredients"><code>DELETE /ingredients</code></a>
 <br><a href="#add-new-ingredient"><code>POST /ingredients</code></a>
-<br><a href="#delete-ingredient"><code>DELETE /ingredients/{itemID}</code></a>
-<br><a href="#edit-ingredient-state"><code>PATCH /ingredients/{itemID}</code></a>
+<br><a href="#delete-ingredient"><code>DELETE /ingredients/{itemId}</code></a>
+<br><a href="#edit-ingredient-state"><code>PATCH /ingredients/{itemId}</code></a>
 <br><a href="#import-from-groceries"><code>POST /ingredients/import</code></a>
 <br><a href="#generate-ideas-with-ai"><code>POST /ideas/generate</code></a>
 <br><a href="#get-ideas"><code>GET /ideas</code></a>
 <br><a href="#clear-ideas"><code>DELETE /ideas</code></a>
 <br><a href="#get-user-preferences"><code>GET /preferences</code></a>
 <br><a href="#update-user-preferences"><code>PATCH /preferences</code></a>
-<br><a href="#get-task-status"><code>GET /tasks/{taskID}</code></a>
-<br><a href="#clear-all-user-data"><code>DELETE /data</code></a>
-<br><a href="#delete-all-active-sessions"><code>DELETE /sessions</code></a>
-<br><a href="#delete-user-account"><code>DELETE /user</code></a></p>
+<br><a href="#get-task-status"><code>GET /tasks/{taskId}</code></a></p>
 </blockquote>
-<h2 id="sign-in">Sign in</h2>
-<h3 id="apple-sign-in">Apple sign in</h3>
-<p>Send ID token received from Apple ID provider and, if valid, get back a JWT
-token relative to the newly created session for the user.</p>
-<p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>POST /signin/apple
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;idToken&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
-<span class="p">}</span>
-</code></pre></div>
-<p><strong>Response</strong></p>
-<ul>
-<li>200: user authenticated successfully</li>
-<li>400: invalid ID token</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;jwtToken&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
-<span class="p">}</span>
-</code></pre></div>
-<h3 id="google-sign-in">Google sign in</h3>
-<p>Send ID token received from Google ID provider and, if valid, get back a JWT
-token relative to the newly created session for the user.</p>
-<p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>POST /signin/google
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;idToken&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
-<span class="p">}</span>
-</code></pre></div>
-<p><strong>Response</strong></p>
-<ul>
-<li>200: user authenticated successfully</li>
-<li>400: invalid ID token</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;jwtToken&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
-<span class="p">}</span>
-</code></pre></div>
 <h2 id="groceries">Groceries</h2>
 <h3 id="get-groceries-list">Get groceries list</h3>
 <p>Get the list of all items in the groceries list of each week day.</p>
@@ -1566,13 +1344,13 @@ This request is idempotent: it doesn't fail if list is already empty.</p>
 <li>400: invalid field</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;itemID&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="nt">&quot;itemId&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="delete-item">Delete item</h3>
 <p>Delete an item from the groceries list.</p>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>DELETE /groceries/{itemID}
+<div class="highlight"><pre><span></span><code>DELETE /groceries/{itemId}
 </code></pre></div>
 <p><strong>Response</strong></p>
 <ul>
@@ -1584,7 +1362,7 @@ This request is idempotent: it doesn't fail if list is already empty.</p>
 Fields may be the description, or the check-box state.
 Omitted fields are ignored (not updated).</p>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>PATCH /groceries/{itemID}
+<div class="highlight"><pre><span></span><code>PATCH /groceries/{itemId}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span>
@@ -1649,7 +1427,7 @@ new ones are simply appended.</p>
 <li>429: computation limit reached</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;taskID&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="plans">Plans</h2>
@@ -1749,7 +1527,7 @@ The plan in which to add the meal is identified by a number from 1 to 4.</p>
 <li>400: invalid field</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;itemID&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="nt">&quot;itemId&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="delete-meal-from-plan">Delete meal from plan</h3>
@@ -1759,7 +1537,7 @@ and will be the first non-empty before the emptied/deleted one.
 If all plans get deleted, the currently selected one is the first, even if
 empty.</p>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>DELETE /meals/{itemID}
+<div class="highlight"><pre><span></span><code>DELETE /meals/{itemId}
 </code></pre></div>
 <p><strong>Response</strong></p>
 <ul>
@@ -1770,7 +1548,7 @@ empty.</p>
 <p>Edit the description or the emoji of a meal.
 Omitted fields are ignored (not updated).</p>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>PATCH /meals/{itemID}
+<div class="highlight"><pre><span></span><code>PATCH /meals/{itemId}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span><span class="p">,</span>
@@ -1831,13 +1609,13 @@ This request is idempotent: if the list is already empty, no error arises.</p>
 <li>400: invalid field</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;itemID&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="nt">&quot;itemId&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="delete-ingredient">Delete ingredient</h3>
 <p>Delete an item from the pantry ingredients list.</p>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>DELETE /ingredients/{itemID}
+<div class="highlight"><pre><span></span><code>DELETE /ingredients/{itemId}
 </code></pre></div>
 <p><strong>Response</strong></p>
 <ul>
@@ -1847,7 +1625,7 @@ This request is idempotent: if the list is already empty, no error arises.</p>
 <h3 id="edit-ingredient-state">Edit ingredient state</h3>
 <p>Edit the description of an item in the pantry ingredients list.</p>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>PATCH /ingredients/{itemID}
+<div class="highlight"><pre><span></span><code>PATCH /ingredients/{itemId}
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
@@ -1935,7 +1713,7 @@ To check the status of the task it is possible to poll the
 <li>429: computation limit reached</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;taskID&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
+<span class="w">    </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">s</span><span class="kc">tr</span><span class="err">i</span><span class="kc">n</span><span class="err">g</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="preferences">Preferences</h2>
@@ -1991,7 +1769,7 @@ Please poll after at least 2 seconds of delay.</p>
 <li>1: task completed successfully</li>
 </ul>
 <p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>GET /tasks/{taskID}
+<div class="highlight"><pre><span></span><code>GET /tasks/{taskId}
 </code></pre></div>
 <p><strong>Response</strong></p>
 <ul>
@@ -2002,41 +1780,6 @@ Please poll after at least 2 seconds of delay.</p>
 <span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">i</span><span class="kc">nt</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="account">Account</h2>
-<h3 id="clear-all-user-data">Clear all user data</h3>
-<p>Delete all content registered with the user profile (without deleting the
-account itself).
-This is a way to "reset" a user profile.
-This request is idempotent: it doesn't fail if user profile is already clear of
-all its data.</p>
-<p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>DELETE /data
-</code></pre></div>
-<p><strong>Response</strong></p>
-<ul>
-<li>204: operation successful</li>
-</ul>
-<h3 id="delete-all-active-sessions">Delete all active sessions</h3>
-<p>All active sessions of the user are deleted for all devices in which it had
-signed in, essentially making all previously issued JWT tokens of the user
-invalid.
-This means that the user is required to authenticate again on all devices.</p>
-<p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>DELETE /sessions
-</code></pre></div>
-<p><strong>Response</strong></p>
-<ul>
-<li>204: operation successful</li>
-</ul>
-<h3 id="delete-user-account">Delete user account</h3>
-<p>The user profile is deleted alongside all its data.</p>
-<p><strong>Request</strong></p>
-<div class="highlight"><pre><span></span><code>DELETE /user
-</code></pre></div>
-<p><strong>Response</strong></p>
-<ul>
-<li>204: operation successful</li>
-</ul>
 
 
 
