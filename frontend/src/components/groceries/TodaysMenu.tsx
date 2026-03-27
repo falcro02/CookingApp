@@ -1,5 +1,6 @@
 import usePage from "@hooks/page";
 import useUser from "@hooks/user";
+import {TODAY} from "@hooks/week";
 import {Button, Card, Box, Flex, Spinner, Heading} from "@radix-ui/themes";
 
 const TodaysMenu = () => {
@@ -31,12 +32,16 @@ const TodaysMenuContent = () => {
   if (!currPlan || Object.keys(currPlan).length === 0)
     return "Tap to create a plan";
 
+  // Find just the meals on today's day
+  const todaysMeals = Object.entries(currPlan).filter(
+    ([_, item]) => item.weekDay === TODAY,
+  );
+
+  if (todaysMeals.length === 0) return "Nothing set for today";
+
   return (
-    <Flex
-      justify={Object.keys(currPlan).length == 1 ? "center" : "between"}
-      width="80%"
-    >
-      {Object.entries(currPlan).map(([id, item]) => (
+    <Flex justify={todaysMeals.length === 1 ? "center" : "between"} width="80%">
+      {todaysMeals.map(([id, item]) => (
         <Heading size="7" key={id}>
           {item.icon}
         </Heading>

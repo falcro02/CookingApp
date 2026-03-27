@@ -203,15 +203,13 @@ const PanelBeforeGenerating = ({generate}: GenerateFuncProp) => {
                 Cancel
               </Button>
             </Dialog.Close>
-            <Dialog.Close>
-              <Button
-                onClick={() => {
-                  generate(false);
-                }}
-              >
-                Generate
-              </Button>
-            </Dialog.Close>
+            <Button
+              onClick={() => {
+                generate(false);
+              }}
+            >
+              Generate
+            </Button>
           </>
         )}
       </Flex>
