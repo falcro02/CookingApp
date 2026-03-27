@@ -8,15 +8,17 @@ import {
     UpdateCommand,
     BatchWriteCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { GroceryItem, UpdateGroceryRequest } from '../models/grocery';
+import { GroceryItemEntity } from '../entities/groceryEntity';
+import { UpdateGroceryRequest } from '@shared/types/groceries';
 
-const client = new DynamoDBClient({});
+import { getDynamoClient } from '../utils/db';
+const client = getDynamoClient();
 const docClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = process.env.TABLE_NAME || '';
 
 export const groceryRepository = {
-    async create(item: GroceryItem): Promise<void> {
+    async create(item: GroceryItemEntity): Promise<void> {
         await docClient.send(
             new PutCommand({
                 TableName: TABLE_NAME,
@@ -25,26 +27,26 @@ export const groceryRepository = {
         );
     },
 
-    async findById(userId: string, itemID: string): Promise<GroceryItem | null> {
+    async findById(userId: string, itemId: string): Promise<GroceryItemEntity | null> {
         const result = await docClient.send(
             new GetCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+                Key: { PK: userId, SK: `GROCERY#${itemId}` },
             }),
         );
-        return (result.Item as GroceryItem) || null;
+        return (result.Item as GroceryItemEntity) || null;
     },
 
-    async delete(userId: string, itemID: string): Promise<void> {
+    async delete(userId: string, itemId: string): Promise<void> {
         await docClient.send(
             new DeleteCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+                Key: { PK: userId, SK: `GROCERY#${itemId}` },
             }),
         );
     },
 
-    async findAllByUser(userId: string): Promise<GroceryItem[]> {
+    async findAllByUser(userId: string): Promise<GroceryItemEntity[]> {
         const result = await docClient.send(
             new QueryCommand({
                 TableName: TABLE_NAME,
@@ -55,14 +57,14 @@ export const groceryRepository = {
                 },
             }),
         );
-        return (result.Items as GroceryItem[]) || [];
+        return (result.Items as GroceryItemEntity[]) || [];
     },
 
     async deleteAllByUser(userId: string): Promise<void> {
         const items = await this.findAllByUser(userId);
         if (items.length === 0) return;
 
-        const batches: GroceryItem[][] = [];
+        const batches: GroceryItemEntity[][] = [];
         for (let i = 0; i < items.length; i += 25) {
             batches.push(items.slice(i, i + 25));
         }
@@ -82,7 +84,7 @@ export const groceryRepository = {
         }
     },
 
-    async update(userId: string, itemID: string, updates: UpdateGroceryRequest): Promise<void> {
+    async update(userId: string, itemId: string, updates: UpdateGroceryRequest): Promise<void> {
         const expressionParts: string[] = [];
         const attributeNames: Record<string, string> = {};
         const attributeValues: Record<string, any> = {};
@@ -103,7 +105,7 @@ export const groceryRepository = {
         await docClient.send(
             new UpdateCommand({
                 TableName: TABLE_NAME,
-                Key: { PK: userId, SK: `GROCERY#${itemID}` },
+                Key: { PK: userId, SK: `GROCERY#${itemId}` },
                 UpdateExpression: `SET ${expressionParts.join(', ')}`,
                 ExpressionAttributeNames: attributeNames,
                 ExpressionAttributeValues: attributeValues,
@@ -126,10 +128,10 @@ export const groceryRepository = {
         }
     },
 
-    async batchCreate(items: GroceryItem[]): Promise<void> {
+    async batchCreate(items: GroceryItemEntity[]): Promise<void> {
         if (items.length === 0) return;
 
-        const batches: GroceryItem[][] = [];
+        const batches: GroceryItemEntity[][] = [];
         for (let i = 0; i < items.length; i += 25) {
             batches.push(items.slice(i, i + 25));
         }

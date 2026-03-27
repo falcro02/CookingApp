@@ -12,6 +12,15 @@ const mockUpdateAllChecked = jest.fn<(...args: any[]) => any>();
 const mockGetGenerationCount = jest.fn<(...args: any[]) => any>();
 const mockBatchCreate = jest.fn<(...args: any[]) => any>();
 const mockIncrementGenerationCount = jest.fn<(...args: any[]) => any>();
+const mockGetCount = jest.fn<(...args: any[]) => any>();
+const mockIncrementCount = jest.fn<(...args: any[]) => any>();
+
+jest.mock('../../src/repositories/counterRepository', () => ({
+    counterRepository: {
+        getCount: (...args: any[]) => mockGetCount(...args),
+        incrementCount: (...args: any[]) => mockIncrementCount(...args),
+    },
+}));
 
 jest.mock('../../src/repositories/groceryRepository', () => ({
     groceryRepository: {
@@ -222,7 +231,7 @@ describe('groceryService', () => {
         };
 
         it('creates task and invokes worker on success', async () => {
-            mockGetGenerationCount.mockResolvedValue(0);
+            mockGetCount.mockResolvedValue(0);
             mockFindRunningByUser.mockResolvedValue(null);
             mockFindByPlan.mockResolvedValue([{ description: 'Chicken' }]);
             mockTaskCreate.mockResolvedValue(undefined);
@@ -232,10 +241,11 @@ describe('groceryService', () => {
             expect(typeof taskID).toBe('string');
             expect(mockTaskCreate).toHaveBeenCalled();
             expect(mockLambdaSend).toHaveBeenCalled();
+            expect(mockGetCount).toHaveBeenCalledWith(USER_ID, expect.any(String));
         });
 
         it('throws 429 when daily limit reached', async () => {
-            mockGetGenerationCount.mockResolvedValue(3);
+            mockGetCount.mockResolvedValue(3);
             await expect(groceryService.generateGroceries(USER_ID, validRequest)).rejects.toMatchObject({
                 statusCode: 429,
                 message: expect.stringContaining('Daily generation limit'),
@@ -243,7 +253,7 @@ describe('groceryService', () => {
         });
 
         it('throws 409 when task already running', async () => {
-            mockGetGenerationCount.mockResolvedValue(0);
+            mockGetCount.mockResolvedValue(0);
             mockFindRunningByUser.mockResolvedValue({ taskID: 'running-task', status: 0 });
             await expect(groceryService.generateGroceries(USER_ID, validRequest)).rejects.toMatchObject({
                 statusCode: 409,
@@ -251,7 +261,7 @@ describe('groceryService', () => {
         });
 
         it('throws 404 when no meals in plan', async () => {
-            mockGetGenerationCount.mockResolvedValue(0);
+            mockGetCount.mockResolvedValue(0);
             mockFindRunningByUser.mockResolvedValue(null);
             mockFindByPlan.mockResolvedValue([]);
             await expect(groceryService.generateGroceries(USER_ID, validRequest)).rejects.toMatchObject({
