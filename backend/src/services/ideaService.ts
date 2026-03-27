@@ -5,6 +5,7 @@ import { ideaRepository } from '../repositories/ideaRepository';
 import { counterRepository } from '../repositories/counterRepository';
 import { taskRepository } from '../repositories/taskRepository';
 import { TaskEntity } from '../entities/taskEntity';
+import { ingredientsService } from './ingredientsService';
 import { preferencesService } from './preferencesService';
 
 const lambdaClient = new LambdaClient({});
@@ -23,7 +24,17 @@ export const ideaService = {
         await ideaRepository.delete(userId);
     },
 
-    async generateIdea(userId: string, ingredients: string[]): Promise<string> {
+    async generateIdea(userId: string): Promise<string> {
+        // Fetch ingredients from DB
+        const ingredientsData = await ingredientsService.getIngredients(userId);
+        const ingredients = Object.values(ingredientsData.ingredients).map(i => i.description);
+
+        if (ingredients.length === 0) {
+            const error = new Error('Ingredients not found (empty list)');
+            (error as any).statusCode = 404;
+            throw error;
+        }
+
         // Check daily generation limit (429)
         const today = new Date().toISOString().split('T')[0];
         const currentCount = await counterRepository.getCount(userId, today);

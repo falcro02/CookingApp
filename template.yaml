@@ -172,36 +172,6 @@ Resources:
         EntryPoints:
           - src/handlers/mealHandler.ts
 
-  PantryFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: backend/
-      Handler: src/handlers/pantryHandler.lambdaHandler
-      Runtime: nodejs24.x
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          TABLE_NAME: !Ref TableName
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref TableName
-      Events:
-        PantryApi:
-          Type: Api
-          Properties:
-            RestApiId: !Ref CookingApi
-            Path: /pantry
-            Method: any
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: "es2020"
-        Sourcemap: false
-        EntryPoints:
-          - src/handlers/pantryHandler.ts
-
   PreferencesFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -446,6 +416,65 @@ Resources:
         EntryPoints:
           - src/handlers/ideaWorkerHandler.ts
 
+  IngredientsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: src/handlers/ingredientsHandler.lambdaHandler
+      Runtime: nodejs24.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableName
+      Events:
+        GetIngredients:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients
+            Method: get
+        AddIngredient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients
+            Method: post
+        ClearIngredients:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients
+            Method: delete
+        DeleteIngredient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients/{itemId}
+            Method: delete
+        UpdateIngredient:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients/{itemId}
+            Method: patch
+        ImportIngredients:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CookingApi
+            Path: /ingredients/import
+            Method: post
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        EntryPoints:
+          - src/handlers/ingredientsHandler.ts
+
   PlanFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -577,3 +606,7 @@ Outputs:
   FrontendBucketName:
     Description: "S3 Bucket name for frontend"
     Value: !Ref FrontendBucket
+
+  FrontendCloudFrontId:
+    Description: "CloudFront Distribution ID"
+    Value: !Ref FrontendCloudFront

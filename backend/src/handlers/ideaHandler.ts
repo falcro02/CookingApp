@@ -36,12 +36,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         // --- POST /ideas/generate ---
         if (httpMethod === 'POST' && resource === '/ideas/generate') {
             try {
-                const body = JSON.parse(event.body || '{}');
-                if (!Array.isArray(body.ingredients) || body.ingredients.length === 0) {
-                    return buildResponse(404, { error: 'Ingredients not found (empty list)' });
-                }
-                const ingredients: string[] = body.ingredients.map((item: any) => String(item));
-                const taskId = await ideaService.generateIdea(userId, ingredients);
+                const taskId = await ideaService.generateIdea(userId);
                 return buildResponse(202, { taskId });
             } catch (error: any) {
                 const statusCode = (error as any).statusCode;

@@ -14,7 +14,7 @@
     "frontend:build": "cd frontend && npm run build",
     "frontend:lint": "cd frontend && npm run lint",
     "frontend:run": "cd frontend && npm run build && npm run preview",
-    "deploy": "sam build && sam deploy --no-confirm-changeset && npm run frontend:build && aws s3 sync frontend/dist/ s3://$(aws cloudformation describe-stacks --stack-name cooking-web-stack --query 'Stacks[0].Outputs[?OutputKey==`FrontendBucketName`].OutputValue' --output text) --delete"
+    "deploy": "sam build && (sam deploy --no-confirm-changeset || echo 'No infrastructure changes detected, continuing...') && npm run frontend:build && aws s3 sync frontend/dist/ s3://$(aws cloudformation describe-stacks --stack-name cooking-web-stack --query 'Stacks[0].Outputs[?OutputKey==`FrontendBucketName`].OutputValue' --output text) --delete && aws cloudfront create-invalidation --distribution-id $(aws cloudformation describe-stacks --stack-name cooking-web-stack --query 'Stacks[0].Outputs[?OutputKey==`FrontendCloudFrontId`].OutputValue' --output text) --paths '/*'"
   },
   "devDependencies": {
     "@eslint/js": "^10",
