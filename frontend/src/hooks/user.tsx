@@ -7,7 +7,7 @@ import {
   IngredientsState,
 } from "@shared/types/ingredients";
 import {PlanItem, Plans, PlansState} from "@shared/types/plans";
-import {PreferencesState} from "@shared/types/preferences";
+import {Preferences, PreferencesState} from "@shared/types/preferences";
 
 // ===== USER REDUCER ===== //
 
@@ -39,7 +39,9 @@ export type UserAction =
   | {action: "CLEAR_INGREDIENTS"}
   | {action: "ADD_INGREDIENT"; id: string; item: IngredientItem}
   | {action: "DELETE_INGREDIENT"; id: string}
-  | {action: "EDIT_INGREDIENT"; id: string; item: Partial<IngredientItem>};
+  | {action: "EDIT_INGREDIENT"; id: string; item: Partial<IngredientItem>}
+  | {action: "SET_PREFERENCES"; preferences: Preferences}
+  | {action: "EDIT_PREFERENCES"; preferences: Partial<Preferences>};
 
 export function userReducer(
   state: User | null,
@@ -267,6 +269,25 @@ export function userReducer(
               ...state?.ingredients?.ingredients[action.id],
               ...action.item,
             },
+          },
+        },
+      };
+    case "SET_PREFERENCES":
+      return {
+        ...state,
+        preferences: {
+          ...state?.preferences,
+          preferences: action.preferences,
+        },
+      };
+    case "EDIT_PREFERENCES":
+      return {
+        ...state,
+        preferences: {
+          ...state?.preferences,
+          preferences: {
+            ...state?.preferences?.preferences,
+            ...action.preferences,
           },
         },
       };

@@ -36,10 +36,8 @@ const GroceriesPage = () => {
 
   return (
     <>
-      <Heading mb="4">Your groceries</Heading>
-      <Heading mt="2" size="3">
-        Today's menu
-      </Heading>
+      <Heading mb="6">Your groceries</Heading>
+      <Heading size="3">Today's menu</Heading>
       <TodaysMenu />
       <Flex mt="4" direction="row" justify="between" align="end" width="100%">
         <Heading size="3">Your shopping list</Heading>
