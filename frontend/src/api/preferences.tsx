@@ -1,5 +1,8 @@
 import {API_URL, getHeaders} from "@hooks/api";
-import {Preferences, PreferencesState} from "@shared/types/preferences";
+import {
+  PreferencesState,
+  UpdatePreferencesInput,
+} from "@shared/types/preferences";
 
 export async function getPreferences(): Promise<PreferencesState> {
   console.log("fetching preferences");
@@ -10,7 +13,7 @@ export async function getPreferences(): Promise<PreferencesState> {
 }
 
 export async function patchPreferences(item: {
-  preferences: Partial<Preferences>;
+  preferences: UpdatePreferencesInput;
 }): Promise<void> {
   console.log("patching preferences");
   const headers = await getHeaders();

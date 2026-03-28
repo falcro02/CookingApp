@@ -1,17 +1,11 @@
 import {API_URL, getHeaders} from "@hooks/api";
-import {GroceriesState, GroceryItem} from "@shared/types/groceries";
-
-export interface CheckAllRequest {
-  check: boolean;
-}
-
-export interface FormFieldsRequest {
-  days: number[];
-  plan: number;
-  unplanned: string[];
-  extra: string;
-  replace: boolean;
-}
+import {
+  CheckAllRequest,
+  CreateGroceryRequest,
+  GenerateGroceriesRequest,
+  GroceriesState,
+  UpdateGroceryRequest,
+} from "@shared/types/groceries";
 
 export async function getGroceries(): Promise<GroceriesState> {
   console.log("fetching groceries");
@@ -25,7 +19,7 @@ export async function getGroceries(): Promise<GroceriesState> {
 }
 
 export async function generateGroceries(
-  req: FormFieldsRequest,
+  req: GenerateGroceriesRequest,
 ): Promise<{taskId: string}> {
   console.log("generating groceries");
   const headers = await getHeaders();
@@ -61,7 +55,7 @@ export async function checkGroceries(req: CheckAllRequest): Promise<void> {
 
 export async function patchGroceryItem(
   id: string,
-  item: Partial<GroceryItem>,
+  item: UpdateGroceryRequest,
 ): Promise<void> {
   console.log("patching grocery item");
   const headers = await getHeaders();
@@ -74,7 +68,7 @@ export async function patchGroceryItem(
 }
 
 export async function addGroceryItem(
-  item: Partial<GroceryItem>,
+  item: CreateGroceryRequest,
 ): Promise<{itemId: string}> {
   console.log("adding grocery item");
   const headers = await getHeaders();

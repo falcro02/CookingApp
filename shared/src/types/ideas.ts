@@ -7,3 +7,7 @@ export interface IdeaItem {
 export interface IdeasState {
   ideas: IdeaItem[];
 }
+
+export interface GenerateIdeasRequest {
+  extra: string;
+}
