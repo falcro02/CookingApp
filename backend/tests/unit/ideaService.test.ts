@@ -64,7 +64,7 @@ describe('ideaService', () => {
             (counterRepository.getCount as jest.Mock).mockResolvedValue(3);
 
             try {
-                await ideaService.generateIdea(mockUserId, mockIngredients);
+                await ideaService.generateIdea(mockUserId, 'some extra info');
                 fail('Expected to throw limit reached error');
             } catch (error: any) {
                 expect(error.message).toBe('Daily generation limit reached');
@@ -77,7 +77,7 @@ describe('ideaService', () => {
             (taskRepository.findRunningByUser as jest.Mock).mockResolvedValue({ taskID: 'running' });
 
             try {
-                await ideaService.generateIdea(mockUserId, mockIngredients);
+                await ideaService.generateIdea(mockUserId, 'some extra info');
                 fail('Expected to throw task running error');
             } catch (error: any) {
                 expect(error.message).toBe('A generation task is already running');
@@ -93,7 +93,7 @@ describe('ideaService', () => {
             jest.useFakeTimers().setSystemTime(new Date('2023-01-01T00:00:00Z'));
             const fixedDate = Date.now();
 
-            const result = await ideaService.generateIdea(mockUserId, mockIngredients);
+            const result = await ideaService.generateIdea(mockUserId, 'some extra info');
 
             expect(result).toBe(fixedDate.toString());
 

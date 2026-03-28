@@ -24,7 +24,7 @@ export const ideaService = {
         await ideaRepository.delete(userId);
     },
 
-    async generateIdea(userId: string): Promise<string> {
+    async generateIdea(userId: string, extra: string): Promise<string> {
         // Fetch ingredients from DB
         const ingredientsData = await ingredientsService.getIngredients(userId);
         const ingredients = Object.values(ingredientsData.ingredients).map((i) => i.description);
@@ -78,6 +78,7 @@ export const ideaService = {
                 allergies: userPrefs.preferences.allergies,
                 disliked: userPrefs.preferences.disliked,
             },
+            extra,
         };
 
         await lambdaClient.send(

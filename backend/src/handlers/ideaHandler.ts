@@ -36,7 +36,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         // --- POST /ideas/generate ---
         if (httpMethod === 'POST' && resource === '/ideas/generate') {
             try {
-                const taskId = await ideaService.generateIdea(userId);
+                const body = JSON.parse(event.body || '{}');
+                const extra = body.extra || '';
+                const taskId = await ideaService.generateIdea(userId, extra);
                 return buildResponse(202, { taskId });
             } catch (error: any) {
                 const statusCode = (error as any).statusCode;

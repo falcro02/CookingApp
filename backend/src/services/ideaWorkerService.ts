@@ -12,11 +12,11 @@ const MODEL_ID = 'eu.anthropic.claude-haiku-4-5-20251001-v1:0';
 
 export const ideaWorkerService = {
     async execute(payload: IdeasWorkerPayload): Promise<void> {
-        const { userId, taskId, ingredients, preferences } = payload;
+        const { userId, taskId, ingredients, preferences, extra } = payload;
 
         try {
             // 1. Build the prompt
-            const prompt = this.buildPrompt(ingredients, preferences);
+            const prompt = this.buildPrompt(ingredients, preferences, extra);
 
             // 2. Call Bedrock
             const aiResponse = await this.callBedrock(prompt);
@@ -42,7 +42,7 @@ export const ideaWorkerService = {
         }
     },
 
-    buildPrompt(ingredients: string[], preferences: UserPreferencesPayload): string {
+    buildPrompt(ingredients: string[], preferences: UserPreferencesPayload, extra: string): string {
         const ingredientList = ingredients.map((i) => `- ${i}`).join('\n');
 
         let preferencesBlock = 'No preferences set.';
@@ -60,6 +60,8 @@ export const ideaWorkerService = {
             preferencesBlock = parts.join('\n');
         }
 
+        const extraBlock = extra.trim() ? `Additional instructions from the user:\n${extra}` : '';
+
         return `You are a creative cooking assistant. Based on the available ingredients and the user's preferences, suggest meal ideas that can be prepared.
 
 AVAILABLE INGREDIENTS:
@@ -67,6 +69,8 @@ ${ingredientList}
 
 USER PREFERENCES:
 ${preferencesBlock}
+
+${extraBlock}
 
 INSTRUCTIONS:
 - Suggest 3 to 5 meal ideas that can be made primarily with the listed ingredients.

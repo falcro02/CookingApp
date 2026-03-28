@@ -37,9 +37,10 @@ describe('ideaWorkerService', () => {
     describe('execute', () => {
         const payload = {
             userId: mockUserId,
-            taskID: mockTaskId,
+            taskId: mockTaskId,
             ingredients: ['Tomato', 'Pasta'],
             preferences: { dietary: 'Vegan', allergies: '', disliked: '' },
+            extra: 'some extra info',
         };
 
         it('should execute successfully and save new ideas', async () => {
@@ -72,12 +73,14 @@ describe('ideaWorkerService', () => {
         it('should build a prompt with preferences and ingredients', () => {
             const ingredients = ['Tomato'];
             const preferences = { dietary: 'Vegan', allergies: 'Peanuts', disliked: 'Mushrooms' };
-            const prompt = ideaWorkerService.buildPrompt(ingredients, preferences);
+            const extra = 'make it spicy';
+            const prompt = ideaWorkerService.buildPrompt(ingredients, preferences, extra);
 
             expect(prompt).toContain('Tomato');
             expect(prompt).toContain('Vegan');
             expect(prompt).toContain('Peanuts');
             expect(prompt).toContain('Mushrooms');
+            expect(prompt).toContain('make it spicy');
         });
     });
 

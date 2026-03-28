@@ -5,4 +5,5 @@ export interface IdeasWorkerPayload {
     taskId: string;
     ingredients: string[];
     preferences: UserPreferencesPayload;
+    extra: string;
 }
