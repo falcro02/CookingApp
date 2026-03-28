@@ -14,6 +14,7 @@ function App() {
   const {appearance} = useAppearance();
   return (
     <Theme
+      scaling="110%"
       accentColor="ruby"
       grayColor="sage"
       radius="large"

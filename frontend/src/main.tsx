@@ -37,7 +37,7 @@ export const AuthDev = ({children}) => {
       <ThemeProvider>
         <AuthProvider
           user={{
-            username: "DEV username",
+            userId: "DEV userId",
           }}
           signOut={() => {
             console.log("DEV: auth is bypassed");

@@ -2,12 +2,12 @@ import {getPreferences} from "@api/preferences";
 import PreferencesFields from "@components/profile/PreferencesFields";
 import useAuth from "@hooks/auth";
 import useUser, {useUserDispatch} from "@hooks/user";
-import {Button, Flex, Text, Heading} from "@radix-ui/themes";
+import {Button, Flex, Separator, Text, Heading} from "@radix-ui/themes";
 import {fetchUserAttributes} from "aws-amplify/auth";
 import {useEffect, useState} from "react";
 
 const ProfilePage = () => {
-  const {signOut} = useAuth();
+  const {user, signOut} = useAuth();
   const dispatch = useUserDispatch();
   const {preferences} = useUser();
   const [email, setEmail] = useState("");
@@ -40,11 +40,17 @@ const ProfilePage = () => {
     <>
       <Heading mb="6">Preferences</Heading>
       <PreferencesFields />
-      <Flex width="100%" justify="between" align="center" p="8">
-        <Text color="gray" align="center">
+      <Separator size="4" mb="4" mt="8" />
+      <Flex width="100%" justify="between" align="center" p="5" px="8">
+        <Text color="gray" size="2" align="left">
           {email}
         </Text>
         <Button onClick={() => signOut()}>Sign out</Button>
+      </Flex>
+      <Flex width="100%" justify="center" align="end" height="10vh">
+        <Text color="gray" size="1">
+          {user.userId}
+        </Text>
       </Flex>
     </>
   );
