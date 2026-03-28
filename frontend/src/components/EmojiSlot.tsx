@@ -1,6 +1,10 @@
 import useAppearance from "@hooks/appearance";
 import {Popover, Button, Text} from "@radix-ui/themes";
-import EmojiPicker, {Theme, Categories} from "emoji-picker-react";
+import EmojiPicker, {
+  Theme,
+  Categories,
+  SuggestionMode,
+} from "emoji-picker-react";
 
 const EmojiSlot = ({disabled, icon, onEmojiClick}) => {
   const {appearance} = useAppearance();
@@ -15,7 +19,7 @@ const EmojiSlot = ({disabled, icon, onEmojiClick}) => {
       <Popover.Content>
         <EmojiPicker
           theme={appearance == "light" ? Theme.LIGHT : Theme.DARK}
-          searchDisabled={true}
+          suggestedEmojisMode={SuggestionMode.RECENT}
           skinTonesDisabled={true}
           categories={[{category: Categories.FOOD_DRINK, name: "Food & Drink"}]}
           previewConfig={{showPreview: false}}

@@ -22,10 +22,8 @@ const IdeasPage = () => {
 
   return (
     <>
-      <Heading mb="4">Your pantry</Heading>
-      <Heading mt="2" size="3">
-        What do you have available?
-      </Heading>
+      <Heading mb="6">Your pantry</Heading>
+      <Heading size="3">What do you have available?</Heading>
       <IngredientsList />
       <Flex width="100%" justify="center" my="6">
         <Button
