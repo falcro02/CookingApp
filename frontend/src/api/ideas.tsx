@@ -1,9 +1,5 @@
 import {API_URL, getHeaders} from "@hooks/api";
-import {IdeasState} from "@shared/types/ideas";
-
-export interface GenerateIdeasRequest {
-  extra: string;
-}
+import {GenerateIdeasRequest, IdeasState} from "@shared/types/ideas";
 
 export async function getIdeas(): Promise<IdeasState> {
   console.log("fetching ideas");

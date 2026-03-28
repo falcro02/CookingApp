@@ -28,3 +28,7 @@ export interface UpdateMealInput {
   description?: string;
   icon?: string;
 }
+
+export interface CurrentPlanRequest {
+  current: number;
+}

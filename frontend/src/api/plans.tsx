@@ -1,9 +1,5 @@
 import {API_URL, getHeaders} from "@hooks/api";
-import {PlansState} from "@shared/types/plans";
-
-export interface CurrentPlanRequest {
-  current: number;
-}
+import {CurrentPlanRequest, PlansState} from "@shared/types/plans";
 
 export async function getPlans(): Promise<PlansState> {
   console.log("fetching plans");
