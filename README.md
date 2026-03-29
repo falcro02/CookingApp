@@ -1,36 +1,118 @@
-# Cooking
+# Cooking App
 
-## Features
+A modern, AI-powered meal planning and grocery management application. This project provides a seamless experience for managing your kitchen, planning meals, and generating creative recipe ideas using state-of-the-art AI.
 
-### Grocery generation
+---
 
-Users can set up a list of all the meals they intend to consume during the week.
-This comprehends breakfast, launch, and dinner, and additional snacks.
-Moreover, the user can also select a set of week days in which it is available
-to go and buy groceries.
+## Key Features
 
-The AI assistant then takes over, generating a groceries list for each of the
-selected days, so that what's bought will fulfill the whole preparation of the
-days-after meals, ingredient-wise.
+- **AI-Powered Meal Ideas**: Generate personalized meal suggestions based on your available ingredients and specific preferences (e.g., "fast recipes", "only pasta").
+- **Smart Grocery Management**: Efficiently track your shopping list with AI-assisted verification to ensure you have everything you need.
+- **Ingredient Tracking**: Maintain a real-time inventory of your kitchen supplies to reduce waste and simplify planning.
+- **Meal Planning**: Organize your weekly meals and sync them across devices.
+- **Secure Authentication**: Integrated with AWS Cognito, supporting both email/password and Google Sign-In.
+- **Serverless Performance**: A high-performance, cost-effective backend built entirely on AWS Serverless infrastructure.
 
-### Suggestions creation
+---
 
-Often times people forget to plan ahead what to eat, and what's home feels
-either insufficient or unenjoyable.
-It is possible for users to prompt the AI assistant telling which ingredients
-are available in the house, for then receiving a set of possible meal ideas
-plausible to prepare and eat.
+## Tech Stack
 
-## Usage
+### Frontend
 
-The user will be able to use the app via the browser, and therefore it must be
-connected to the internet to be able to interact with the AI assistant, and to
-view its data.
-A minimal UI will provide easy access to the main sections/pages:
+- **Framework**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **UI Components**: [Radix UI](https://www.radix-ui.com/)
+- **Language**: TypeScript
 
-- a page for inserting the week's meals and generating/viewing the groceries
-  list;
-- a page for inserting which ingredients the user has available and for then
-  requesting meal ideas;
-- a page for inserting extra info about user's eating habits and for performing
-  other account actions.
+### Backend
+
+- **Infrastructure**: [AWS SAM](https://aws.amazon.com/serverless/sam/) (Serverless Application Model)
+- **Functions**: AWS Lambda (Node.js 24)
+- **Database**: DynamoDB (Single Table Design)
+- **AI Engine**: [AWS Bedrock](https://aws.amazon.com/bedrock/) (Claude 4.5 Haiku)
+- **Auth**: AWS Cognito
+
+---
+
+## Project Structure
+
+- `frontend/`: React + Vite application (UI).
+- `backend/`: AWS SAM application (API & Workers).
+- `shared/`: TypeScript types and utilities shared between frontend and backend.
+- `docs/`: Additional documentation and architecture diagrams.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** (v20 or newer)
+- **Docker Desktop** (required for local DynamoDB)
+- **AWS CLI** (configured with your credentials)
+- **AWS SAM CLI** (for local backend and deployment)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo/cooking-app.git
+   cd cooking-app
+   ```
+2. Install dependencies for the entire workspace:
+   ```bash
+   npm install
+   ```
+
+---
+
+## Available Commands
+
+Run these from the root directory:
+
+| Command                | Description                                                        |
+| ---------------------- | ------------------------------------------------------------------ |
+| `npm run backend:dev`  | Starts local DynamoDB, opens GUI, and launches SAM local API.      |
+| `npm run frontend:dev` | Starts the Vite development server for the frontend.               |
+| `npm run deploy`       | Builds and deploys the backend (SAM) and frontend (S3/CloudFront). |
+| `npm run fmt`          | Formats the entire codebase using Prettier.                        |
+
+---
+
+## Local Development Launch
+
+To run the application locally:
+
+1. **Start the Backend**:
+
+   ```bash
+   npm run backend:dev
+   ```
+
+   _This starts DynamoDB in Docker, initializes tables, and launches the API at port 3000._
+
+2. **Start the Frontend**:
+   ```bash
+   npm run frontend:dev
+   ```
+   _The app will be available at [http://localhost:5173](http://localhost:5173)._
+
+---
+
+## Deployment
+
+Ensure you have your AWS environment configured before deploying.
+
+### 1. Configure Environment
+
+Fill the `.env` file with your deployment targets:
+
+- `DEPLOY_S3_BUCKET`
+- `DEPLOY_CLOUDFRONT_ID`
+
+### 2. Deploy Everything
+
+```bash
+npm run deploy
+```
+
+This command builds the Lambda functions, deploys the CloudFormation stack, and syncs the frontend to S3 with a CloudFront invalidation.
