@@ -27,7 +27,7 @@ export const ideaService = {
     async generateIdea(userId: string): Promise<string> {
         // Fetch ingredients from DB
         const ingredientsData = await ingredientsService.getIngredients(userId);
-        const ingredients = Object.values(ingredientsData.ingredients).map(i => i.description);
+        const ingredients = Object.values(ingredientsData.ingredients).map((i) => i.description);
 
         if (ingredients.length === 0) {
             const error = new Error('Ingredients not found (empty list)');

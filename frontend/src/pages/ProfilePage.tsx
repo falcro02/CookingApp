@@ -43,7 +43,7 @@ const ProfilePage = () => {
       <Separator size="4" mb="4" mt="8" />
       <Flex width="100%" justify="between" align="center" p="5" px="8">
         <Text color="gray" size="2" align="left">
-          {email}
+          {email || user.username || "Logged in"}
         </Text>
         <Button onClick={() => signOut()}>Sign out</Button>
       </Flex>

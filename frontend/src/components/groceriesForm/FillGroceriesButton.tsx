@@ -18,6 +18,7 @@ const FillGroceriesButton = ({
   formData: Partial<FormFieldsRequest>;
 }) => {
   const dispatch = useUserDispatch();
+  const {plans} = useUser();
   const {updatePage} = usePage();
 
   const [status, setStatus] = useState<Status>("before");
@@ -112,13 +113,16 @@ const FillGroceriesButton = ({
     ),
   };
 
+  const buttonDisabled =
+    formData.days?.length === 0 ||
+    formData.plan === null ||
+    Object.keys(plans?.plans[formData.plan] ?? {}).length === 0 ||
+    Object.keys(plans?.plans[formData.plan] ?? {}).some((n) => n === "");
+
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button
-          size="2"
-          disabled={formData.days?.length === 0 || formData.plan === null}
-        >
+        <Button size="2" disabled={buttonDisabled}>
           Generate groceries
         </Button>
       </Dialog.Trigger>

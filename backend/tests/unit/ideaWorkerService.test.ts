@@ -14,7 +14,7 @@ jest.mock('@aws-sdk/client-bedrock-runtime', () => {
             send: mockSend,
         })),
         InvokeModelCommand: jest.fn(),
-        __mockSend: mockSend
+        __mockSend: mockSend,
     };
 });
 
@@ -24,7 +24,7 @@ const mockSend = require('@aws-sdk/client-bedrock-runtime').__mockSend;
 describe('ideaWorkerService', () => {
     const mockUserId = 'USER#123';
     const mockTaskId = 'TASK#456';
-    
+
     afterEach(() => {
         jest.restoreAllMocks();
     });
@@ -44,7 +44,7 @@ describe('ideaWorkerService', () => {
 
         it('should execute successfully and save new ideas', async () => {
             jest.spyOn(ideaWorkerService, 'callBedrock').mockResolvedValue(
-                '[{"name": "Pasta Pomodoro", "story": "Boil pasta.", "icon": "🍝"}]'
+                '[{"name": "Pasta Pomodoro", "story": "Boil pasta.", "icon": "🍝"}]',
             );
 
             await ideaWorkerService.execute(payload);
@@ -52,19 +52,19 @@ describe('ideaWorkerService', () => {
             expect(ideaWorkerService.callBedrock).toHaveBeenCalled();
             expect(ideaRepository.delete).toHaveBeenCalledWith(mockUserId);
             expect(ideaRepository.save).toHaveBeenCalledWith(mockUserId, [
-                { name: 'Pasta Pomodoro', story: 'Boil pasta.', icon: '🍝' }
+                { name: 'Pasta Pomodoro', story: 'Boil pasta.', icon: '🍝' },
             ]);
             expect(counterRepository.incrementCount).toHaveBeenCalled();
             expect(taskRepository.updateStatus).toHaveBeenCalledWith(mockUserId, mockTaskId, 1);
         });
 
         it('should handle errors and update task status to -1', async () => {
-             const errorMsg = 'Failed to fetch AI';
-             jest.spyOn(ideaWorkerService, 'callBedrock').mockRejectedValue(new Error(errorMsg));
+            const errorMsg = 'Failed to fetch AI';
+            jest.spyOn(ideaWorkerService, 'callBedrock').mockRejectedValue(new Error(errorMsg));
 
-             await ideaWorkerService.execute(payload);
+            await ideaWorkerService.execute(payload);
 
-             expect(taskRepository.updateStatus).toHaveBeenCalledWith(mockUserId, mockTaskId, -1, errorMsg);
+            expect(taskRepository.updateStatus).toHaveBeenCalledWith(mockUserId, mockTaskId, -1, errorMsg);
         });
     });
 
@@ -84,9 +84,11 @@ describe('ideaWorkerService', () => {
     describe('callBedrock', () => {
         it('should invoke Bedrock model', async () => {
             const mockResponse = {
-                body: new TextEncoder().encode(JSON.stringify({
-                    content: [{ text: 'idea response' }]
-                }))
+                body: new TextEncoder().encode(
+                    JSON.stringify({
+                        content: [{ text: 'idea response' }],
+                    }),
+                ),
             };
             mockSend.mockResolvedValue(mockResponse);
 
@@ -105,7 +107,7 @@ describe('ideaWorkerService', () => {
 
         it('should throw an error if response is not an array', () => {
             const raw = '{"name": "Soup", "story": "Hot soup", "icon": "🍲"}';
-             expect(() => ideaWorkerService.parseAiResponse(raw)).toThrow('AI response is not an array');
+            expect(() => ideaWorkerService.parseAiResponse(raw)).toThrow('AI response is not an array');
         });
     });
 });

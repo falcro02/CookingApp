@@ -10,6 +10,7 @@ type GenerateFuncProp = {generate: (extras: string) => void};
 
 const GenerateIdeasButton = () => {
   const dispatch = useUserDispatch();
+  const {ingredients} = useUser();
   const [status, setStatus] = useState<Status>("before");
   const [task, setTask] = useState<string | null>(null);
 
@@ -96,10 +97,16 @@ const GenerateIdeasButton = () => {
     ),
   };
 
+  const buttonDisabled =
+    Object.keys(ingredients?.ingredients ?? {}).length === 0 ||
+    Object.keys(ingredients?.ingredients ?? {}).some((n) => n === "");
+
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button size="2">Generate ideas</Button>
+        <Button disabled={buttonDisabled} size="2">
+          Generate ideas
+        </Button>
       </Dialog.Trigger>
       {contentViews[status]}
     </Dialog.Root>
