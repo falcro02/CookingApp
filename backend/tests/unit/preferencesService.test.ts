@@ -29,8 +29,8 @@ describe('preferencesService', () => {
                 preferences: {
                     dietary: '',
                     allergies: '',
-                    disliked: ''
-                }
+                    disliked: '',
+                },
             });
         });
 
@@ -41,7 +41,7 @@ describe('preferencesService', () => {
                 dietary: 'vegan',
                 allergies: 'nuts',
                 disliked: 'onions',
-                updatedAt: '2023-01-01'
+                updatedAt: '2023-01-01',
             };
             mockGetPreferences.mockResolvedValue(mockStored);
 
@@ -50,8 +50,8 @@ describe('preferencesService', () => {
                 preferences: {
                     dietary: 'vegan',
                     allergies: 'nuts',
-                    disliked: 'onions'
-                }
+                    disliked: 'onions',
+                },
             });
         });
     });
@@ -64,7 +64,7 @@ describe('preferencesService', () => {
                 dietary: 'vegetarian',
                 allergies: 'peanuts',
                 disliked: 'garlic',
-                updatedAt: '2023-01-01'
+                updatedAt: '2023-01-01',
             };
             mockGetPreferences.mockResolvedValue(current);
 
@@ -72,19 +72,21 @@ describe('preferencesService', () => {
                 preferences: {
                     dietary: 'vegan',
                     // allergies omitted, should remain peanuts
-                    disliked: '' // explicitly cleared
-                }
+                    disliked: '', // explicitly cleared
+                },
             };
 
             await preferencesService.updatePreferences(userId, input);
 
-            expect(mockSavePreferences).toHaveBeenCalledWith(expect.objectContaining({
-                PK: userId,
-                dietary: 'vegan',
-                allergies: 'peanuts',
-                disliked: '',
-                updatedAt: expect.any(String)
-            }));
+            expect(mockSavePreferences).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    PK: userId,
+                    dietary: 'vegan',
+                    allergies: 'peanuts',
+                    disliked: '',
+                    updatedAt: expect.any(String),
+                }),
+            );
         });
 
         it('creates new preferences if none exist', async () => {
@@ -94,18 +96,20 @@ describe('preferencesService', () => {
                 preferences: {
                     dietary: 'none',
                     allergies: 'none',
-                    disliked: 'none'
-                }
+                    disliked: 'none',
+                },
             };
 
             await preferencesService.updatePreferences(userId, input);
 
-            expect(mockSavePreferences).toHaveBeenCalledWith(expect.objectContaining({
-                PK: userId,
-                dietary: 'none',
-                allergies: 'none',
-                disliked: 'none'
-            }));
+            expect(mockSavePreferences).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    PK: userId,
+                    dietary: 'none',
+                    allergies: 'none',
+                    disliked: 'none',
+                }),
+            );
         });
     });
 });

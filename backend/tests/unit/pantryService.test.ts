@@ -44,9 +44,9 @@ describe('pantryService', () => {
     });
 
     describe('deletePantryItem', () => {
-         it('should delete a pantry item', async () => {
-             await pantryService.deletePantryItem(mockUserId, 'ITEM#1');
-             expect(pantryRepository.delete).toHaveBeenCalledWith(mockUserId, 'ITEM#1');
-         });
+        it('should delete a pantry item', async () => {
+            await pantryService.deletePantryItem(mockUserId, 'ITEM#1');
+            expect(pantryRepository.delete).toHaveBeenCalledWith(mockUserId, 'ITEM#1');
+        });
     });
 });

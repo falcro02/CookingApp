@@ -38,7 +38,7 @@ describe('mealService', () => {
                     icon: '🍕',
                     weekDay: 2,
                     plan: 1,
-                })
+                }),
             );
         });
 
@@ -50,14 +50,14 @@ describe('mealService', () => {
         it('should throw error for invalid weekDay', async () => {
             const invalidInput = { description: 'Pizza', icon: '🍕', weekDay: 8, plan: 1 };
             await expect(mealService.createMeal(mockUserId, invalidInput)).rejects.toThrow(
-                'weekDay must be between 0 and 6'
+                'weekDay must be between 0 and 6',
             );
         });
 
         it('should throw error for invalid plan', async () => {
             const invalidInput = { description: 'Pizza', icon: '🍕', weekDay: 2, plan: 5 };
             await expect(mealService.createMeal(mockUserId, invalidInput)).rejects.toThrow(
-                'plan must be between 1 and 4'
+                'plan must be between 1 and 4',
             );
         });
     });
@@ -75,7 +75,7 @@ describe('mealService', () => {
         });
 
         it('should delete and update current plan if plan becomes empty', async () => {
-             const mockMeal = { itemID: '1', plan: 2 };
+            const mockMeal = { itemID: '1', plan: 2 };
             (mealRepository.findById as jest.Mock).mockResolvedValue(mockMeal);
             (mealRepository.findByPlan as jest.Mock)
                 .mockResolvedValueOnce([]) // First call for deleted plan (empty)
@@ -109,8 +109,10 @@ describe('mealService', () => {
         });
 
         it('should throw error if meal not found', async () => {
-             (mealRepository.findById as jest.Mock).mockResolvedValue(null);
-             await expect(mealService.updateMeal(mockUserId, '1', { description: 'New Pizza' })).rejects.toThrow('meal not found');
+            (mealRepository.findById as jest.Mock).mockResolvedValue(null);
+            await expect(mealService.updateMeal(mockUserId, '1', { description: 'New Pizza' })).rejects.toThrow(
+                'meal not found',
+            );
         });
     });
 });

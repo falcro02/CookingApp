@@ -16,7 +16,7 @@ jest.mock('@aws-sdk/client-lambda', () => {
             send: mockSend,
         })),
         InvokeCommand: jest.fn(),
-        __mockSend: mockSend
+        __mockSend: mockSend,
     };
 });
 
@@ -43,9 +43,9 @@ describe('ideaService', () => {
         });
 
         it('should return empty array if no ideas found', async () => {
-             (ideaRepository.findByUser as jest.Mock).mockResolvedValue(null);
-             const result = await ideaService.getIdeas(mockUserId);
-             expect(result).toEqual([]);
+            (ideaRepository.findByUser as jest.Mock).mockResolvedValue(null);
+            const result = await ideaService.getIdeas(mockUserId);
+            expect(result).toEqual([]);
         });
     });
 
@@ -89,14 +89,14 @@ describe('ideaService', () => {
             (counterRepository.getCount as jest.Mock).mockResolvedValue(1);
             (taskRepository.findRunningByUser as jest.Mock).mockResolvedValue(null);
             (preferencesService.getPreferences as jest.Mock).mockResolvedValue(mockPrefs);
-            
+
             jest.useFakeTimers().setSystemTime(new Date('2023-01-01T00:00:00Z'));
             const fixedDate = Date.now();
 
             const result = await ideaService.generateIdea(mockUserId, mockIngredients);
 
             expect(result).toBe(fixedDate.toString());
-            
+
             expect(taskRepository.create).toHaveBeenCalledWith({
                 PK: mockUserId,
                 SK: `TASK#${fixedDate.toString()}`,

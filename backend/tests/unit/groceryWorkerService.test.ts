@@ -18,7 +18,7 @@ jest.mock('@aws-sdk/client-bedrock-runtime', () => {
             send: mockSend,
         })),
         InvokeModelCommand: jest.fn(),
-        __mockSend: mockSend
+        __mockSend: mockSend,
     };
 });
 
@@ -28,7 +28,7 @@ const mockSend = require('@aws-sdk/client-bedrock-runtime').__mockSend;
 describe('groceryWorkerService', () => {
     const mockUserId = 'USER#123';
     const mockTaskId = 'TASK#456';
-    
+
     afterEach(() => {
         jest.restoreAllMocks();
     });
@@ -50,14 +50,12 @@ describe('groceryWorkerService', () => {
         };
 
         it('should execute successfully and replace items', async () => {
-            (mealRepository.findByPlan as jest.Mock).mockResolvedValue([
-                { description: 'Pasta', weekDay: 1 }
-            ]);
+            (mealRepository.findByPlan as jest.Mock).mockResolvedValue([{ description: 'Pasta', weekDay: 1 }]);
             (preferenceRepository.getPreferences as jest.Mock).mockResolvedValue(null);
 
             // Mock callBedrock which is called internally
             jest.spyOn(groceryWorkerService, 'callBedrock').mockResolvedValue(
-                '[{"description": "Pasta 500g", "weekDay": 0}]'
+                '[{"description": "Pasta 500g", "weekDay": 0}]',
             );
 
             // Mock Date for consistent item IDs
@@ -70,27 +68,29 @@ describe('groceryWorkerService', () => {
             expect(preferenceRepository.getPreferences).toHaveBeenCalledWith(mockUserId);
             expect(groceryWorkerService.callBedrock).toHaveBeenCalled();
             expect(groceryRepository.deleteAllByUser).toHaveBeenCalledWith(mockUserId);
-            
-            expect(groceryRepository.batchCreate).toHaveBeenCalledWith([{
-                PK: mockUserId,
-                SK: `GROCERY#${fixedDate}_0`,
-                itemID: `${fixedDate}_0`,
-                description: 'Pasta 500g',
-                weekDay: 0,
-                checked: false,
-            }]);
-            
+
+            expect(groceryRepository.batchCreate).toHaveBeenCalledWith([
+                {
+                    PK: mockUserId,
+                    SK: `GROCERY#${fixedDate}_0`,
+                    itemID: `${fixedDate}_0`,
+                    description: 'Pasta 500g',
+                    weekDay: 0,
+                    checked: false,
+                },
+            ]);
+
             expect(counterRepository.incrementCount).toHaveBeenCalled();
             expect(taskRepository.updateStatus).toHaveBeenCalledWith(mockUserId, mockTaskId, 1);
         });
 
         it('should handle errors and update task status to -1', async () => {
-             const errorMsg = 'Failed to fetch meals';
-             (mealRepository.findByPlan as jest.Mock).mockRejectedValue(new Error(errorMsg));
+            const errorMsg = 'Failed to fetch meals';
+            (mealRepository.findByPlan as jest.Mock).mockRejectedValue(new Error(errorMsg));
 
-             await groceryWorkerService.execute(payload);
+            await groceryWorkerService.execute(payload);
 
-             expect(taskRepository.updateStatus).toHaveBeenCalledWith(mockUserId, mockTaskId, -1, errorMsg);
+            expect(taskRepository.updateStatus).toHaveBeenCalledWith(mockUserId, mockTaskId, -1, errorMsg);
         });
     });
 
@@ -112,9 +112,11 @@ describe('groceryWorkerService', () => {
     describe('callBedrock', () => {
         it('should invoke Bedrock model', async () => {
             const mockResponse = {
-                body: new TextEncoder().encode(JSON.stringify({
-                    content: [{ text: 'response text' }]
-                }))
+                body: new TextEncoder().encode(
+                    JSON.stringify({
+                        content: [{ text: 'response text' }],
+                    }),
+                ),
             };
             mockSend.mockResolvedValue(mockResponse);
 
@@ -133,7 +135,7 @@ describe('groceryWorkerService', () => {
 
         it('should throw an error if response is not an array', () => {
             const raw = '{"description": "Milk 1L", "weekDay": 0}';
-             expect(() => groceryWorkerService.parseAiResponse(raw)).toThrow('AI response is not an array');
+            expect(() => groceryWorkerService.parseAiResponse(raw)).toThrow('AI response is not an array');
         });
     });
 });
