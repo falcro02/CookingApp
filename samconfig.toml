@@ -15,7 +15,8 @@ lint = true
 
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
+confirm_changeset = false
+fail_on_empty_changeset = false
 resolve_s3 = true
 stack_name = "cooking-web-stack"
 s3_prefix = "cooking-web-stack"
