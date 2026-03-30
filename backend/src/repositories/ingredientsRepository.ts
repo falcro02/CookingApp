@@ -50,5 +50,5 @@ export const ingredientsRepository = {
         for (const item of items) {
             await this.delete(userId, item.SK.replace('INGREDIENT#', ''));
         }
-    }
+    },
 };

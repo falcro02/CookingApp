@@ -10,7 +10,7 @@ export const getDynamoClient = (): DynamoDBClient => {
         // When running inside a SAM Docker container, '127.0.0.1' points to the container itself.
         // On Mac/Windows, 'host.docker.internal' points to the host machine where DynamoDB Local is running.
         const endpoint = process.env.AWS_SAM_LOCAL ? 'http://host.docker.internal:8000' : 'http://127.0.0.1:8000';
-        
+
         console.log(`🔌 Connecting to local DynamoDB endpoint: ${endpoint}`);
         return new DynamoDBClient({
             endpoint: endpoint,
