@@ -32,34 +32,43 @@ const AppearanceToggle = () => {
   const {appearance, setAppearance} = useAppearance();
   return (
     <Tooltip content="Toggle appearance">
-      <div>
-        <IconButtonStyled
-          onClick={() =>
-            setAppearance(appearance === "dark" ? "light" : "dark")
-          }
-        >
-          {appearance === "dark" ? (
-            <SunIcon {...iconSize} />
-          ) : (
-            <MoonIcon {...iconSize} />
-          )}
-        </IconButtonStyled>
-      </div>
+      <IconButton
+        variant="ghost"
+        radius="full"
+        style={{
+          color: "var(--gray-12)",
+        }}
+        onClick={() => setAppearance(appearance === "dark" ? "light" : "dark")}
+      >
+        {appearance === "dark" ? (
+          <SunIcon {...iconSize} />
+        ) : (
+          <MoonIcon {...iconSize} />
+        )}
+      </IconButton>
     </Tooltip>
   );
 };
 
 const GitHubLink = () => (
   <Tooltip content="Go to GitHub repository">
-    <Link
-      href="https://github.com/falcro02/CookingApp"
-      target="_blank"
-      underline="none"
+    <IconButton
+      variant="ghost"
+      radius="full"
+      style={{
+        color: "var(--gray-12)",
+        cursor: "var(--cursor-link)",
+      }}
+      asChild
     >
-      <IconButtonStyled link>
+      <Link
+        href="https://github.com/falcro02/CookingApp"
+        target="_blank"
+        underline="none"
+      >
         <GitHubLogoIcon {...iconSize} />
-      </IconButtonStyled>
-    </Link>
+      </Link>
+    </IconButton>
   </Tooltip>
 );
 
@@ -67,11 +76,15 @@ const InfoPopover = () => (
   <Popover.Root>
     <Tooltip content="Show credits">
       <Popover.Trigger>
-        <div>
-          <IconButtonStyled>
-            <InfoCircledIcon {...iconSize} />
-          </IconButtonStyled>
-        </div>
+        <IconButton
+          variant="ghost"
+          radius="full"
+          style={{
+            color: "var(--gray-12)",
+          }}
+        >
+          <InfoCircledIcon {...iconSize} />
+        </IconButton>
       </Popover.Trigger>
     </Tooltip>
     <Popover.Content>
@@ -91,20 +104,6 @@ const InfoPopover = () => (
       </Text>
     </Popover.Content>
   </Popover.Root>
-);
-
-const IconButtonStyled = ({link = false, onClick = null, children}) => (
-  <IconButton
-    onClick={onClick}
-    variant="ghost"
-    radius="full"
-    style={{
-      color: "var(--gray-12)",
-      cursor: link ? "var(--cursor-link)" : undefined,
-    }}
-  >
-    {children}
-  </IconButton>
 );
 
 const iconSize = {
