@@ -41,13 +41,13 @@ const ProfilePage = () => {
       <Heading mb="6">Preferences</Heading>
       <PreferencesFields />
       <Separator size="4" mb="4" mt="8" />
-      <Flex width="100%" justify="between" align="center" p="5" px="8">
-        <Text color="gray" size="2" align="left">
-          {email || user.username || "Logged in"}
+      <Flex direction="column" width="100%" justify="center" align="center">
+        <Button m="8" onClick={() => signOut()}>
+          Sign out
+        </Button>
+        <Text color="gray" size="1">
+          {email || user.username}
         </Text>
-        <Button onClick={() => signOut()}>Sign out</Button>
-      </Flex>
-      <Flex width="100%" justify="center" align="end" height="10vh">
         <Text color="gray" size="1">
           {user.userId}
         </Text>

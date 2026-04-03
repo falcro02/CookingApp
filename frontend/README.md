@@ -71,13 +71,13 @@ npm run deploy         # Deploy the whole application (frontend also)
 
 The frontend requires the following env var loaded in the `.env` file.
 
-Name                     | Description
--------------------------|-----------------------------
-VITE_USER_POOL_ID        | Cognito directory identifier
-VITE_USER_POOL_CLIENT_ID | Cognito app client ID
-VITE_COGNITO_DOMAIN      | Hosted authentication domain
-VITE_API_URL             | Backend API endpoint
-VITE_SITE_URL            | Frontend application URL
+| Name                     | Description                  |
+| ------------------------ | ---------------------------- |
+| VITE_USER_POOL_ID        | Cognito directory identifier |
+| VITE_USER_POOL_CLIENT_ID | Cognito app client ID        |
+| VITE_COGNITO_DOMAIN      | Hosted authentication domain |
+| VITE_API_URL             | Backend API endpoint         |
+| VITE_SITE_URL            | Frontend application URL     |
 
 # Development
 
@@ -88,4 +88,3 @@ requiring internet connection (like authentication), and in general simplifying
 the whole development process itself.
 For example, operations like retrieving some user information or retrieving
 request headers (along side the whole auth process) is skipped.
-
