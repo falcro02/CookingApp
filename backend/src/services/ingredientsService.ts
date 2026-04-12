@@ -48,11 +48,9 @@ export const ingredientsService = {
     },
 
     async importFromGroceries(userId: string): Promise<void> {
-        // Prendi tutte le grocery che hanno il check a true
         const groceries = await groceryRepository.findAllByUser(userId);
         const checkedItems = groceries.filter((g: any) => g.checked);
 
-        // Prendi gli ingredienti attuali per evitare duplicati
         const existingIngredients = await ingredientsRepository.findAllByUserId(userId);
         const existingDescriptions = new Set(existingIngredients.map((i) => i.description.toLowerCase()));
 
